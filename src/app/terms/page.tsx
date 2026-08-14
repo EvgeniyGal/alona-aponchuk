@@ -1,14 +1,14 @@
 import type { Metadata } from "next";
 import { PageHero, Section } from "@/components/page-shell";
+import { createPageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = createPageMetadata({
   title: "Terms & Disclaimer — Aponchuk Workflow Systems LLC",
   description:
     "Terms of use and professional disclaimer covering the scope of consulting, workflow analysis, QA validation, and implementation-support services.",
-  robots: { index: false },
-  openGraph: { url: "/terms" },
-  alternates: { canonical: "/terms" },
-};
+  path: "/terms",
+  noIndex: true,
+});
 
 const EMAIL = "info@aponchukworkflow.com";
 const EFFECTIVE_DATE = "January 1, 2026";

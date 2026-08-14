@@ -5,6 +5,8 @@ import { SiteFooter } from "@/components/site-footer";
 import { SmoothScroll } from "@/components/smooth-scroll";
 import { ScrollProgress } from "@/components/scroll-progress";
 import { ScrollToTop } from "@/components/scroll-to-top";
+import { JsonLd } from "@/components/json-ld";
+import { absoluteUrl, siteConfig } from "@/lib/seo";
 import "./globals.css";
 
 const manrope = Manrope({
@@ -22,26 +24,67 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(siteConfig.url),
   title: {
-    default: "Alona Aponchuk — CRM Workflow & Client Journey Automation for Healthcare & Wellness",
-    template: "%s | Alona Aponchuk",
+    default: siteConfig.title,
+    template: `%s | ${siteConfig.name}`,
   },
-  description:
-    "Alona Aponchuk helps healthcare and wellness organizations improve CRM workflows, client journeys, scheduling, follow-up, and AI-mediated communication through structured workflow analysis, QA validation, and RAG-ready automation design.",
-  authors: [{ name: "Aponchuk Workflow Systems LLC" }],
+  description: siteConfig.description,
+  applicationName: siteConfig.legalName,
+  authors: [{ name: siteConfig.name, url: absoluteUrl("/about") }],
+  creator: siteConfig.name,
+  publisher: siteConfig.legalName,
+  keywords: [...siteConfig.keywords],
+  category: "business",
+  referrer: "origin-when-cross-origin",
+  formatDetection: {
+    email: false,
+    address: false,
+    telephone: false,
+  },
   icons: {
-    icon: "/favicon.png",
-    apple: "/favicon.png",
+    icon: [{ url: "/favicon.png", type: "image/png" }],
+    apple: [{ url: "/favicon.png", type: "image/png" }],
+    shortcut: ["/favicon.png"],
+  },
+  manifest: undefined,
+  alternates: {
+    canonical: siteConfig.url,
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+      "max-video-preview": -1,
+    },
   },
   openGraph: {
-    siteName: "Alona Aponchuk — Aponchuk Workflow Systems LLC",
     type: "website",
+    locale: siteConfig.locale,
+    url: siteConfig.url,
+    siteName: `${siteConfig.name} — ${siteConfig.legalName}`,
     title: "Alona Aponchuk — CRM Workflow & Client Journey Automation",
     description:
       "Reliable Workflows. Better Client Journeys. Responsible AI. Consulting for healthcare and wellness organizations across the United States.",
+    images: [
+      {
+        url: siteConfig.defaultOgImage,
+        width: 1200,
+        height: 630,
+        alt: `${siteConfig.name} — CRM workflow and client journey consulting`,
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
+    title: "Alona Aponchuk — CRM Workflow & Client Journey Automation",
+    description:
+      "Reliable Workflows. Better Client Journeys. Responsible AI. Consulting for healthcare and wellness organizations across the United States.",
+    images: [siteConfig.defaultOgImage],
   },
 };
 
@@ -49,6 +92,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={`${inter.variable} ${manrope.variable}`}>
       <body>
+        <JsonLd />
         <SmoothScroll />
         <ScrollProgress />
         <div className="flex min-h-dvh flex-col bg-ivory">

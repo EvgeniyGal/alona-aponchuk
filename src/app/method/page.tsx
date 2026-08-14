@@ -1,18 +1,16 @@
 import type { Metadata } from "next";
 import { PageHero, Section, CtaBand } from "@/components/page-shell";
 import { Reveal } from "@/components/reveal";
+import { createPageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = createPageMetadata({
   title: "My Method — Workflow Discovery to Controlled Pilot",
   description:
     "Seven structured consulting steps: workflow discovery, client journey mapping, CRM logic optimization, knowledge base structuring, RAG readiness, QA calibration, and controlled pilot support.",
-  openGraph: {
-    title: "My Method — Structured Workflow Optimization",
-    description: "Seven structured steps from discovery to controlled pilot.",
-    url: "/method",
-  },
-  alternates: { canonical: "/method" },
-};
+  path: "/method",
+  image: "/images/home-service-workflow-audit.webp",
+  imageAlt: "Seven structured steps from discovery to controlled pilot",
+});
 
 const steps = [
   {

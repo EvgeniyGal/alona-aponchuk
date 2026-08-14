@@ -4,18 +4,16 @@ import { ArrowRight } from "lucide-react";
 import { PageHero, Section, CtaBand } from "@/components/page-shell";
 import { Reveal } from "@/components/reveal";
 import { ImagePlaceholder } from "@/components/image-placeholder";
+import { createPageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = createPageMetadata({
   title: "Services — Workflow Audit, Automation Readiness, Pilot Support",
   description:
     "Workflow Audit, Automation Readiness Package, Pilot Implementation Support, and a Monthly Optimization Retainer for healthcare and wellness organizations.",
-  openGraph: {
-    title: "Services — Aponchuk Workflow Systems",
-    description: "Bounded consulting engagements calibrated to your operational context.",
-    url: "/services",
-  },
-  alternates: { canonical: "/services" },
-};
+  path: "/services",
+  image: "/images/home-service-automation-readiness.webp",
+  imageAlt: "Bounded consulting engagements for healthcare and wellness workflows",
+});
 
 const services = [
   {

@@ -3,18 +3,16 @@ import { PageHero, Section, CtaBand } from "@/components/page-shell";
 import { CheckCircle2, XCircle } from "lucide-react";
 import { Reveal } from "@/components/reveal";
 import { ImagePlaceholder } from "@/components/image-placeholder";
+import { createPageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = createPageMetadata({
   title: "Responsible AI — Bounded, QA-Validated Client Communication",
   description:
     "I scope AI-supported communication to approved informational, administrative, scheduling, preparation, and follow-up interactions — never diagnosis, clinical advice, or guaranteed outcomes.",
-  openGraph: {
-    title: "Responsible AI in Healthcare & Wellness Workflows",
-    description: "AI belongs in the operational layer of the client journey, not in place of professional judgment.",
-    url: "/responsible-ai",
-  },
-  alternates: { canonical: "/responsible-ai" },
-};
+  path: "/responsible-ai",
+  image: "/images/home-five-layer-system.webp",
+  imageAlt: "Responsible AI for healthcare and wellness client journeys",
+});
 
 const allowed = [
   "Approved informational questions",

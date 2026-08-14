@@ -4,18 +4,16 @@ import Link from "next/link";
 import { MapPin, Mail, Linkedin, ExternalLink } from "lucide-react";
 import { Section, CtaBand } from "@/components/page-shell";
 import { Reveal } from "@/components/reveal";
+import { createPageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = createPageMetadata({
   title: "About Alona Aponchuk — CRM, Patient Management & Digital Workflow Systems",
   description:
     "Executive biography of Alona Aponchuk: QA engineer and workflow systems consultant specializing in CRM, patient management, healthcare and wellness workflows, RAG readiness, and responsible AI-supported communication.",
-  openGraph: {
-    title: "About Alona Aponchuk",
-    description: "Executive consulting profile — CRM, patient management, workflow reliability, and responsible AI.",
-    url: "/about",
-  },
-  alternates: { canonical: "/about" },
-};
+  path: "/about",
+  image: "/alona-portrait.webp",
+  imageAlt: "Portrait of Alona Aponchuk, workflow systems consultant",
+});
 
 const experience = [
   {

@@ -1,18 +1,16 @@
 import type { Metadata } from "next";
 import { PageHero, Section, CtaBand } from "@/components/page-shell";
 import { Reveal } from "@/components/reveal";
+import { createPageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = createPageMetadata({
   title: "Mission — Reliable Digital Workflows for Human-Centered Care",
   description:
     "The client journey is one connected operational system. CRM, intake, scheduling, communication, knowledge, and automation must work together reliably.",
-  openGraph: {
-    title: "Mission — Aponchuk Workflow Systems",
-    description: "Reliable workflows for human-centered healthcare and wellness organizations.",
-    url: "/mission",
-  },
-  alternates: { canonical: "/mission" },
-};
+  path: "/mission",
+  image: "/images/home-mission-continuum.webp",
+  imageAlt: "Reliable digital workflows for human-centered care",
+});
 
 export default function MissionPage() {
   return (

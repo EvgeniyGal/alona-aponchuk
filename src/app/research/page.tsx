@@ -3,18 +3,16 @@ import { PageHero, Section, CtaBand } from "@/components/page-shell";
 import { ArrowRight, ChevronDown, ExternalLink } from "lucide-react";
 import { Reveal } from "@/components/reveal";
 import { ImagePlaceholder } from "@/components/image-placeholder";
+import { createPageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = createPageMetadata({
   title: "Research Basis — Quality Metrics for AI-Mediated Communication",
   description:
     "Applied research foundation for CRM workflow optimization and RAG-supported client communication, including RSI, IDS, and RCS quality metrics.",
-  openGraph: {
-    title: "Research Basis — Aponchuk Workflow Systems",
-    description: "Applied research supporting reliable AI-mediated communication in healthcare and wellness workflows.",
-    url: "/research",
-  },
-  alternates: { canonical: "/research" },
-};
+  path: "/research",
+  image: "/images/home-research-methodology.webp",
+  imageAlt: "Research basis for AI-mediated communication quality metrics",
+});
 
 const layers = [
   { code: "01", title: "CRM", body: "System of record for the client relationship." },

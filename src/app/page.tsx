@@ -18,22 +18,17 @@ import { ContinuityReveal } from "@/components/continuity-reveal";
 import { Reveal } from "@/components/reveal";
 import { MetricPulse } from "@/components/metric-pulse";
 import { HeroAtmosphere } from "@/components/hero-atmosphere";
+import { createPageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
-  title: {
-    absolute: "Alona Aponchuk — CRM Workflow & Client Journey Consulting for Healthcare & Wellness",
-  },
+export const metadata: Metadata = createPageMetadata({
+  title: "Alona Aponchuk — CRM Workflow & Client Journey Consulting for Healthcare & Wellness",
   description:
     "I help healthcare and wellness organizations build reliable digital workflows: CRM optimization, client journey design, QA-validated communication, and RAG-ready automation. Sarasota, Florida — remote consulting across the United States.",
-  openGraph: {
-    title: "Alona Aponchuk — Reliable Workflows. Better Client Journeys. Responsible AI.",
-    description:
-      "Executive workflow consulting for healthcare and wellness organizations. CRM, client journeys, QA validation, and responsible AI.",
-    url: "/",
-    type: "website",
-  },
-  alternates: { canonical: "/" },
-};
+  path: "/",
+  absoluteTitle: true,
+  image: "/images/home-hero-operations.webp",
+  imageAlt: "Client journey automation for healthcare and wellness organizations",
+});
 
 const comparison = [
   {
@@ -339,8 +334,11 @@ export default function HomePage() {
                   <div className="p-7 flex flex-col flex-1">
                     <h3 className="font-display text-[17px] font-semibold text-graphite">{s.title}</h3>
                     <p className="mt-3 text-[13.5px] text-muted-foreground leading-relaxed flex-1">{s.body}</p>
-                    <Link href="/services" className="mt-5 inline-flex items-center gap-1.5 text-blue text-[13.5px] font-medium hover:underline">
-                      Learn more <ArrowRight size={13} />
+                    <Link
+                      href="/services"
+                      className="mt-5 inline-flex items-center gap-1.5 text-blue text-[13.5px] font-medium hover:underline"
+                    >
+                      Learn more about {s.title} <ArrowRight size={13} />
                     </Link>
                   </div>
                 </div>

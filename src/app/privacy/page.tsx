@@ -1,14 +1,14 @@
 import type { Metadata } from "next";
 import { PageHero, Section } from "@/components/page-shell";
+import { createPageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = createPageMetadata({
   title: "Privacy Policy — Aponchuk Workflow Systems LLC",
   description:
     "How Aponchuk Workflow Systems LLC collects, uses, and protects information submitted through this website.",
-  robots: { index: false },
-  openGraph: { url: "/privacy" },
-  alternates: { canonical: "/privacy" },
-};
+  path: "/privacy",
+  noIndex: true,
+});
 
 const EMAIL = "info@aponchukworkflow.com";
 const EFFECTIVE_DATE = "January 1, 2026";

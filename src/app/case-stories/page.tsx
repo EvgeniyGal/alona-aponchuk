@@ -4,19 +4,16 @@ import { ArrowRight } from "lucide-react";
 import { PageHero, Section, CtaBand } from "@/components/page-shell";
 import { Reveal } from "@/components/reveal";
 import { ImagePlaceholder } from "@/components/image-placeholder";
+import { createPageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = createPageMetadata({
   title: "Case Stories — Selected Workflow Engagements",
   description:
     "Selected case stories from CRM, EHR, and workflow optimization engagements across integrative healthcare, educational research, and AI-supported digital systems.",
-  openGraph: {
-    title: "Selected Case Stories — Aponchuk Workflow Systems",
-    description:
-      "Structured workflow analysis applied to healthcare operations, educational research programs, and AI-supported digital platforms.",
-    url: "/case-stories",
-  },
-  alternates: { canonical: "/case-stories" },
-};
+  path: "/case-stories",
+  image: "/images/home-case-integrative-health.webp",
+  imageAlt: "Selected CRM and workflow case stories",
+});
 
 type Story = {
   id: string;
