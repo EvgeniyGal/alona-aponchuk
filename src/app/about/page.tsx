@@ -147,7 +147,7 @@ export default function AboutPage() {
             <div className="relative mx-auto w-full max-w-sm">
               <div className="absolute -inset-3 rounded-2xl bg-sage-soft/40 -z-10" aria-hidden />
               <Image
-                src="/alona-portrait.jpg"
+                src="/alona-portrait.webp"
                 alt="Portrait of Alona Aponchuk, workflow systems consultant"
                 width={480}
                 height={480}

@@ -4,7 +4,6 @@ import {
   ArrowRight,
   MapPin,
   CheckCircle2,
-  AlertCircle,
   Layers,
   BookOpen,
   Bot,
@@ -14,6 +13,10 @@ import {
 } from "lucide-react";
 import { JourneyDiagram } from "@/components/journey-diagram";
 import { CtaBand } from "@/components/page-shell";
+import { ImagePlaceholder } from "@/components/image-placeholder";
+import { ContinuityReveal } from "@/components/continuity-reveal";
+import { Reveal } from "@/components/reveal";
+import { MetricPulse } from "@/components/metric-pulse";
 
 export const metadata: Metadata = {
   title: {
@@ -63,10 +66,30 @@ const layers = [
 ];
 
 const services = [
-  { title: "Workflow Audit", body: "Structured review of intake, CRM, scheduling, follow-up, and existing automation." },
-  { title: "Automation Readiness", body: "Knowledge base, retrieval structure, and response boundaries prepared for AI." },
-  { title: "Pilot Implementation", body: "Guided pilot of a bounded, QA-validated communication workflow." },
-  { title: "Optimization Retainer", body: "Ongoing workflow calibration, monitoring, and refinement." },
+  {
+    title: "Workflow Audit",
+    body: "Structured review of intake, CRM, scheduling, follow-up, and existing automation.",
+    image: "home-service-workflow-audit.webp",
+    tone: "blue" as const,
+  },
+  {
+    title: "Automation Readiness",
+    body: "Knowledge base, retrieval structure, and response boundaries prepared for AI.",
+    image: "home-service-automation-readiness.webp",
+    tone: "teal" as const,
+  },
+  {
+    title: "Pilot Implementation",
+    body: "Guided pilot of a bounded, QA-validated communication workflow.",
+    image: "home-service-pilot-implementation.webp",
+    tone: "sage" as const,
+  },
+  {
+    title: "Optimization Retainer",
+    body: "Ongoing workflow calibration, monitoring, and refinement.",
+    image: "home-service-optimization-retainer.webp",
+    tone: "gold" as const,
+  },
 ];
 
 const caseStories = [
@@ -77,6 +100,8 @@ const caseStories = [
     challenge: "Clinical documentation and operational data moved between roles through inconsistent paths.",
     approach: "Standardized CharmHealth CRM/EHR configuration, intake forms, and clinical templates alongside inventory workflows.",
     outcome: "More standardized workflows, improved physician–staff coordination, and stronger operational reliability.",
+    image: "home-case-integrative-health.webp",
+    tone: "teal" as const,
   },
   {
     id: "educational-research",
@@ -85,6 +110,8 @@ const caseStories = [
     challenge: "Participant, registration, and reporting data were fragmented across tools and hard to rely on.",
     approach: "Rebuilt CRM logic around the participant journey with clearer forms, statuses, triggers, and reporting.",
     outcome: "Stronger workflow consistency and more reliable reporting across programs and international events.",
+    image: "home-case-educational-research.webp",
+    tone: "blue" as const,
   },
   {
     id: "ai-digital-systems",
@@ -93,6 +120,8 @@ const caseStories = [
     challenge: "AI-enabled workflows required structured validation of system logic and user journeys.",
     approach: "Contributed to workflow design and testing across AI-oriented platforms, including the PersonaMatrix project.",
     outcome: "Supported the reliability of AI-enabled workflows and strengthened QA and validation processes.",
+    image: "home-case-ai-digital-systems.webp",
+    tone: "sage" as const,
   },
 ];
 
@@ -130,11 +159,34 @@ const publications = [
 export default function HomePage() {
   return (
     <>
-      <section className="relative overflow-hidden border-b border-hairline bg-white">
-        <div className="container-page py-20 md:py-28 grid gap-16 lg:grid-cols-[1.15fr_1fr] items-center">
-          <div>
+      {/* HERO — full-bleed visual plane + brand composition */}
+      <section className="relative overflow-hidden border-b border-hairline hero-atmosphere">
+        {/* Atmosphere only — no labels (prevents peeking under Journey card) */}
+        <div className="pointer-events-none absolute inset-0" aria-hidden>
+          <div className="absolute inset-y-0 right-0 w-full lg:w-[52%]">
+            <ImagePlaceholder
+              label="Hero: calm clinical operations atmosphere"
+              filename="home-hero-operations.webp"
+              aspect="fill"
+              tone="teal"
+              silent
+              priority
+              className="border-0 rounded-none"
+            />
+          </div>
+          <div className="absolute inset-0 bg-gradient-to-r from-white via-white/95 to-white/55 lg:to-white/20" />
+          <div className="absolute inset-0 bg-gradient-to-t from-ivory via-transparent to-white/50" />
+        </div>
+
+        <div className="relative z-10 container-page py-16 md:py-24 lg:py-28 grid gap-12 lg:grid-cols-[1.1fr_0.9fr] items-center">
+          <Reveal variant="up">
+            <div className="hero-brand-mark mb-5 inline-flex items-center gap-3 rounded-md border border-hairline bg-white/80 px-3 py-2 backdrop-blur-sm">
+              <span className="font-display text-[15px] font-semibold text-graphite">Alona Aponchuk</span>
+              <span className="h-4 w-px bg-hairline" aria-hidden />
+              <span className="text-[11.5px] text-muted-foreground">Aponchuk Workflow Systems LLC</span>
+            </div>
             <div className="eyebrow">Reliable Workflows · Better Client Journeys · Responsible AI</div>
-            <h1 className="mt-5 font-display text-[44px] md:text-[64px] leading-[1.03] font-semibold text-graphite tracking-tight">
+            <h1 className="mt-5 font-display text-[40px] sm:text-[44px] md:text-[64px] leading-[1.03] font-semibold text-graphite tracking-tight">
               Client Journey Automation for Healthcare & Wellness Organizations
             </h1>
             <p className="mt-7 text-lg text-muted-foreground max-w-xl leading-relaxed">
@@ -159,13 +211,13 @@ export default function HomePage() {
             <div className="mt-10 flex flex-wrap gap-4">
               <Link
                 href="/contact"
-                className="inline-flex items-center gap-2 rounded-md bg-blue px-6 py-3.5 text-[14.5px] font-medium text-white hover:bg-blue/90 transition-colors"
+                className="cta-shimmer inline-flex items-center gap-2 rounded-md bg-blue px-6 py-3.5 text-[14.5px] font-medium text-white hover:bg-blue/90 transition-colors"
               >
                 Request Workflow Audit <ArrowRight size={16} />
               </Link>
               <Link
                 href="/method"
-                className="inline-flex items-center gap-2 rounded-md border border-hairline bg-white px-6 py-3.5 text-[14.5px] font-medium text-graphite hover:bg-muted transition-colors"
+                className="inline-flex items-center gap-2 rounded-md border border-hairline bg-white/90 px-6 py-3.5 text-[14.5px] font-medium text-graphite hover:bg-muted transition-colors backdrop-blur-sm"
               >
                 Explore My Method
               </Link>
@@ -175,312 +227,367 @@ export default function HomePage() {
               <MapPin size={14} className="text-blue" />
               Sarasota, Florida. Remote consulting across the United States.
             </div>
-          </div>
+          </Reveal>
 
-          <div className="lg:justify-self-end w-full max-w-md">
+          <Reveal variant="right" delayMs={120} className="relative z-20 lg:justify-self-end w-full max-w-md">
             <JourneyDiagram />
-          </div>
+          </Reveal>
         </div>
       </section>
 
-      <section className="py-20 bg-white border-b border-hairline">
-        <div className="container-page grid gap-12 md:grid-cols-[1fr_1.2fr] items-start">
-          <div>
+      {/* MISSION */}
+      <section className="py-20 bg-white border-b border-hairline overflow-hidden">
+        <div className="container-page grid gap-12 lg:grid-cols-[1fr_1.05fr] items-center">
+          <Reveal variant="left">
             <div className="eyebrow">Mission</div>
             <h2 className="mt-3 font-display text-3xl md:text-4xl text-graphite leading-tight">
               Reliable Digital Workflows for Human-Centered Care
             </h2>
-          </div>
-          <div className="text-[16px] text-muted-foreground leading-relaxed space-y-5">
-            <p>
-              The client journey is one connected operational system. When each layer is documented,
-              validated, and calibrated, technology stops interrupting care and starts supporting it.
-            </p>
-            <Link href="/mission" className="inline-flex items-center gap-1.5 text-blue font-medium hover:underline">
-              Read the full mission <ArrowRight size={14} />
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      <section className="py-20">
-        <div className="container-page">
-          <div className="max-w-3xl">
-            <div className="eyebrow">Today vs. After Implementation</div>
-            <h2 className="mt-3 font-display text-3xl md:text-4xl text-graphite leading-tight">
-              What changes when workflows are documented, structured, and QA-validated.
-            </h2>
-          </div>
-
-          <div className="mt-12 hidden md:block overflow-hidden rounded-2xl border border-hairline bg-white">
-            <div className="grid grid-cols-2 border-b border-hairline">
-              <div className="px-6 py-4 bg-muted">
-                <div className="eyebrow" style={{ color: "#8a6a2b" }}>Today</div>
-              </div>
-              <div className="px-6 py-4 bg-teal-soft border-l border-hairline">
-                <div className="eyebrow" style={{ color: "#2f6f77" }}>After Implementation</div>
-              </div>
+            <div className="mt-6 text-[16px] text-muted-foreground leading-relaxed space-y-5">
+              <p>
+                The client journey is one connected operational system. When each layer is documented,
+                validated, and calibrated, technology stops interrupting care and starts supporting it.
+              </p>
+              <Link href="/mission" className="inline-flex items-center gap-1.5 text-blue font-medium hover:underline">
+                Read the full mission <ArrowRight size={14} />
+              </Link>
             </div>
-            {comparison.map((row, i) => (
-              <div key={i} className="grid grid-cols-2 border-b border-hairline last:border-b-0">
-                <div className="px-6 py-5 text-[15px] text-graphite">
-                  <div className="flex gap-3">
-                    <AlertCircle size={18} className="mt-0.5 text-gold shrink-0" />
-                    <span>{row.today}</span>
-                  </div>
-                </div>
-                <div className="px-6 py-5 text-[15px] text-graphite bg-white border-l border-hairline">
-                  <div className="flex gap-3">
-                    <CheckCircle2 size={18} className="mt-0.5 text-teal shrink-0" />
-                    <span>{row.after}</span>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          <div className="mt-10 grid gap-5 md:hidden">
-            {comparison.map((row, i) => (
-              <article key={i} className="overflow-hidden rounded-2xl border border-hairline bg-white">
-                <div className="p-5 bg-muted/60">
-                  <div className="eyebrow" style={{ color: "#8a6a2b" }}>Today</div>
-                  <div className="mt-2 flex gap-3 text-[14.5px] text-graphite">
-                    <AlertCircle size={18} className="mt-0.5 text-gold shrink-0" />
-                    <span>{row.today}</span>
-                  </div>
-                </div>
-                <div className="p-5 border-t border-hairline bg-teal-soft/40">
-                  <div className="eyebrow" style={{ color: "#2f6f77" }}>After Implementation</div>
-                  <div className="mt-2 flex gap-3 text-[14.5px] text-graphite">
-                    <CheckCircle2 size={18} className="mt-0.5 text-teal shrink-0" />
-                    <span>{row.after}</span>
-                  </div>
-                </div>
-              </article>
-            ))}
-          </div>
-
-          <p className="mt-6 text-[13px] text-muted-foreground max-w-3xl leading-relaxed">
-            Research-based modeled indicators, not guaranteed results. Actual outcomes depend on
-            CRM configuration, data quality, staff processes, implementation scope, and adoption.
-          </p>
+          </Reveal>
+          <Reveal variant="right" delayMs={100}>
+            <ImagePlaceholder
+              label="Mission: connected care continuum"
+              filename="home-mission-continuum.webp"
+              aspect="landscape"
+              tone="sage"
+              className="rounded-2xl shadow-[0_24px_50px_-36px_rgba(31,41,51,0.4)]"
+            />
+          </Reveal>
         </div>
       </section>
 
+      {/* TODAY / AFTER + VIRAL CONTINUITY REVEAL */}
+      <section className="py-20 relative">
+        <div
+          className="pointer-events-none absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-teal-soft/30 to-transparent"
+          aria-hidden
+        />
+        <div className="container-page relative">
+          <Reveal>
+            <div className="max-w-3xl">
+              <div className="eyebrow">Today vs. After Implementation</div>
+              <h2 className="mt-3 font-display text-3xl md:text-4xl text-graphite leading-tight">
+                What changes when workflows are documented, structured, and QA-validated.
+              </h2>
+            </div>
+          </Reveal>
+
+          <Reveal delayMs={80} className="mt-12">
+            <ContinuityReveal rows={comparison} />
+          </Reveal>
+
+          <Reveal delayMs={140}>
+            <p className="mt-6 text-[13px] text-muted-foreground max-w-3xl leading-relaxed">
+              Research-based modeled indicators, not guaranteed results. Actual outcomes depend on
+              CRM configuration, data quality, staff processes, implementation scope, and adoption.
+            </p>
+          </Reveal>
+        </div>
+      </section>
+
+      {/* FIVE LAYERS */}
       <section className="py-20 bg-white border-y border-hairline">
         <div className="container-page">
-          <div className="max-w-2xl">
-            <div className="eyebrow">The Five-Layer Solution</div>
-            <h2 className="mt-3 font-display text-3xl md:text-4xl text-graphite leading-tight">
-              AI is one layer of a broader, reliable workflow system.
-            </h2>
+          <div className="grid gap-10 lg:grid-cols-[1fr_1.1fr] items-end">
+            <Reveal>
+              <div className="max-w-2xl">
+                <div className="eyebrow">The Five-Layer Solution</div>
+                <h2 className="mt-3 font-display text-3xl md:text-4xl text-graphite leading-tight">
+                  AI is one layer of a broader, reliable workflow system.
+                </h2>
+              </div>
+            </Reveal>
+            <Reveal delayMs={80} variant="fade">
+              <ImagePlaceholder
+                label="Five-layer workflow system diagram"
+                filename="home-five-layer-system.webp"
+                aspect="wide"
+                tone="blue"
+                className="rounded-xl"
+              />
+            </Reveal>
           </div>
           <div className="mt-12 grid gap-5 md:grid-cols-3 lg:grid-cols-5">
             {layers.map(({ icon: Icon, title, body }, i) => (
-              <div key={title} className="rounded-xl border border-hairline p-6 bg-ivory/60 transition-all hover:border-blue/40 hover:shadow-sm">
-                <div className="text-[11px] font-semibold text-blue">0{i + 1}</div>
-                <div className="mt-3 flex h-10 w-10 items-center justify-center rounded-md bg-blue text-white">
-                  <Icon size={18} />
+              <Reveal key={title} delayMs={i * 70} variant="up">
+                <div className="layer-card h-full rounded-xl border border-hairline p-6 bg-ivory/60">
+                  <div className="text-[11px] font-semibold text-blue">0{i + 1}</div>
+                  <div className="layer-icon mt-3 flex h-10 w-10 items-center justify-center rounded-md bg-blue text-white">
+                    <Icon size={18} />
+                  </div>
+                  <h3 className="mt-5 font-display text-[15.5px] font-semibold text-graphite">{title}</h3>
+                  <p className="mt-2 text-[13px] text-muted-foreground leading-relaxed">{body}</p>
                 </div>
-                <h3 className="mt-5 font-display text-[15.5px] font-semibold text-graphite">{title}</h3>
-                <p className="mt-2 text-[13px] text-muted-foreground leading-relaxed">{body}</p>
-              </div>
+              </Reveal>
             ))}
           </div>
         </div>
       </section>
 
+      {/* SERVICES */}
       <section className="py-20">
         <div className="container-page">
-          <div className="max-w-2xl">
-            <div className="eyebrow">Services</div>
-            <h2 className="mt-3 font-display text-3xl md:text-4xl text-graphite leading-tight">
-              Bounded engagements, calibrated to your operational context.
-            </h2>
-          </div>
+          <Reveal>
+            <div className="max-w-2xl">
+              <div className="eyebrow">Services</div>
+              <h2 className="mt-3 font-display text-3xl md:text-4xl text-graphite leading-tight">
+                Bounded engagements, calibrated to your operational context.
+              </h2>
+            </div>
+          </Reveal>
           <div className="mt-12 grid gap-5 md:grid-cols-2 lg:grid-cols-4">
-            {services.map((s) => (
-              <div key={s.title} className="rounded-xl border border-hairline bg-white p-7 flex flex-col transition-all hover:border-blue/40 hover:shadow-sm">
-                <h3 className="font-display text-[17px] font-semibold text-graphite">{s.title}</h3>
-                <p className="mt-3 text-[13.5px] text-muted-foreground leading-relaxed flex-1">{s.body}</p>
-                <Link href="/services" className="mt-5 inline-flex items-center gap-1.5 text-blue text-[13.5px] font-medium hover:underline">
-                  Learn more <ArrowRight size={13} />
-                </Link>
-              </div>
+            {services.map((s, i) => (
+              <Reveal key={s.title} delayMs={i * 70}>
+                <div className="service-card h-full overflow-hidden rounded-xl border border-hairline bg-white flex flex-col">
+                  <ImagePlaceholder
+                    label={s.title}
+                    filename={s.image}
+                    aspect="landscape"
+                    tone={s.tone}
+                    className="border-0 border-b rounded-none"
+                  />
+                  <div className="p-7 flex flex-col flex-1">
+                    <h3 className="font-display text-[17px] font-semibold text-graphite">{s.title}</h3>
+                    <p className="mt-3 text-[13.5px] text-muted-foreground leading-relaxed flex-1">{s.body}</p>
+                    <Link href="/services" className="mt-5 inline-flex items-center gap-1.5 text-blue text-[13.5px] font-medium hover:underline">
+                      Learn more <ArrowRight size={13} />
+                    </Link>
+                  </div>
+                </div>
+              </Reveal>
             ))}
           </div>
         </div>
       </section>
 
+      {/* CLIENT FEEDBACK */}
       <section className="py-20 bg-white border-y border-hairline">
         <div className="container-page">
-          <div className="max-w-2xl">
-            <div className="eyebrow">Client Feedback</div>
-            <h2 className="mt-3 font-display text-3xl md:text-4xl text-graphite leading-tight">
-              What collaborators and organizations say about working with me.
-            </h2>
-          </div>
-          <div className="mt-10 rounded-2xl border border-dashed border-hairline bg-ivory/50 p-10 text-center">
-            <p className="text-[15px] text-muted-foreground leading-relaxed max-w-xl mx-auto">
-              Client feedback will be added following publication approval. Testimonials are
-              published only after written consent from the person and organization involved.
-            </p>
-          </div>
+          <Reveal>
+            <div className="max-w-2xl">
+              <div className="eyebrow">Client Feedback</div>
+              <h2 className="mt-3 font-display text-3xl md:text-4xl text-graphite leading-tight">
+                What collaborators and organizations say about working with me.
+              </h2>
+            </div>
+          </Reveal>
+          <Reveal delayMs={80}>
+            <div className="mt-10 overflow-hidden rounded-2xl border border-dashed border-hairline bg-ivory/50">
+              <ImagePlaceholder
+                label="Client collaboration atmosphere"
+                filename="home-client-feedback.webp"
+                aspect="wide"
+                tone="ivory"
+                className="border-0 rounded-none opacity-80"
+              />
+              <div className="p-10 text-center border-t border-hairline">
+                <p className="text-[15px] text-muted-foreground leading-relaxed max-w-xl mx-auto">
+                  Client feedback will be added following publication approval. Testimonials are
+                  published only after written consent from the person and organization involved.
+                </p>
+              </div>
+            </div>
+          </Reveal>
         </div>
       </section>
 
+      {/* CASE STORIES */}
       <section className="py-20">
         <div className="container-page">
-          <div className="max-w-2xl">
-            <div className="eyebrow">Selected Case Stories</div>
-            <h2 className="mt-3 font-display text-3xl md:text-4xl text-graphite leading-tight">
-              How structured workflow analysis translates into practical operational improvements.
-            </h2>
-          </div>
+          <Reveal>
+            <div className="max-w-2xl">
+              <div className="eyebrow">Selected Case Stories</div>
+              <h2 className="mt-3 font-display text-3xl md:text-4xl text-graphite leading-tight">
+                How structured workflow analysis translates into practical operational improvements.
+              </h2>
+            </div>
+          </Reveal>
           <div className="mt-12 grid gap-5 md:grid-cols-3">
-            {caseStories.map((c) => (
-              <article key={c.id} className="rounded-2xl border border-hairline bg-white p-7 flex flex-col transition-all hover:border-blue/40 hover:shadow-sm">
-                <div className="text-[11px] font-semibold uppercase tracking-wider text-blue">{c.org}</div>
-                <h3 className="mt-2 font-display text-[17px] font-semibold text-graphite leading-snug">
-                  {c.title}
-                </h3>
-                <dl className="mt-5 space-y-4 text-[13.5px] flex-1">
-                  <div>
-                    <dt className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Challenge</dt>
-                    <dd className="mt-1 text-muted-foreground leading-relaxed">{c.challenge}</dd>
+            {caseStories.map((c, i) => (
+              <Reveal key={c.id} delayMs={i * 80}>
+                <article className="case-card h-full overflow-hidden rounded-2xl border border-hairline bg-white flex flex-col">
+                  <ImagePlaceholder
+                    label={c.title}
+                    filename={c.image}
+                    aspect="landscape"
+                    tone={c.tone}
+                    className="border-0 border-b rounded-none"
+                  />
+                  <div className="p-7 flex flex-col flex-1">
+                    <div className="text-[11px] font-semibold uppercase tracking-wider text-blue">{c.org}</div>
+                    <h3 className="mt-2 font-display text-[17px] font-semibold text-graphite leading-snug">
+                      {c.title}
+                    </h3>
+                    <dl className="mt-5 space-y-4 text-[13.5px] flex-1">
+                      <div>
+                        <dt className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Challenge</dt>
+                        <dd className="mt-1 text-muted-foreground leading-relaxed">{c.challenge}</dd>
+                      </div>
+                      <div>
+                        <dt className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Approach</dt>
+                        <dd className="mt-1 text-muted-foreground leading-relaxed">{c.approach}</dd>
+                      </div>
+                      <div>
+                        <dt className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Outcome</dt>
+                        <dd className="mt-1 text-graphite leading-relaxed">{c.outcome}</dd>
+                      </div>
+                    </dl>
+                    <Link
+                      href={`/case-stories#${c.id}`}
+                      className="mt-6 inline-flex items-center gap-1.5 text-blue text-[13.5px] font-medium hover:underline"
+                    >
+                      Read Case Story <ArrowRight size={13} />
+                    </Link>
                   </div>
-                  <div>
-                    <dt className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Approach</dt>
-                    <dd className="mt-1 text-muted-foreground leading-relaxed">{c.approach}</dd>
-                  </div>
-                  <div>
-                    <dt className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Outcome</dt>
-                    <dd className="mt-1 text-graphite leading-relaxed">{c.outcome}</dd>
-                  </div>
-                </dl>
-                <Link
-                  href={`/case-stories#${c.id}`}
-                  className="mt-6 inline-flex items-center gap-1.5 text-blue text-[13.5px] font-medium hover:underline"
-                >
-                  Read Case Story <ArrowRight size={13} />
-                </Link>
-              </article>
+                </article>
+              </Reveal>
             ))}
           </div>
-          <p className="mt-6 text-[13px] text-muted-foreground max-w-3xl leading-relaxed">
-            Case stories describe selected professional contributions based on available project
-            records. Certain identifying, technical, operational, or client-confidential details
-            may be omitted or generalized.
-          </p>
+          <Reveal>
+            <p className="mt-6 text-[13px] text-muted-foreground max-w-3xl leading-relaxed">
+              Case stories describe selected professional contributions based on available project
+              records. Certain identifying, technical, operational, or client-confidential details
+              may be omitted or generalized.
+            </p>
+          </Reveal>
         </div>
       </section>
 
+      {/* RESEARCH / METRICS */}
       <section className="py-20 bg-white border-y border-hairline">
         <div className="container-page">
-          <div className="max-w-2xl">
-            <div className="eyebrow">Research-Based Process Effectiveness</div>
-            <h2 className="mt-3 font-display text-3xl md:text-4xl text-graphite leading-tight">
-              Evidence behind my workflow methodology.
-            </h2>
-            <p className="mt-5 text-muted-foreground leading-relaxed">
-              My consulting framework is informed by applied research in CRM workflow optimization,
-              healthcare and wellness operations, RAG architectures, QA validation, and responsible
-              AI-mediated communication.
-            </p>
+          <div className="grid gap-10 lg:grid-cols-[1.1fr_0.9fr] items-start">
+            <Reveal>
+              <div className="max-w-2xl">
+                <div className="eyebrow">Research-Based Process Effectiveness</div>
+                <h2 className="mt-3 font-display text-3xl md:text-4xl text-graphite leading-tight">
+                  Evidence behind my workflow methodology.
+                </h2>
+                <p className="mt-5 text-muted-foreground leading-relaxed">
+                  My consulting framework is informed by applied research in CRM workflow optimization,
+                  healthcare and wellness operations, RAG architectures, QA validation, and responsible
+                  AI-mediated communication.
+                </p>
+              </div>
+            </Reveal>
+            <Reveal variant="right" delayMs={90}>
+              <ImagePlaceholder
+                label="Research methodology visual"
+                filename="home-research-methodology.webp"
+                aspect="landscape"
+                tone="teal"
+                className="rounded-2xl"
+              />
+            </Reveal>
           </div>
 
           <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-            {metrics.map((m) => (
-              <div key={m.label} className="rounded-2xl border border-hairline bg-ivory/50 p-6">
-                <div className="text-[10.5px] font-semibold uppercase tracking-wider text-blue">
-                  Research-Based Modeled Indicator
-                </div>
-                <div className="mt-4 flex items-baseline gap-2">
-                  <span className="font-display text-[15px] text-muted-foreground line-through">
-                    {m.from}
-                  </span>
-                  <ArrowRight size={14} className="text-blue" />
-                  <span className="font-display text-2xl font-semibold text-graphite">{m.to}</span>
-                </div>
-                <div className="mt-2 text-[13px] text-muted-foreground leading-relaxed">
-                  {m.label}
-                </div>
-              </div>
+            {metrics.map((m, i) => (
+              <MetricPulse key={m.label} {...m} delayMs={i * 90} />
             ))}
           </div>
 
-          <p className="mt-6 text-[13px] text-muted-foreground max-w-3xl leading-relaxed">
-            These figures are research-based modeled indicators, not guaranteed client results.
-            Actual outcomes depend on CRM configuration, data quality, staff processes,
-            implementation scope, organizational context, and adoption.
-          </p>
+          <Reveal>
+            <p className="mt-6 text-[13px] text-muted-foreground max-w-3xl leading-relaxed">
+              These figures are research-based modeled indicators, not guaranteed client results.
+              Actual outcomes depend on CRM configuration, data quality, staff processes,
+              implementation scope, organizational context, and adoption.
+            </p>
+          </Reveal>
 
           <div className="mt-16">
-            <div className="max-w-2xl">
-              <div className="eyebrow">Featured Publications</div>
-              <h3 className="mt-3 font-display text-2xl md:text-3xl text-graphite leading-tight">
-                Peer-reviewed research supporting the methodology.
-              </h3>
-            </div>
+            <Reveal>
+              <div className="max-w-2xl">
+                <div className="eyebrow">Featured Publications</div>
+                <h3 className="mt-3 font-display text-2xl md:text-3xl text-graphite leading-tight">
+                  Peer-reviewed research supporting the methodology.
+                </h3>
+              </div>
+            </Reveal>
             <div className="mt-8 grid gap-5 md:grid-cols-2">
-              {publications.map((p) => (
-                <article key={p.doi} className="rounded-2xl border border-hairline bg-white p-7 flex flex-col">
-                  <div className="flex items-center gap-3 text-[11px] font-semibold uppercase tracking-wider">
-                    <span className="text-blue">{p.role}</span>
-                    <span className="text-muted-foreground">· {p.year}</span>
-                  </div>
-                  <h4 className="mt-3 font-display text-[16.5px] font-semibold text-graphite leading-snug">
-                    {p.title}
-                  </h4>
-                  {p.venue && (
-                    <div className="mt-2 text-[13px] text-muted-foreground">{p.venue}</div>
-                  )}
-                  <p className="mt-4 text-[13.5px] text-muted-foreground leading-relaxed flex-1">
-                    {p.summary}
-                  </p>
-                  <a
-                    href={p.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label={`Read publication (opens in new tab): ${p.title}`}
-                    className="mt-5 inline-flex items-center gap-1.5 text-[13.5px] font-medium text-blue hover:underline"
-                  >
-                    Read Publication <ExternalLink size={12} aria-hidden />
-                  </a>
-                </article>
+              {publications.map((p, i) => (
+                <Reveal key={p.doi} delayMs={i * 80}>
+                  <article className="pub-card h-full rounded-2xl border border-hairline bg-white p-7 flex flex-col">
+                    <div className="flex items-center gap-3 text-[11px] font-semibold uppercase tracking-wider">
+                      <span className="text-blue">{p.role}</span>
+                      <span className="text-muted-foreground">· {p.year}</span>
+                    </div>
+                    <h4 className="mt-3 font-display text-[16.5px] font-semibold text-graphite leading-snug">
+                      {p.title}
+                    </h4>
+                    {p.venue && (
+                      <div className="mt-2 text-[13px] text-muted-foreground">{p.venue}</div>
+                    )}
+                    <p className="mt-4 text-[13.5px] text-muted-foreground leading-relaxed flex-1">
+                      {p.summary}
+                    </p>
+                    <a
+                      href={p.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label={`Read publication (opens in new tab): ${p.title}`}
+                      className="mt-5 inline-flex items-center gap-1.5 text-[13.5px] font-medium text-blue hover:underline"
+                    >
+                      Read Publication <ExternalLink size={12} aria-hidden />
+                    </a>
+                  </article>
+                </Reveal>
               ))}
             </div>
-            <div className="mt-8">
-              <Link href="/research" className="inline-flex items-center gap-1.5 text-blue font-medium hover:underline">
-                Explore the Research Basis <ArrowRight size={14} />
-              </Link>
-            </div>
+            <Reveal>
+              <div className="mt-8">
+                <Link href="/research" className="inline-flex items-center gap-1.5 text-blue font-medium hover:underline">
+                  Explore the Research Basis <ArrowRight size={14} />
+                </Link>
+              </div>
+            </Reveal>
           </div>
         </div>
       </section>
 
+      {/* ABOUT */}
       <section className="py-20">
-        <div className="container-page grid gap-12 md:grid-cols-[1fr_1.4fr] items-start">
-          <div>
-            <div className="eyebrow">About Me</div>
-            <h2 className="mt-3 font-display text-3xl md:text-4xl text-graphite leading-tight">
-              Applied specialist in CRM, patient management, and digital workflow systems.
-            </h2>
-          </div>
-          <div className="space-y-5 text-muted-foreground leading-relaxed">
-            <p>
-              I work with healthcare and wellness organizations on the practical layers of the
-              client journey — CRM logic, intake, scheduling, staff handoffs, knowledge access,
-              and responsible AI-supported communication.
-            </p>
-            <p>
-              Aponchuk Workflow Systems LLC is based in Sarasota, Florida and delivers services
-              remotely across the United States.
-            </p>
-            <Link href="/about" className="inline-flex items-center gap-1.5 text-blue font-medium hover:underline">
-              Read more about me <ArrowRight size={14} />
-            </Link>
-          </div>
+        <div className="container-page grid gap-12 lg:grid-cols-[0.9fr_1.1fr] items-center">
+          <Reveal variant="left">
+            <ImagePlaceholder
+              label="About atmosphere: consulting workspace"
+              filename="home-about-workspace.webp"
+              aspect="portrait"
+              tone="sage"
+              className="rounded-2xl max-w-md mx-auto lg:mx-0 shadow-[0_24px_50px_-36px_rgba(31,41,51,0.4)]"
+            />
+          </Reveal>
+          <Reveal variant="right" delayMs={80}>
+            <div>
+              <div className="eyebrow">About Me</div>
+              <h2 className="mt-3 font-display text-3xl md:text-4xl text-graphite leading-tight">
+                Applied specialist in CRM, patient management, and digital workflow systems.
+              </h2>
+            </div>
+            <div className="mt-6 space-y-5 text-muted-foreground leading-relaxed">
+              <p>
+                I work with healthcare and wellness organizations on the practical layers of the
+                client journey — CRM logic, intake, scheduling, staff handoffs, knowledge access,
+                and responsible AI-supported communication.
+              </p>
+              <p>
+                Aponchuk Workflow Systems LLC is based in Sarasota, Florida and delivers services
+                remotely across the United States.
+              </p>
+              <Link href="/about" className="inline-flex items-center gap-1.5 text-blue font-medium hover:underline">
+                Read more about me <ArrowRight size={14} />
+              </Link>
+            </div>
+          </Reveal>
         </div>
       </section>
 

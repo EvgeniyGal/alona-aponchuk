@@ -112,3 +112,212 @@
   font-weight: 600;
   color: var(--color-blue);
 }
+
+/* Homepage motion + interactive effects */
+@keyframes float-soft {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+@keyframes shimmer-line {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 200% 50%; }
+}
+
+@keyframes pulse-ring {
+  0% { transform: scale(0.92); opacity: 0.55; }
+  70% { transform: scale(1.18); opacity: 0; }
+  100% { transform: scale(1.18); opacity: 0; }
+}
+
+@keyframes journey-step-in {
+  from { opacity: 0; transform: translateX(8px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+.reveal {
+  opacity: 0;
+  transition:
+    opacity 700ms cubic-bezier(0.22, 1, 0.36, 1),
+    transform 700ms cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: opacity, transform;
+}
+
+.reveal-up { transform: translateY(28px); }
+.reveal-fade { transform: none; }
+.reveal-scale { transform: scale(0.96); }
+.reveal-left { transform: translateX(-24px); }
+.reveal-right { transform: translateX(24px); }
+
+.reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+.hero-atmosphere {
+  background:
+    radial-gradient(ellipse 70% 55% at 85% 15%, rgba(79, 157, 166, 0.16), transparent 55%),
+    radial-gradient(ellipse 55% 45% at 10% 85%, rgba(156, 175, 159, 0.18), transparent 50%),
+    linear-gradient(180deg, #ffffff 0%, #f8f7f2 100%);
+}
+
+.hero-brand-mark {
+  animation: float-soft 7s ease-in-out infinite;
+}
+
+.cta-shimmer {
+  position: relative;
+  overflow: hidden;
+}
+
+.cta-shimmer::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    110deg,
+    transparent 20%,
+    rgba(255, 255, 255, 0.22) 45%,
+    transparent 70%
+  );
+  background-size: 200% 100%;
+  animation: shimmer-line 3.2s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.layer-card {
+  transition:
+    transform 320ms cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 320ms ease,
+    box-shadow 320ms ease,
+    background-color 320ms ease;
+}
+
+.layer-card:hover {
+  transform: translateY(-6px);
+  border-color: color-mix(in oklab, var(--color-blue) 40%, var(--color-hairline));
+  box-shadow: 0 18px 40px -28px rgba(31, 41, 51, 0.35);
+  background-color: #ffffff;
+}
+
+.layer-card .layer-icon {
+  transition: transform 320ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.layer-card:hover .layer-icon {
+  transform: scale(1.08) rotate(-3deg);
+}
+
+.service-card,
+.case-card,
+.pub-card {
+  transition:
+    transform 320ms cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 320ms ease,
+    box-shadow 320ms ease;
+}
+
+.service-card:hover,
+.case-card:hover,
+.pub-card:hover {
+  transform: translateY(-4px);
+  border-color: color-mix(in oklab, var(--color-blue) 35%, var(--color-hairline));
+  box-shadow: 0 16px 36px -26px rgba(31, 41, 51, 0.3);
+}
+
+.metric-pulse .metric-to {
+  transition: transform 600ms cubic-bezier(0.22, 1, 0.36, 1), color 600ms ease;
+  display: inline-block;
+}
+
+.metric-pulse .metric-arrow {
+  transition: transform 600ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.metric-pulse.is-active .metric-to {
+  transform: scale(1.08);
+  color: var(--color-teal);
+}
+
+.metric-pulse.is-active .metric-arrow {
+  transform: translateX(3px);
+}
+
+.continuity-range {
+  appearance: none;
+  height: 6px;
+  border-radius: 999px;
+  background: linear-gradient(
+    90deg,
+    #f6ecd7 0%,
+    #e6e3d9 45%,
+    #dcecee 100%
+  );
+  outline: none;
+  cursor: pointer;
+}
+
+.continuity-range::-webkit-slider-thumb {
+  appearance: none;
+  width: 22px;
+  height: 22px;
+  border-radius: 999px;
+  background: #466a86;
+  border: 3px solid #ffffff;
+  box-shadow: 0 4px 12px rgba(70, 106, 134, 0.35);
+  cursor: grab;
+}
+
+.continuity-range::-moz-range-thumb {
+  width: 22px;
+  height: 22px;
+  border-radius: 999px;
+  background: #466a86;
+  border: 3px solid #ffffff;
+  box-shadow: 0 4px 12px rgba(70, 106, 134, 0.35);
+  cursor: grab;
+}
+
+.journey-live li {
+  animation: journey-step-in 520ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.journey-live li:nth-child(1) { animation-delay: 40ms; }
+.journey-live li:nth-child(2) { animation-delay: 90ms; }
+.journey-live li:nth-child(3) { animation-delay: 140ms; }
+.journey-live li:nth-child(4) { animation-delay: 190ms; }
+.journey-live li:nth-child(5) { animation-delay: 240ms; }
+.journey-live li:nth-child(6) { animation-delay: 290ms; }
+.journey-live li:nth-child(7) { animation-delay: 340ms; }
+
+.status-ping {
+  position: relative;
+}
+
+.status-ping::after {
+  content: "";
+  position: absolute;
+  inset: -3px;
+  border-radius: 999px;
+  border: 1px solid currentColor;
+  animation: pulse-ring 2.2s ease-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal,
+  .hero-brand-mark,
+  .cta-shimmer::after,
+  .layer-card,
+  .service-card,
+  .case-card,
+  .pub-card,
+  .metric-pulse .metric-to,
+  .metric-pulse .metric-arrow,
+  .journey-live li,
+  .status-ping::after {
+    animation: none !important;
+    transition: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}

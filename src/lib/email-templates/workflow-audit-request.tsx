@@ -38,7 +38,7 @@ export interface WorkflowAuditRequestProps {
   improve?: string
 }
 
-const LOGO_URL = 'https://www.aponchukworkflow.com/logo.png'
+const LOGO_URL = 'https://www.aponchukworkflow.com/logo.webp'
 
 const main = {
   backgroundColor: '#f4f1ea',

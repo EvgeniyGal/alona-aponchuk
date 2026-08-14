@@ -12,26 +12,26 @@ const steps = [
 
 export function JourneyDiagram() {
   return (
-    <div className="rounded-2xl border border-hairline bg-white p-6 shadow-[0_1px_0_rgba(31,41,51,0.03),0_20px_40px_-24px_rgba(31,41,51,0.15)]">
+    <div className="relative z-10 rounded-2xl border border-hairline bg-white p-6 shadow-[0_1px_0_rgba(31,41,51,0.03),0_20px_40px_-24px_rgba(31,41,51,0.15)]">
       <div className="flex items-center justify-between mb-5">
         <div>
           <div className="eyebrow">Client Journey</div>
           <div className="mt-1 font-display text-[15px] font-semibold text-graphite">Connected operational system</div>
         </div>
         <div className="hidden sm:flex items-center gap-2 text-[11px] text-muted-foreground">
-          <span className="inline-block h-2 w-2 rounded-full bg-sage" /> On track
+          <span className="status-ping inline-block h-2 w-2 rounded-full bg-sage text-sage" /> On track
           <span className="ml-3 inline-block h-2 w-2 rounded-full bg-gold" /> Needs review
         </div>
       </div>
 
-      <ol className="space-y-2.5">
+      <ol className="journey-live space-y-2.5">
         {steps.map((s, i) => {
           const Icon = s.icon;
           const status = i === 3 ? "gold" : "sage";
           return (
             <li
               key={s.label}
-              className="flex items-center gap-3 rounded-lg border border-hairline bg-ivory/60 px-3.5 py-3"
+              className="flex items-center gap-3 rounded-lg border border-hairline bg-ivory/60 px-3.5 py-3 transition-colors hover:bg-white"
             >
               <div className="flex h-9 w-9 items-center justify-center rounded-md bg-white border border-hairline text-blue">
                 <Icon size={17} />

@@ -11,7 +11,7 @@ export function SiteFooter() {
       <div className="container-page py-16 grid gap-12 md:grid-cols-4">
         <div className="md:col-span-2">
           <div className="flex items-center gap-3">
-            <Image src="/logo.png" alt="" width={44} height={44} className="h-11 w-11 object-contain" />
+            <Image src="/logo.webp" alt="" width={44} height={44} className="h-11 w-11 object-contain" />
             <div>
               <div className="font-display text-[15.5px] font-semibold text-graphite">Alona Aponchuk</div>
               <div className="text-[12px] text-muted-foreground">Aponchuk Workflow Systems LLC</div>

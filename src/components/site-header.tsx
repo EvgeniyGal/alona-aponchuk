@@ -31,7 +31,7 @@ export function SiteHeader() {
       <div className="container-page flex h-20 items-center justify-between gap-6">
         <Link href="/" className="flex min-w-0 items-center gap-3" onClick={() => setOpen(false)}>
           <Image
-            src="/logo.png"
+            src="/logo.webp"
             alt="Alona Aponchuk — Aponchuk Workflow Systems LLC"
             width={48}
             height={48}
