@@ -17,6 +17,7 @@ import { ImagePlaceholder } from "@/components/image-placeholder";
 import { ContinuityReveal } from "@/components/continuity-reveal";
 import { Reveal } from "@/components/reveal";
 import { MetricPulse } from "@/components/metric-pulse";
+import { HeroAtmosphere } from "@/components/hero-atmosphere";
 
 export const metadata: Metadata = {
   title: {
@@ -161,40 +162,20 @@ export default function HomePage() {
     <>
       {/* HERO — full-bleed visual plane + brand composition */}
       <section className="relative overflow-hidden border-b border-hairline hero-atmosphere">
-        {/* Atmosphere only — no labels (prevents peeking under Journey card) */}
-        <div className="pointer-events-none absolute inset-0" aria-hidden>
-          <div className="absolute inset-y-0 right-0 w-full lg:w-[52%]">
-            <ImagePlaceholder
-              label="Hero: calm clinical operations atmosphere"
-              filename="home-hero-operations.webp"
-              aspect="fill"
-              tone="teal"
-              silent
-              priority
-              className="border-0 rounded-none"
-            />
-          </div>
-          <div className="absolute inset-0 bg-gradient-to-r from-white via-white/95 to-white/55 lg:to-white/20" />
-          <div className="absolute inset-0 bg-gradient-to-t from-ivory via-transparent to-white/50" />
-        </div>
+        <HeroAtmosphere />
 
         <div className="relative z-10 container-page py-16 md:py-24 lg:py-28 grid gap-12 lg:grid-cols-[1.1fr_0.9fr] items-center">
-          <Reveal variant="up">
-            <div className="hero-brand-mark mb-5 inline-flex items-center gap-3 rounded-md border border-hairline bg-white/80 px-3 py-2 backdrop-blur-sm">
-              <span className="font-display text-[15px] font-semibold text-graphite">Alona Aponchuk</span>
-              <span className="h-4 w-px bg-hairline" aria-hidden />
-              <span className="text-[11.5px] text-muted-foreground">Aponchuk Workflow Systems LLC</span>
-            </div>
+          <Reveal variant="up" className="w-full min-w-0">
             <div className="eyebrow">Reliable Workflows · Better Client Journeys · Responsible AI</div>
             <h1 className="mt-5 font-display text-[40px] sm:text-[44px] md:text-[64px] leading-[1.03] font-semibold text-graphite tracking-tight">
               Client Journey Automation for Healthcare & Wellness Organizations
             </h1>
-            <p className="mt-7 text-lg text-muted-foreground max-w-xl leading-relaxed">
+            <p className="mt-7 text-lg text-muted-foreground w-full max-w-none lg:max-w-xl leading-relaxed">
               I help healthcare and wellness organizations build reliable digital workflows —
               CRM, scheduling, follow-up, and responsible AI-supported communication.
             </p>
 
-            <ul className="mt-8 grid sm:grid-cols-2 gap-3 max-w-xl">
+            <ul className="mt-8 grid sm:grid-cols-2 gap-3 w-full max-w-none lg:max-w-xl">
               {[
                 "Reliable intake and follow-up",
                 "Clearer CRM and scheduling logic",
@@ -208,16 +189,16 @@ export default function HomePage() {
               ))}
             </ul>
 
-            <div className="mt-10 flex flex-wrap gap-4">
+            <div className="mt-10 flex flex-col sm:flex-row flex-wrap gap-4 w-full">
               <Link
                 href="/contact"
-                className="cta-shimmer inline-flex items-center gap-2 rounded-md bg-blue px-6 py-3.5 text-[14.5px] font-medium text-white hover:bg-blue/90 transition-colors"
+                className="cta-shimmer inline-flex w-full sm:w-auto items-center justify-center gap-2 rounded-md bg-blue px-6 py-3.5 text-[14.5px] font-medium text-white hover:bg-blue/90 transition-colors"
               >
                 Request Workflow Audit <ArrowRight size={16} />
               </Link>
               <Link
                 href="/method"
-                className="inline-flex items-center gap-2 rounded-md border border-hairline bg-white/90 px-6 py-3.5 text-[14.5px] font-medium text-graphite hover:bg-muted transition-colors backdrop-blur-sm"
+                className="inline-flex w-full sm:w-auto items-center justify-center gap-2 rounded-md border border-hairline bg-white/90 px-6 py-3.5 text-[14.5px] font-medium text-graphite hover:bg-muted transition-colors backdrop-blur-sm"
               >
                 Explore My Method
               </Link>
@@ -229,7 +210,7 @@ export default function HomePage() {
             </div>
           </Reveal>
 
-          <Reveal variant="right" delayMs={120} className="relative z-20 lg:justify-self-end w-full max-w-md">
+          <Reveal variant="right" delayMs={120} className="relative z-20 w-full min-w-0 lg:justify-self-end lg:max-w-md">
             <JourneyDiagram />
           </Reveal>
         </div>
@@ -557,7 +538,7 @@ export default function HomePage() {
       {/* ABOUT */}
       <section className="py-20">
         <div className="container-page grid gap-12 lg:grid-cols-[0.9fr_1.1fr] items-center">
-          <Reveal variant="left">
+          <Reveal variant="left" className="hidden lg:block">
             <ImagePlaceholder
               label="About atmosphere: consulting workspace"
               filename="home-about-workspace.webp"

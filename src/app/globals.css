@@ -114,11 +114,6 @@
 }
 
 /* Homepage motion + interactive effects */
-@keyframes float-soft {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-8px); }
-}
-
 @keyframes shimmer-line {
   0% { background-position: 0% 50%; }
   100% { background-position: 200% 50%; }
@@ -159,10 +154,6 @@
     radial-gradient(ellipse 70% 55% at 85% 15%, rgba(79, 157, 166, 0.16), transparent 55%),
     radial-gradient(ellipse 55% 45% at 10% 85%, rgba(156, 175, 159, 0.18), transparent 50%),
     linear-gradient(180deg, #ffffff 0%, #f8f7f2 100%);
-}
-
-.hero-brand-mark {
-  animation: float-soft 7s ease-in-out infinite;
 }
 
 .cta-shimmer {
@@ -305,7 +296,6 @@
 
 @media (prefers-reduced-motion: reduce) {
   .reveal,
-  .hero-brand-mark,
   .cta-shimmer::after,
   .layer-card,
   .service-card,
