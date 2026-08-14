@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { PageHero, Section, CtaBand } from "@/components/page-shell";
+import { Reveal } from "@/components/reveal";
 
 export const metadata: Metadata = {
   title: "My Method — Workflow Discovery to Controlled Pilot",
@@ -58,27 +59,31 @@ export default function MethodPage() {
         eyebrow="My Method"
         title="Seven structured steps from discovery to controlled pilot."
         lead="Each step produces a specific artifact — a map, a document, a configuration, or a test result — that the next step depends on. Nothing is skipped for speed."
+        image={{
+          filename: "home-service-workflow-audit.webp",
+          label: "Structured workflow discovery materials",
+          tone: "blue",
+        }}
       />
       <Section>
-        <ol className="grid gap-6 md:grid-cols-2">
+        <div className="grid gap-6 md:grid-cols-2">
           {steps.map((s, i) => (
-            <li
-              key={s.title}
-              className="rounded-2xl border border-hairline bg-white p-8 flex gap-6 transition-all hover:border-blue/40 hover:shadow-sm"
-            >
-              <div className="shrink-0">
-                <div className="font-display text-5xl md:text-6xl font-semibold text-blue leading-none">
-                  {String(i + 1).padStart(2, "0")}
+            <Reveal key={s.title} delayMs={i * 50} variant="up">
+              <article className="layer-card h-full rounded-2xl border border-hairline bg-white p-8 flex gap-6">
+                <div className="shrink-0">
+                  <div className="font-display text-5xl md:text-6xl font-semibold text-blue leading-none">
+                    {String(i + 1).padStart(2, "0")}
+                  </div>
+                  <div className="mt-2 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Step</div>
                 </div>
-                <div className="mt-2 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Step</div>
-              </div>
-              <div>
-                <h3 className="font-display text-xl md:text-2xl text-graphite">{s.title}</h3>
-                <p className="mt-3 text-[14.5px] text-muted-foreground leading-relaxed">{s.body}</p>
-              </div>
-            </li>
+                <div className="min-w-0">
+                  <h3 className="font-display text-xl md:text-2xl text-graphite">{s.title}</h3>
+                  <p className="mt-3 text-[14.5px] text-muted-foreground leading-relaxed">{s.body}</p>
+                </div>
+              </article>
+            </Reveal>
           ))}
-        </ol>
+        </div>
       </Section>
       <CtaBand />
     </>

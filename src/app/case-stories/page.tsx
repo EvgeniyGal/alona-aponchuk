@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { PageHero, Section, CtaBand } from "@/components/page-shell";
+import { Reveal } from "@/components/reveal";
+import { ImagePlaceholder } from "@/components/image-placeholder";
 
 export const metadata: Metadata = {
   title: "Case Stories — Selected Workflow Engagements",
@@ -28,6 +30,8 @@ type Story = {
   contribution: string[];
   outcome: string[];
   note: string;
+  image: string;
+  tone: "blue" | "teal" | "sage" | "gold" | "ivory";
 };
 
 const stories: Story[] = [
@@ -59,6 +63,8 @@ const stories: Story[] = [
       "Improved inventory-process visibility and stronger operational reliability.",
     ],
     note: "Scope covers workflow, documentation, and system-configuration contributions. No clinical outcomes are claimed.",
+    image: "home-case-integrative-health.webp",
+    tone: "teal",
   },
   {
     id: "educational-research",
@@ -86,6 +92,8 @@ const stories: Story[] = [
       "Scalable digital support for educational, research, and event operations.",
     ],
     note: "Scope describes workflow and CRM contributions. No participant, revenue, or growth figures are claimed.",
+    image: "home-case-educational-research.webp",
+    tone: "blue",
   },
   {
     id: "ai-digital-systems",
@@ -112,6 +120,8 @@ const stories: Story[] = [
       "Contributed to more structured automation environments.",
     ],
     note: "Contributions were collaborative. No product ownership or guaranteed performance is claimed.",
+    image: "home-case-ai-digital-systems.webp",
+    tone: "sage",
   },
 ];
 
@@ -137,74 +147,93 @@ export default function CaseStoriesPage() {
         eyebrow="Case Stories"
         title="Selected professional contributions in CRM, workflow, and AI-supported systems."
         lead="Each case story describes a real engagement, anonymized where confidentiality applies. Structured to show context, approach, and practical contribution — not marketing outcomes."
+        image={{
+          filename: "home-case-integrative-health.webp",
+          label: "Clinical workflow operations",
+          tone: "teal",
+        }}
       />
 
       <Section>
         <div className="space-y-8">
-          {stories.map((s) => (
-            <article
-              key={s.id}
-              id={s.id}
-              className="rounded-2xl border border-hairline bg-white p-8 md:p-10"
-            >
-              <div className="flex flex-col gap-2">
-                <div className="text-[11px] font-semibold uppercase tracking-wider text-blue">
-                  {s.org}
-                </div>
-                <h2 className="font-display text-2xl md:text-[26px] text-graphite leading-tight">
-                  {s.title}
-                </h2>
-                <div className="text-[13.5px] text-muted-foreground">My role: {s.role}</div>
-              </div>
+          {stories.map((s, i) => (
+            <Reveal key={s.id} delayMs={i * 60} variant="up">
+              <article
+                id={s.id}
+                className="case-card overflow-hidden rounded-2xl border border-hairline bg-white"
+              >
+                <ImagePlaceholder
+                  label={s.title}
+                  filename={s.image}
+                  aspect="wide"
+                  tone={s.tone}
+                  className="border-0 border-b rounded-none hidden md:block"
+                />
+                <div className="p-8 md:p-10">
+                  <div className="flex flex-col gap-2">
+                    <div className="text-[11px] font-semibold uppercase tracking-wider text-blue">
+                      {s.org}
+                    </div>
+                    <h2 className="font-display text-2xl md:text-[26px] text-graphite leading-tight">
+                      {s.title}
+                    </h2>
+                    <div className="text-[13.5px] text-muted-foreground">My role: {s.role}</div>
+                  </div>
 
-              <div className="mt-8 grid gap-8 md:grid-cols-2">
-                <Field label="Context">{s.context}</Field>
-                <Field label="Operational Challenge">{s.challenge}</Field>
-                <Field label="Approach">{s.approach}</Field>
-                <Field label="Systems / Processes Involved">{s.systems}</Field>
-              </div>
+                  <div className="mt-8 grid gap-8 md:grid-cols-2">
+                    <Field label="Context">{s.context}</Field>
+                    <Field label="Operational Challenge">{s.challenge}</Field>
+                    <Field label="Approach">{s.approach}</Field>
+                    <Field label="Systems / Processes Involved">{s.systems}</Field>
+                  </div>
 
-              <div className="mt-8 grid gap-8 md:grid-cols-2">
-                <div>
-                  <Label>Practical Contribution</Label>
-                  <ul className="mt-3 space-y-2 text-[14.5px] text-muted-foreground leading-relaxed">
-                    {s.contribution.map((c) => (
-                      <li key={c}>· {c}</li>
-                    ))}
-                  </ul>
-                </div>
-                <div>
-                  <Label>Outcome</Label>
-                  <ul className="mt-3 space-y-2 text-[14.5px] text-graphite leading-relaxed">
-                    {s.outcome.map((c) => (
-                      <li key={c}>· {c}</li>
-                    ))}
-                  </ul>
-                </div>
-              </div>
+                  <div className="mt-8 grid gap-8 md:grid-cols-2">
+                    <div>
+                      <Label>Practical Contribution</Label>
+                      <ul className="mt-3 space-y-2 text-[14.5px] text-muted-foreground leading-relaxed">
+                        {s.contribution.map((c) => (
+                          <li key={c}>· {c}</li>
+                        ))}
+                      </ul>
+                    </div>
+                    <div>
+                      <Label>Outcome</Label>
+                      <ul className="mt-3 space-y-2 text-[14.5px] text-graphite leading-relaxed">
+                        {s.outcome.map((c) => (
+                          <li key={c}>· {c}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  </div>
 
-              <p className="mt-8 text-[12.5px] text-muted-foreground leading-relaxed border-t border-hairline pt-5">
-                <span className="font-medium text-graphite/70">Scope & Confidentiality Note.</span>{" "}
-                {s.note}
-              </p>
-            </article>
+                  <p className="mt-8 text-[12.5px] text-muted-foreground leading-relaxed border-t border-hairline pt-5">
+                    <span className="font-medium text-graphite/70">Scope & Confidentiality Note.</span>{" "}
+                    {s.note}
+                  </p>
+                </div>
+              </article>
+            </Reveal>
           ))}
         </div>
 
-        <p className="mt-10 text-[13px] text-muted-foreground max-w-3xl leading-relaxed">
-          Case stories describe selected professional contributions based on available project
-          records. Certain identifying, technical, operational, or client-confidential details may
-          be omitted or generalized.
-        </p>
+        <Reveal>
+          <p className="mt-10 text-[13px] text-muted-foreground max-w-3xl leading-relaxed">
+            Case stories describe selected professional contributions based on available project
+            records. Certain identifying, technical, operational, or client-confidential details may
+            be omitted or generalized.
+          </p>
+        </Reveal>
 
-        <div className="mt-10">
-          <Link
-            href="/contact"
-            className="inline-flex items-center gap-2 rounded-md bg-blue px-6 py-3 text-[14.5px] font-medium text-white hover:bg-blue/90"
-          >
-            Discuss Your Workflow <ArrowRight size={16} />
-          </Link>
-        </div>
+        <Reveal delayMs={60}>
+          <div className="mt-10">
+            <Link
+              href="/contact"
+              className="cta-shimmer inline-flex w-full sm:w-auto items-center justify-center gap-2 rounded-md bg-blue px-6 py-3 text-[14.5px] font-medium text-white hover:bg-blue/90"
+            >
+              Discuss Your Workflow <ArrowRight size={16} />
+            </Link>
+          </div>
+        </Reveal>
       </Section>
 
       <CtaBand />

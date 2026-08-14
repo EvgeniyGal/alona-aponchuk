@@ -120,5 +120,7 @@ Portrait-oriented photograph of a remote consulting workspace overlooking soft F
 ## After generation
 
 1. Export or convert to **WebP** and place files under `public/images/` using the exact filenames above.
-2. Homepage slots auto-load `/images/{filename}`; missing files fall back to placeholders.
+2. Homepage and inner-page slots auto-load `/images/{filename}`; missing files fall back to placeholders.
 3. Prefer WebP quality ~80–85 for balance of size and clarity.
+4. Inner pages reuse homepage assets for heroes (mission continuum, service/case/research images). Hero side images are desktop-only (`lg+`).
+
