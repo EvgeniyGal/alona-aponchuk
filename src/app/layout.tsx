@@ -1,11 +1,6 @@
 import type { Metadata } from "next";
 import { Manrope, Inter } from "next/font/google";
-import { SiteHeader } from "@/components/site-header";
-import { SiteFooter } from "@/components/site-footer";
-import { SmoothScroll } from "@/components/smooth-scroll";
-import { ScrollProgress } from "@/components/scroll-progress";
-import { ScrollToTop } from "@/components/scroll-to-top";
-import { JsonLd } from "@/components/json-ld";
+import { AppChrome } from "@/components/app-chrome";
 import { absoluteUrl, siteConfig } from "@/lib/seo";
 import "./globals.css";
 
@@ -92,15 +87,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={`${inter.variable} ${manrope.variable}`}>
       <body>
-        <JsonLd />
-        <SmoothScroll />
-        <ScrollProgress />
-        <div className="flex min-h-dvh flex-col bg-ivory">
-          <SiteHeader />
-          <main className="flex-1">{children}</main>
-          <SiteFooter />
-        </div>
-        <ScrollToTop />
+        <AppChrome>{children}</AppChrome>
       </body>
     </html>
   );

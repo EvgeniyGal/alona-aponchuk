@@ -1,26 +1,75 @@
 import { NextResponse } from "next/server";
 import { ZodError } from "zod";
 import { contactSchema } from "@/lib/contact";
+import { getDb } from "@/lib/db";
+import { leads, type AssessmentAnswers } from "@/lib/db/schema";
+import { newId } from "@/lib/id";
+import { notifyNewLead } from "@/lib/notify/leads";
 import { sendTemplateEmail } from "@/lib/email-templates/send-email";
+
+function field(value: string, label = value): AssessmentAnswers[string] {
+  return { value, label };
+}
 
 export async function POST(request: Request) {
   try {
     const body = await request.json();
     const data = contactSchema.parse(body);
+    const db = getDb();
+    const id = newId();
+    const now = new Date();
+
+    const assessmentAnswers: AssessmentAnswers = {
+      organization_type: field(data.orgType),
+      role: field(data.role || ""),
+      problem: field(data.problem),
+      crm: field(data.crm || ""),
+      scheduling: field(data.scheduling || ""),
+      ai: field(data.ai || ""),
+      forms: field(data.forms || ""),
+      messaging: field(data.messaging || ""),
+      leads: field(data.leads || ""),
+      consults: field(data.consults || ""),
+      clients: field(data.clients || ""),
+      staff: field(data.staff || ""),
+      lost: field(data.lost || ""),
+      followup: field(data.followup || ""),
+      afterForm: field(data.afterForm || ""),
+      improve: field(data.improve || ""),
+    };
+
+    const [lead] = await db
+      .insert(leads)
+      .values({
+        id,
+        source: "contact_form",
+        status: "new",
+        fullName: data.name,
+        organizationName: data.organization,
+        workEmail: data.email.toLowerCase(),
+        phone: data.phone,
+        website: data.website,
+        roleTitle: data.role,
+        consentAt: now,
+        assessmentAnswers,
+        diagnosticSummary: null,
+        transcript: [],
+        createdAt: now,
+        updatedAt: now,
+      })
+      .returning();
 
     const idempotencyKey = `workflow-audit-${data.email}-${Date.now()}`;
-    const result = await sendTemplateEmail(
-      "workflow-audit-request",
-      "info@aponchukworkflow.com",
-      {
-        templateData: data,
-        idempotencyKey,
-        replyTo: data.email,
-      },
-    );
+    const result = await sendTemplateEmail("workflow-audit-request", "info@aponchukworkflow.com", {
+      templateData: data,
+      idempotencyKey,
+      replyTo: data.email,
+    });
 
-    if (!result.sent) {
-      console.warn("[contact] Send suppressed:", result.reason);
+    if (lead) {
+      void notifyNewLead(lead, { email: false }).catch((error) =>
+        console.error("[contact] telegram/notify", error),
+      );
     }
 
     return NextResponse.json({ ok: true, delivered: result.sent });

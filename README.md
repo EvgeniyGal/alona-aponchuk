@@ -1,26 +1,36 @@
 # Alona Aponchuk — Aponchuk Workflow Systems LLC
 
-Next.js + Tailwind CSS rebuild of the consulting site. UI, UX, and color schema match the previous version.
+Next.js + Tailwind CSS consulting site with a lead-generation workflow assistant and invite-only admin panel.
 
 ## Stack
 
 - Next.js (App Router)
 - Tailwind CSS v4
-- TypeScript
-- Lucide icons
+- Auth.js (NextAuth v5) credentials
+- Neon + Drizzle ORM
+- OpenAI SDK
+- Mailgun
+- Telegram Bot API
 
 ## Getting started
 
 ```bash
 npm install
+cp .env.example .env.local
+```
+
+Fill in `DATABASE_URL`, `AUTH_SECRET`, Mailgun, OpenAI, and Telegram values. Then:
+
+```bash
+npm run db:push
+npm run db:seed
+npm run telegram:set-webhook
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000).
+`db:seed` creates the first approved admin from `ADMIN_EMAIL` / `ADMIN_PASSWORD` and loads the approved knowledge base.
 
-## Contact form email
-
-Copy `.env.example` to `.env.local` and set `LOVABLE_API_KEY` for Workflow Audit email delivery via Lovable managed email.
+Open [http://localhost:3000](http://localhost:3000). Admin is at `/admin/login`.
 
 ## Scripts
 
@@ -28,3 +38,6 @@ Copy `.env.example` to `.env.local` and set `LOVABLE_API_KEY` for Workflow Audit
 - `npm run build` — production build
 - `npm run start` — start production server
 - `npm run lint` — ESLint
+- `npm run db:push` — push Drizzle schema to Neon
+- `npm run db:seed` — seed first admin + knowledge base
+- `npm run telegram:set-webhook` — register the Telegram webhook

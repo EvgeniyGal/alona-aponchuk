@@ -350,7 +350,7 @@ html {
 .scroll-to-top {
   position: fixed;
   right: 1.25rem;
-  bottom: 1.25rem;
+  bottom: 5.5rem;
   z-index: 50;
   display: inline-flex;
   height: 2.75rem;
@@ -383,6 +383,58 @@ html {
   background: #466a86;
   color: #ffffff;
   border-color: #466a86;
+}
+
+.chat-launcher {
+  position: fixed;
+  right: 1.25rem;
+  bottom: 1.25rem;
+  z-index: 50;
+  display: inline-flex;
+  height: 3.25rem;
+  width: 3.25rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  background: #466a86;
+  color: #ffffff;
+  box-shadow: 0 16px 32px -16px rgba(31, 41, 51, 0.55);
+  border: 0;
+}
+
+.chat-launcher:hover {
+  background: #3c5d75;
+}
+
+.chat-panel {
+  position: fixed;
+  right: 1.25rem;
+  bottom: 5.25rem;
+  z-index: 50;
+  display: flex;
+  width: min(24.5rem, calc(100vw - 1.5rem));
+  height: min(36rem, calc(100dvh - 7rem));
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid #e6e3d9;
+  border-radius: 1rem;
+  background: #ffffff;
+  box-shadow: 0 24px 48px -24px rgba(31, 41, 51, 0.5);
+}
+
+@media (max-width: 640px) {
+  .chat-panel {
+    right: 0.5rem;
+    left: 0.5rem;
+    bottom: 5rem;
+    width: auto;
+    height: min(38rem, calc(100dvh - 6.25rem));
+  }
+
+  .chat-launcher,
+  .scroll-to-top {
+    right: 0.75rem;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
