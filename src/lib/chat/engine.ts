@@ -19,7 +19,17 @@ export type ChatMode =
   | "done";
 
 export type IncomingMessage =
-  | { type: "cta"; value: "start_assessment" | "ask_question" | "learn_services" | "pass_to_alona" | "restart" }
+  | {
+      type: "cta";
+      value:
+        | "start_assessment"
+        | "continue_assessment"
+        | "pause_assessment"
+        | "ask_question"
+        | "learn_services"
+        | "pass_to_alona"
+        | "restart";
+    }
   | { type: "select"; step: string; value: string }
   | { type: "multi_done"; step: string; values: string[] }
   | { type: "text"; value: string };
@@ -38,12 +48,36 @@ export type EngineMessage = {
   ui?: ChatMessageUi | null;
 };
 
-function followupCtas(locale: AppLocale): ChatMessageUi {
+function hasSavedAssessment(session: EngineSession) {
+  return Boolean(session.assessmentStep);
+}
+
+function assessmentCta(locale: AppLocale, session: EngineSession) {
+  const chat = getChatCatalog(locale);
+  if (hasSavedAssessment(session)) {
+    return { label: chat.continueAssessment, value: "continue_assessment" as const };
+  }
+  return { label: chat.startAssessment, value: "start_assessment" as const };
+}
+
+function followupCtas(locale: AppLocale, session: EngineSession): ChatMessageUi {
   const chat = getChatCatalog(locale);
   return {
     kind: "followup_ctas",
     options: [
-      { label: chat.startAssessment, value: "start_assessment" },
+      assessmentCta(locale, session),
+      { label: chat.passToAlona, value: "pass_to_alona" },
+    ],
+  };
+}
+
+function pausedUi(locale: AppLocale): ChatMessageUi {
+  const chat = getChatCatalog(locale);
+  return {
+    kind: "followup_ctas",
+    options: [
+      { label: chat.continueAssessment, value: "continue_assessment" },
+      { label: chat.askQuestion, value: "ask_question" },
       { label: chat.passToAlona, value: "pass_to_alona" },
     ],
   };
@@ -180,11 +214,39 @@ export async function processTurn(
           ...session,
           mode: "assessment",
           assessmentStep: FIRST_STEP,
+          assessmentAnswers: {},
           pendingOtherField: null,
         },
         messages: [
           { role: "user", content: chat.startAssessment },
           questionMessage(locale, FIRST_STEP),
+        ],
+      };
+    }
+    if (input.value === "pause_assessment") {
+      if (session.mode !== "assessment" || !session.assessmentStep) {
+        return { session, messages: [] };
+      }
+      return {
+        session: { ...session, mode: "faq" },
+        messages: [
+          { role: "user", content: chat.pauseAssessment },
+          { role: "assistant", content: chat.pauseSaved, ui: pausedUi(locale) },
+        ],
+      };
+    }
+    if (input.value === "continue_assessment") {
+      const stepId =
+        session.assessmentStep && questions[session.assessmentStep] ? session.assessmentStep : FIRST_STEP;
+      const pendingStep =
+        session.pendingOtherField && questions[session.pendingOtherField]
+          ? questions[session.pendingOtherField]
+          : null;
+      return {
+        session: { ...session, mode: "assessment", assessmentStep: stepId },
+        messages: [
+          { role: "user", content: chat.continueAssessment },
+          pendingStep ? otherMessage(locale, pendingStep) : questionMessage(locale, stepId),
         ],
       };
     }
@@ -202,7 +264,7 @@ export async function processTurn(
         session: { ...session, mode: "services" },
         messages: [
           { role: "user", content: chat.learnServices },
-          { role: "assistant", content: chat.servicesOverview, ui: followupCtas(locale) },
+          { role: "assistant", content: chat.servicesOverview, ui: followupCtas(locale, session) },
         ],
       };
     }
@@ -287,7 +349,8 @@ export async function processTurn(
 
     if (session.mode === "assessment" && session.assessmentStep) {
       const step = questions[session.assessmentStep];
-      if (step?.freeText) {
+      if (!step) return { session, messages: [] };
+      if (step.freeText) {
         const updated = storeAnswer(session, step.field, { value: "custom", label: text });
         return afterAnswer(updated, step.id, [{ role: "user", content: text }]);
       }
@@ -295,7 +358,7 @@ export async function processTurn(
         session,
         messages: [
           { role: "user", content: text },
-          { role: "assistant", content: chat.chooseOption },
+          { role: "assistant", content: chat.chooseOption, ui: questionUi(step) },
         ],
       };
     }
@@ -316,7 +379,7 @@ export async function processTurn(
             : chat.fallbackGuarantee || config.fallbackGuarantee;
       return {
         session: { ...session, mode: session.mode === "assessment" ? session.mode : "faq" },
-        messages: [userMessage, { role: "assistant", content: fallback, ui: followupCtas(locale) }],
+        messages: [userMessage, { role: "assistant", content: fallback, ui: followupCtas(locale, session) }],
       };
     }
 
@@ -330,7 +393,7 @@ export async function processTurn(
     const reply = await answerFaq(text, [...history, { role: "user", content: text }], locale, retrieved);
     return {
       session: { ...session, mode: "faq" },
-      messages: [userMessage, { role: "assistant", content: reply, ui: followupCtas(locale) }],
+      messages: [userMessage, { role: "assistant", content: reply, ui: followupCtas(locale, session) }],
     };
   }
 

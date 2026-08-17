@@ -13,7 +13,15 @@ import { rateLimit } from "@/lib/rate-limit";
 const payloadSchema = z.discriminatedUnion("type", [
   z.object({
     type: z.literal("cta"),
-    value: z.enum(["start_assessment", "ask_question", "learn_services", "pass_to_alona", "restart"]),
+    value: z.enum([
+      "start_assessment",
+      "continue_assessment",
+      "pause_assessment",
+      "ask_question",
+      "learn_services",
+      "pass_to_alona",
+      "restart",
+    ]),
   }),
   z.object({
     type: z.literal("select"),

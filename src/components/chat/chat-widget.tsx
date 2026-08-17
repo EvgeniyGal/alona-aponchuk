@@ -13,7 +13,6 @@ import {
 } from "@/lib/chat/client-storage";
 import { cn } from "@/lib/utils";
 import type { ChatMessageUi } from "@/lib/db/schema";
-import { LanguageSwitcher } from "@/components/language-switcher";
 
 type ChatMessage = {
   id: string;
@@ -247,6 +246,7 @@ export function ChatWidget() {
   const [open, setOpen] = useState(false);
   const [showHelpPrompt, setShowHelpPrompt] = useState(false);
   const [messages, setMessages] = useState<ChatMessage[]>(() => readCache()?.messages ?? []);
+  const [mode, setMode] = useState("welcome");
   const [busy, setBusy] = useState(false);
   const [draft, setDraft] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -271,6 +271,11 @@ export function ChatWidget() {
     const last = [...messages].reverse().find((message) => message.role === "assistant");
     return Boolean(last?.ui && last.ui.kind !== "followup_ctas" && last.ui.kind !== "welcome_ctas");
   }, [messages]);
+  const inAssessment = mode === "assessment";
+
+  useEffect(() => {
+    if (inAssessment) setDraft("");
+  }, [inAssessment]);
 
   const load = useCallback(async () => {
     visitorId.current = getOrCreateVisitorId();
@@ -287,6 +292,7 @@ export function ChatWidget() {
     const serverMessages = json.messages as ChatMessage[];
     setMessages(serverMessages);
     sessionId.current = json.session.id;
+    if (typeof json.session.mode === "string") setMode(json.session.mode);
 
     if (cached && cached.sessionId !== json.session.id) {
       clearCache();
@@ -347,6 +353,7 @@ export function ChatWidget() {
       });
       const json = await res.json();
       if (!res.ok || !json.ok) throw new Error(json.error || t("sendError"));
+      if (typeof json.mode === "string") setMode(json.mode);
       setMessages((current) => {
         const next = [...current, ...(json.messages as ChatMessage[])];
         persistCache(next);
@@ -418,13 +425,12 @@ export function ChatWidget() {
       {open ? (
         <section className="chat-panel" role="dialog" aria-label={t("dialogLabel")}>
           <header className="flex items-center justify-between border-b border-hairline bg-ivory px-4 py-3">
-            <div>
+            <div className="min-w-0 pr-2">
               <p className="font-display text-[15px] font-semibold text-graphite">{t("widgetTitle")}</p>
               <p className="text-[11.5px] text-muted-foreground">{t("widgetSubtitle")}</p>
             </div>
-            <div className="flex items-center gap-2">
-              <LanguageSwitcher compact />
-              <button type="button" aria-label={t("closeShort")} onClick={() => setOpen(false)} className="text-graphite/70 hover:text-graphite">
+            <div className="flex shrink-0 items-center">
+              <button type="button" aria-label={t("closeShort")} onClick={() => setOpen(false)} className="cursor-pointer text-graphite/70 hover:text-graphite">
                 <X size={16} />
               </button>
             </div>
@@ -443,31 +449,45 @@ export function ChatWidget() {
             {busy ? <p className="text-[12px] text-muted-foreground">{t("thinking")}</p> : null}
             {error ? <p className="text-[12px] text-destructive">{error}</p> : null}
           </div>
-          <form
-            className="flex gap-2 border-t border-hairline bg-white p-3"
-            onSubmit={(event) => {
-              event.preventDefault();
-              const value = draft.trim();
-              if (!value || busy) return;
-              setDraft("");
-              void send({ type: "text", value });
-            }}
-          >
-            <input
-              value={draft}
-              onChange={(event) => setDraft(event.target.value)}
-              placeholder={lastAssistantHasInput ? t("orTypePlaceholder") : t("askPlaceholder")}
-              className="min-w-0 flex-1 rounded-md border border-hairline px-3 py-2 text-[13.5px] outline-none focus:border-blue"
-            />
-            <button
-              type="submit"
-              disabled={busy || !draft.trim()}
-              className="inline-flex h-10 w-10 items-center justify-center rounded-md bg-blue text-white disabled:opacity-50"
-              aria-label={t("send")}
+          {inAssessment ? (
+            <div className="shrink-0 border-t border-hairline bg-white p-3">
+              <button
+                type="button"
+                disabled={busy}
+                onClick={() => void send({ type: "cta", value: "pause_assessment" })}
+                className="inline-flex w-full cursor-pointer items-center justify-center rounded-md bg-blue px-3 py-2.5 text-[13px] font-semibold text-white hover:bg-blue/90 disabled:opacity-50"
+              >
+                {t("pauseAssessment")}
+              </button>
+              <p className="mt-2 text-center text-[12px] leading-relaxed text-muted-foreground">{t("assessmentLocked")}</p>
+            </div>
+          ) : (
+            <form
+              className="flex gap-2 border-t border-hairline bg-white p-3"
+              onSubmit={(event) => {
+                event.preventDefault();
+                const value = draft.trim();
+                if (!value || busy) return;
+                setDraft("");
+                void send({ type: "text", value });
+              }}
             >
-              <Send size={16} />
-            </button>
-          </form>
+              <input
+                value={draft}
+                onChange={(event) => setDraft(event.target.value)}
+                placeholder={lastAssistantHasInput ? t("orTypePlaceholder") : t("askPlaceholder")}
+                className="min-w-0 flex-1 rounded-md border border-hairline px-3 py-2 text-[13.5px] outline-none focus:border-blue"
+              />
+              <button
+                type="submit"
+                disabled={busy || !draft.trim()}
+                className="inline-flex h-10 w-10 cursor-pointer items-center justify-center rounded-md bg-blue text-white disabled:cursor-not-allowed disabled:opacity-50"
+                aria-label={t("send")}
+              >
+                <Send size={16} />
+              </button>
+            </form>
+          )}
         </section>
       ) : null}
     </>
