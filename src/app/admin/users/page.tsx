@@ -2,11 +2,11 @@ import { desc } from "drizzle-orm";
 import { requireAdmin } from "@/lib/admin/require-admin";
 import { getDb } from "@/lib/db";
 import { users } from "@/lib/db/schema";
-import { setUserApproved } from "./actions";
+import { UserApprovalButton } from "./approval-button";
 import { InviteUserForm } from "./invite-form";
 
 export default async function UsersPage() {
-  await requireAdmin();
+  const currentUser = await requireAdmin();
   const db = getDb();
   const rows = await db.select().from(users).orderBy(desc(users.createdAt));
 
@@ -34,13 +34,11 @@ export default async function UsersPage() {
                 <td className="px-4 py-3">{user.approved ? "Yes" : "No"}</td>
                 <td className="px-4 py-3">{user.telegramUsername ? `@${user.telegramUsername}` : user.telegramChatId ? "Linked" : "Not linked"}</td>
                 <td className="px-4 py-3">
-                  <form action={setUserApproved}>
-                    <input type="hidden" name="id" value={user.id} />
-                    <input type="hidden" name="approved" value={user.approved ? "false" : "true"} />
-                    <button type="submit" className="text-blue hover:underline">
-                      {user.approved ? "Revoke" : "Restore"}
-                    </button>
-                  </form>
+                  {user.id === currentUser.id ? (
+                    <span className="text-[12px] text-muted-foreground">You</span>
+                  ) : (
+                    <UserApprovalButton userId={user.id} approved={user.approved} />
+                  )}
                 </td>
               </tr>
             ))}

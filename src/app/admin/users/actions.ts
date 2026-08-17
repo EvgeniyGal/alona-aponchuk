@@ -44,11 +44,14 @@ export async function inviteUser(_prev: string | undefined, formData: FormData) 
   return `Invite sent to ${email}.`;
 }
 
-export async function setUserApproved(formData: FormData) {
-  await requireAdmin();
-  const id = String(formData.get("id") || "");
-  const approved = String(formData.get("approved") || "") === "true";
+export async function setUserApproved(userId: string, approved: boolean) {
+  const current = await requireAdmin();
+  if (!userId) throw new Error("Missing user.");
+  if (current.id === userId) {
+    throw new Error("You cannot revoke or restore your own admin access.");
+  }
+
   const db = getDb();
-  await db.update(users).set({ approved }).where(eq(users.id, id));
+  await db.update(users).set({ approved }).where(eq(users.id, userId));
   revalidatePath("/admin/users");
 }
