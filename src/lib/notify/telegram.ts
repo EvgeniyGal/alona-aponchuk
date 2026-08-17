@@ -31,16 +31,31 @@ async function telegramRequest(method: string, body: Record<string, unknown>) {
 }
 
 export async function sendTelegramMessage(chatId: string, text: string, detailsUrl?: string) {
-  return telegramRequest("sendMessage", {
+  const payload: Record<string, unknown> = {
     chat_id: chatId,
     text,
     disable_web_page_preview: true,
-    reply_markup: detailsUrl
-      ? {
-          inline_keyboard: [[{ text: "Open details", url: detailsUrl }]],
-        }
-      : undefined,
-  });
+  };
+
+  if (!detailsUrl) {
+    return telegramRequest("sendMessage", payload);
+  }
+
+  try {
+    return await telegramRequest("sendMessage", {
+      ...payload,
+      reply_markup: {
+        inline_keyboard: [[{ text: "Open details", url: detailsUrl }]],
+      },
+    });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "";
+    if (!/BUTTON_URL_INVALID|wrong HTTP URL/i.test(message)) throw error;
+    return telegramRequest("sendMessage", {
+      ...payload,
+      text: `${text}\n\nDetails: ${detailsUrl}`,
+    });
+  }
 }
 
 function answerLabel(lead: Lead, field: string) {

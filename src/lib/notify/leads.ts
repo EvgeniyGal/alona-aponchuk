@@ -2,7 +2,7 @@ import { and, eq, isNotNull } from "drizzle-orm";
 import { getDb } from "@/lib/db";
 import { leads, users, type Lead } from "@/lib/db/schema";
 import { sendTemplateEmail } from "@/lib/email-templates/send-email";
-import { getLeadNotificationEmails } from "@/lib/notify/settings";
+import { getExtraTelegramRecipients, getLeadNotificationEmails, removeExtraTelegramRecipient } from "@/lib/notify/settings";
 import { leadDetailsUrl, leadSummaryText, sendTelegramMessage } from "@/lib/notify/telegram";
 
 function label(lead: Lead, field: string) {
@@ -62,19 +62,24 @@ export async function notifyNewLead(lead: Lead, options: { email?: boolean } = {
   }
 
   const db = getDb();
-  const recipients = await db
-    .select({
-      id: users.id,
-      telegramChatId: users.telegramChatId,
-    })
-    .from(users)
-    .where(and(eq(users.approved, true), isNotNull(users.telegramChatId)));
+  const [adminRecipients, extraRecipients] = await Promise.all([
+    db
+      .select({
+        id: users.id,
+        telegramChatId: users.telegramChatId,
+      })
+      .from(users)
+      .where(and(eq(users.approved, true), isNotNull(users.telegramChatId))),
+    getExtraTelegramRecipients(),
+  ]);
 
   const text = leadSummaryText(lead);
   const detailsUrl = leadDetailsUrl(lead.id);
+  const sentChatIds = new Set<string>();
 
-  for (const recipient of recipients) {
-    if (!recipient.telegramChatId) continue;
+  for (const recipient of adminRecipients) {
+    if (!recipient.telegramChatId || sentChatIds.has(recipient.telegramChatId)) continue;
+    sentChatIds.add(recipient.telegramChatId);
     try {
       await sendTelegramMessage(recipient.telegramChatId, text, detailsUrl);
     } catch (error) {
@@ -89,6 +94,20 @@ export async function notifyNewLead(lead: Lead, options: { email?: boolean } = {
             telegramLinkedAt: null,
           })
           .where(eq(users.id, recipient.id));
+      }
+      console.error("[notify] Telegram failed:", error);
+    }
+  }
+
+  for (const recipient of extraRecipients) {
+    if (!recipient.telegramChatId || sentChatIds.has(recipient.telegramChatId)) continue;
+    sentChatIds.add(recipient.telegramChatId);
+    try {
+      await sendTelegramMessage(recipient.telegramChatId, text, detailsUrl);
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "";
+      if (/blocked|forbidden|chat not found/i.test(message)) {
+        await removeExtraTelegramRecipient(recipient.telegramUserId);
       }
       console.error("[notify] Telegram failed:", error);
     }

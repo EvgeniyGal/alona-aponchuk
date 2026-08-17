@@ -232,7 +232,6 @@ export const template = {
   subject: (data: Record<string, unknown>) =>
     `New Workflow Audit Request – ${String(data.organization || data.name || "New submission")}`,
   displayName: 'Workflow Audit Request',
-  to: 'info@aponchukworkflow.com',
   previewData: {
     name: 'Jane Doe',
     organization: 'Acme Wellness',

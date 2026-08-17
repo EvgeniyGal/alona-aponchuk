@@ -45,9 +45,7 @@ export async function sendTemplateEmail(
     );
   }
 
-  const recipients = template.to
-    ? [template.to]
-    : (Array.isArray(to) ? to : [to]).filter(Boolean);
+  const recipients = (Array.isArray(to) ? to : [to]).filter(Boolean);
   if (recipients.length === 0) {
     throw new Error("At least one recipient is required");
   }

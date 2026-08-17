@@ -205,5 +205,4 @@ export const template = {
   subject: (data: Record<string, unknown>) =>
     `${String(data.header || "New Workflow Assessment Lead")} – ${String(data.organizationName || data.fullName || "New lead")}`,
   displayName: "New Assessment Lead",
-  to: "info@aponchukworkflow.com",
 } satisfies TemplateEntry;

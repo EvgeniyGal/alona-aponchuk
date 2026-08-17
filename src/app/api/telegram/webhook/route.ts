@@ -4,6 +4,13 @@ import { getDb } from "@/lib/db";
 import { authTokens, users } from "@/lib/db/schema";
 import { hashToken } from "@/lib/auth/tokens";
 import { sendTelegramMessage } from "@/lib/notify/telegram";
+import {
+  getExtraTelegramRecipients,
+  MAX_TELEGRAM_RECIPIENTS,
+  removeExtraTelegramRecipient,
+  TELEGRAM_RECIPIENT_INVITE_EMAIL,
+  upsertExtraTelegramRecipient,
+} from "@/lib/notify/settings";
 
 type TelegramUpdate = {
   message?: {
@@ -51,6 +58,13 @@ export async function POST(request: Request) {
         })
         .where(eq(users.id, linked.id));
       await sendTelegramMessage(chatId, "Telegram has been disconnected from your admin account.");
+      return NextResponse.json({ ok: true });
+    }
+
+    const extras = await getExtraTelegramRecipients();
+    if (extras.some((item) => item.telegramUserId === telegramUserId)) {
+      await removeExtraTelegramRecipient(telegramUserId);
+      await sendTelegramMessage(chatId, "Telegram has been disconnected from lead alerts.");
     } else {
       await sendTelegramMessage(chatId, REFUSAL);
     }
@@ -83,6 +97,34 @@ export async function POST(request: Request) {
       return NextResponse.json({ ok: true });
     }
 
+    if (record.email === TELEGRAM_RECIPIENT_INVITE_EMAIL) {
+      const [inviter] = await db.select().from(users).where(eq(users.id, record.userId)).limit(1);
+      if (!inviter?.approved) {
+        await sendTelegramMessage(chatId, REFUSAL);
+        return NextResponse.json({ ok: true });
+      }
+
+      const extras = await getExtraTelegramRecipients();
+      const alreadyAdded = extras.some((item) => item.telegramUserId === telegramUserId);
+      if (!alreadyAdded && extras.length >= MAX_TELEGRAM_RECIPIENTS) {
+        await sendTelegramMessage(
+          chatId,
+          `The notification list is full (${MAX_TELEGRAM_RECIPIENTS} Telegram accounts). Remove one from the Admin panel first.`,
+        );
+        return NextResponse.json({ ok: true });
+      }
+
+      await upsertExtraTelegramRecipient({
+        telegramUserId,
+        telegramChatId: chatId,
+        telegramUsername: username,
+        linkedAt: new Date().toISOString(),
+      });
+      await db.update(authTokens).set({ usedAt: new Date() }).where(eq(authTokens.id, record.id));
+      await sendTelegramMessage(chatId, "Linked. You will receive lead alerts here. Send /unlink to disconnect.");
+      return NextResponse.json({ ok: true });
+    }
+
     const [adminUser] = await db.select().from(users).where(eq(users.id, record.userId)).limit(1);
     if (!adminUser?.approved) {
       await sendTelegramMessage(chatId, REFUSAL);
@@ -111,7 +153,10 @@ export async function POST(request: Request) {
   }
 
   const [linked] = await db.select().from(users).where(eq(users.telegramUserId, telegramUserId)).limit(1);
-  if (!linked?.approved) {
+  if (linked?.approved) return NextResponse.json({ ok: true });
+
+  const extras = await getExtraTelegramRecipients();
+  if (!extras.some((item) => item.telegramUserId === telegramUserId)) {
     await sendTelegramMessage(chatId, REFUSAL);
   }
   return NextResponse.json({ ok: true });

@@ -176,9 +176,17 @@ export const assistantSettings = pgTable("assistant_settings", {
   updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
 });
 
+export type TelegramRecipient = {
+  telegramUserId: string;
+  telegramChatId: string;
+  telegramUsername: string | null;
+  linkedAt: string;
+};
+
 export const notificationSettings = pgTable("notification_settings", {
   id: text("id").primaryKey(),
   leadEmails: jsonb("lead_emails").$type<string[]>().notNull().default([]),
+  telegramRecipients: jsonb("telegram_recipients").$type<TelegramRecipient[]>().notNull().default([]),
   updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
 });
 

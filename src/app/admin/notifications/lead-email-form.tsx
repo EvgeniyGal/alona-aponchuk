@@ -40,8 +40,7 @@ export function LeadEmailsForm({ initialEmails }: { initialEmails: string[] }) {
         <div>
           <h2 className="font-display text-lg">Lead notification emails</h2>
           <p className="mt-1 text-[13.5px] text-muted-foreground">
-            New chat assessment leads and contact-form submissions are emailed to every address listed here. Telegram
-            alerts are unchanged.
+            New chat assessment leads and contact-form submissions are emailed to every address listed here.
           </p>
         </div>
         <button

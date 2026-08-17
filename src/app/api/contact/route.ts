@@ -62,11 +62,6 @@ export async function POST(request: Request) {
 
     const notificationEmails = await getLeadNotificationEmails();
     const idempotencyKey = `workflow-audit-${data.email}-${Date.now()}`;
-    const result = await sendTemplateEmail("workflow-audit-request", notificationEmails, {
-      templateData: data,
-      idempotencyKey,
-      replyTo: data.email,
-    });
 
     if (lead) {
       void notifyNewLead(lead, { email: false }).catch((error) =>
@@ -74,7 +69,17 @@ export async function POST(request: Request) {
       );
     }
 
-    return NextResponse.json({ ok: true, delivered: result.sent });
+    try {
+      const result = await sendTemplateEmail("workflow-audit-request", notificationEmails, {
+        templateData: data,
+        idempotencyKey,
+        replyTo: data.email,
+      });
+      return NextResponse.json({ ok: true, delivered: result.sent });
+    } catch (emailError) {
+      console.error("[contact] email failed after lead save:", emailError);
+      return NextResponse.json({ ok: true, delivered: false });
+    }
   } catch (error) {
     if (error instanceof ZodError) {
       return NextResponse.json(
