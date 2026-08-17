@@ -73,6 +73,9 @@ export function serializeMessage(message: {
   };
 }
 
-export function chatFetchHeaders(visitorId: string): HeadersInit {
-  return visitorId ? { "X-Chat-Visitor-Id": visitorId } : {};
+export function chatFetchHeaders(visitorId: string, locale?: string): HeadersInit {
+  const headers: Record<string, string> = {};
+  if (visitorId) headers["X-Chat-Visitor-Id"] = visitorId;
+  if (locale) headers["X-Chat-Locale"] = locale;
+  return headers;
 }

@@ -1,130 +1,19 @@
-import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { MapPin, Mail, Linkedin, ExternalLink } from "lucide-react";
-import { Section, CtaBand } from "@/components/page-shell";
+import { getTranslations } from "next-intl/server";
+import { Section } from "@/components/page-shell";
+import { CtaBand } from "@/components/cta-band";
 import { Reveal } from "@/components/reveal";
-import { createPageMetadata } from "@/lib/seo";
+import { translatedPageMetadata } from "@/i18n/page-metadata";
 
-export const metadata: Metadata = createPageMetadata({
-  title: "About Alona Aponchuk — CRM, Patient Management & Digital Workflow Systems",
-  description:
-    "Executive biography of Alona Aponchuk: QA engineer and workflow systems consultant specializing in CRM, patient management, healthcare and wellness workflows, RAG readiness, and responsible AI-supported communication.",
-  path: "/about",
-  image: "/alona-portrait.webp",
-  imageAlt: "Portrait of Alona Aponchuk, workflow systems consultant",
-});
-
-const experience = [
-  {
-    dates: "2026 – Present",
-    role: "CRM & Workflow Systems Specialist",
-    org: "International Institute of Psychological Maturity",
-    location: "United States",
-    body:
-      "Independent contractor responsible for CRM administration, workflow optimization, registration and participant management systems, communication automation, reporting logic, and digital infrastructure supporting educational and scientific programs, including international conference operations.",
-  },
-  {
-    dates: "2026 – Present",
-    role: "AI & Digital Systems Subcontractor",
-    org: "Opulentia SC LLC",
-    location: "Florida, USA",
-    body:
-      "Supporting the design and implementation of AI-based digital systems, workflow architectures, educational technologies, CRM-connected environments, knowledge-base supported platforms, and automation-oriented systems, including the PersonaMatrix project and RAG-supported workflow research.",
-  },
-  {
-    dates: "2025 – Present",
-    role: "CRM, EHR & Clinical Workflow Consultant",
-    org: "Health & Beauty Integrative Center",
-    location: "Florida, USA",
-    body:
-      "Consultant supporting CharmHealth CRM/EHR administration, patient intake and medical form design, clinical templates for IV therapies, IM injections and laboratory procedures, scheduling and inventory workflows (Blologic), staff training, documentation processes, and operational workflow improvement across clinical and front-office teams.",
-  },
-  {
-    dates: "Dec 2020 – Jun 2021",
-    role: "Manual QA Engineer",
-    org: "BeWell Innovations — Well@Home™ digital health platform",
-    location: "Remote",
-    body:
-      "Functional and regression testing of a clinically validated digital health platform used by hospitals, clinics, and private practices. Validated patient-facing workflows and system interactions and contributed to platform stability and consistency.",
-  },
-  {
-    dates: "May 2019 – Mar 2020",
-    role: "Manual QA Engineer",
-    org: "TEAM International — Adapt (U.S. staffing & recruitment platform)",
-    location: "Remote",
-    body:
-      "Functional, regression, and system testing across a workflow-heavy enterprise platform integrating with data warehousing and third-party systems. Validated business workflows and cross-system data flow within Agile / Scrum delivery.",
-  },
-  {
-    dates: "Sep 2017 – May 2019",
-    role: "Manual QA Engineer",
-    org: "Mediasapiens — ASK E-Learning (20,000+ users) and Easy Fish mobile app",
-    location: "Remote",
-    body:
-      "Requirements analysis, test documentation, workflow validation, and production quality assurance across a multilingual large-scale educational platform and a consumer mobile application.",
-  },
-  {
-    dates: "May 2017 – Aug 2017",
-    role: "Junior Manual QA Engineer",
-    org: "Itomych Studio — FitGrid Pro",
-    location: "Remote",
-    body:
-      "Functional testing, requirements analysis, and validation of scheduling, instructor management, and client retention workflows — an early foundation for scheduling and client management systems work.",
-  },
-];
-
-const education = [
-  {
-    degree: "Master of Science in Information Science",
-    school: 'National Technical University "Kharkiv Polytechnic Institute"',
-    dates: "2014 – 2016",
-    location: "Kharkiv, Ukraine",
-  },
-  {
-    degree: "Bachelor of Science in Computer Science, with Honors",
-    school: 'National Technical University "Kharkiv Polytechnic Institute"',
-    dates: "2010 – 2014",
-    location: "Kharkiv, Ukraine",
-  },
-];
-
-const expertise = [
-  "CRM Administration & Optimization",
-  "Patient Management Systems",
-  "Client Journey Design & Validation",
-  "Healthcare & Wellness Workflows",
-  "Scheduling & Intake Process Validation",
-  "Requirements Analysis",
-  "Functional & Regression Testing",
-  "Workflow Mapping",
-  "Digital Process Optimization",
-  "AI-Enabled Service Systems",
-  "RAG-Based Client Journey Automation",
-  "Knowledge Base Design",
-  "User Journey Validation",
-  "Data Consistency & Workflow Reliability",
-  "Agile / Scrum",
-  "Jira, Redmine, TestRail, Postman",
-];
-
-const publications = [
-  {
-    role: "Author",
-    title:
-      "RAG-Based Automation of the Client Journey in Medical and Wellness Systems: Operational Efficiency, Client Retention, and Behavioral Calibration of AI-Mediated Communication",
-    doi: "10.69635/mssl.2026.2.2.45",
-    url: "https://doi.org/10.69635/mssl.2026.2.2.45",
-  },
-  {
-    role: "Co-Author",
-    title:
-      "Psychological Testing as an Instrument of Differentiated Support in Education, Healthcare Settings, and Crisis Life Transitions: Typological, Trait-Based, and Psychodynamic Approaches",
-    venue: "Metaverse Science, Society and Law",
-    doi: "10.69635/mssl.2026.2.2.38",
-    url: "https://doi.org/10.69635/mssl.2026.2.2.38",
-  },
-];
+export async function generateMetadata() {
+  return translatedPageMetadata({
+    namespace: "about",
+    path: "/about",
+    image: "/alona-portrait.webp",
+  });
+}
 
 function SectionCard({ title, children }: { title: string; children: React.ReactNode }) {
   return (
@@ -137,7 +26,31 @@ function SectionCard({ title, children }: { title: string; children: React.React
   );
 }
 
-export default function AboutPage() {
+export default async function AboutPage() {
+  const t = await getTranslations("about");
+  const common = await getTranslations("common");
+  const expertise = t.raw("expertise") as string[];
+  const experience = t.raw("experience") as Array<{
+    dates: string;
+    role: string;
+    org: string;
+    location: string;
+    body: string;
+  }>;
+  const education = t.raw("education") as Array<{
+    degree: string;
+    school: string;
+    dates: string;
+    location: string;
+  }>;
+  const publications = t.raw("publications") as Array<{
+    role: string;
+    title: string;
+    doi: string;
+    url: string;
+    venue?: string;
+  }>;
+
   return (
     <>
       <section className="relative overflow-hidden border-b border-hairline bg-white">
@@ -155,7 +68,7 @@ export default function AboutPage() {
               <div className="absolute -inset-3 rounded-2xl bg-sage-soft/40 -z-10" aria-hidden />
               <Image
                 src="/alona-portrait.webp"
-                alt="Portrait of Alona Aponchuk, workflow systems consultant"
+                alt={t("seo.imageAlt")}
                 width={480}
                 height={480}
                 className="w-full aspect-square object-cover rounded-2xl border border-hairline shadow-sm"
@@ -164,21 +77,18 @@ export default function AboutPage() {
             </div>
           </Reveal>
           <Reveal variant="right" delayMs={80} className="order-1 lg:order-2 w-full min-w-0">
-            <div className="eyebrow">About Me</div>
+            <div className="eyebrow">{t("eyebrow")}</div>
             <h1 className="mt-4 font-display text-[36px] md:text-5xl font-semibold text-graphite leading-[1.1]">
-              Alona Aponchuk
+              {t("name")}
             </h1>
             <p className="mt-3 font-display text-lg text-graphite/80">
-              QA Engineer · CRM, Patient Management & Digital Workflow Systems Specialist
+              {t("role")}
             </p>
             <p className="mt-6 text-[16px] text-muted-foreground leading-relaxed w-full max-w-none lg:max-w-xl">
-              I am the founder of Aponchuk Workflow Systems LLC. I help healthcare and wellness
-              organizations build reliable digital workflows, optimize CRM and patient management
-              processes, structure knowledge for responsible AI-supported communication, and validate
-              client journeys through applied QA methods.
+              {t("lead")}
             </p>
             <div className="mt-6 flex flex-wrap items-center gap-x-5 gap-y-2 text-[13.5px] text-muted-foreground">
-              <span className="inline-flex items-center gap-1.5"><MapPin size={14} className="text-blue" /> Sarasota, Florida</span>
+              <span className="inline-flex items-center gap-1.5"><MapPin size={14} className="text-blue" /> {t("location")}</span>
               <a href="mailto:info@aponchukworkflow.com" className="inline-flex items-center gap-1.5 hover:text-blue">
                 <Mail size={14} /> info@aponchukworkflow.com
               </a>
@@ -188,9 +98,9 @@ export default function AboutPage() {
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-1.5 hover:text-blue"
               >
-                <Linkedin size={14} /> LinkedIn
+                <Linkedin size={14} /> {t("linkedin")}
               </a>
-              <span className="text-muted-foreground/80">ORCID 0009-0008-3505-7871</span>
+              <span className="text-muted-foreground/80">{t("orcid")}</span>
             </div>
           </Reveal>
         </div>
@@ -199,34 +109,16 @@ export default function AboutPage() {
       <Section>
         <div className="grid gap-8 md:grid-cols-2">
           <Reveal variant="up">
-            <SectionCard title="Professional Introduction">
-              <p>
-                For more than eight years I have worked at the intersection of software quality
-                assurance, CRM administration, and workflow design. My focus is the operational
-                reliability of systems that support people — patients, clients, program participants,
-                and the staff who serve them.
-              </p>
-              <p>
-                I work remotely with organizations across the United States and specialize in
-                healthcare, wellness, and mission-driven service environments where continuity of
-                the client journey directly affects the quality of care.
-              </p>
+            <SectionCard title={t("introTitle")}>
+              <p>{t("introP1")}</p>
+              <p>{t("introP2")}</p>
             </SectionCard>
           </Reveal>
 
           <Reveal variant="up" delayMs={80}>
-            <SectionCard title="Professional Background">
-              <p>
-                My professional path began in enterprise QA engineering, validating complex platforms
-                in staffing, education, digital health, and consumer applications. That work shaped a
-                disciplined approach to requirements analysis, workflow validation, and cross-system
-                data integrity.
-              </p>
-              <p>
-                Over time my focus shifted from testing software to designing the operational
-                workflows the software is meant to support — CRM logic, patient intake, scheduling,
-                staff handoffs, knowledge access, and responsible automation.
-              </p>
+            <SectionCard title={t("backgroundTitle")}>
+              <p>{t("backgroundP1")}</p>
+              <p>{t("backgroundP2")}</p>
             </SectionCard>
           </Reveal>
         </div>
@@ -235,9 +127,9 @@ export default function AboutPage() {
       <Section className="bg-white border-y border-hairline">
         <Reveal>
           <div className="max-w-2xl">
-            <div className="eyebrow">Areas of Expertise</div>
+            <div className="eyebrow">{t("expertiseEyebrow")}</div>
             <h2 className="mt-3 font-display text-3xl text-graphite leading-tight">
-              Where my consulting work is concentrated.
+              {t("expertiseTitle")}
             </h2>
           </div>
         </Reveal>
@@ -255,9 +147,9 @@ export default function AboutPage() {
       <Section>
         <Reveal>
           <div className="max-w-2xl">
-            <div className="eyebrow">Professional Experience</div>
+            <div className="eyebrow">{t("experienceEyebrow")}</div>
             <h2 className="mt-3 font-display text-3xl text-graphite leading-tight">
-              Selected engagements across healthcare, wellness, education, and enterprise systems.
+              {t("experienceTitle")}
             </h2>
           </div>
         </Reveal>
@@ -286,9 +178,9 @@ export default function AboutPage() {
         <div className="grid gap-10 md:grid-cols-[1fr_1.6fr] items-start">
           <Reveal>
             <div>
-              <div className="eyebrow">Education</div>
+              <div className="eyebrow">{t("educationEyebrow")}</div>
               <h2 className="mt-3 font-display text-3xl text-graphite leading-tight">
-                Formal training in information science and computer science.
+                {t("educationTitle")}
               </h2>
             </div>
           </Reveal>
@@ -309,34 +201,16 @@ export default function AboutPage() {
       <Section>
         <div className="grid gap-8 md:grid-cols-2">
           <Reveal variant="up">
-            <SectionCard title="Current Consulting Focus">
-              <p>
-                Today my work centers on medical practices, wellness centers, medspas, therapy
-                practices, rehabilitation programs, aesthetics clinics, and integrative health
-                organizations. Typical engagements involve CRM and EHR workflow optimization,
-                patient intake and scheduling reliability, knowledge base structuring, RAG
-                readiness, and QA validation of AI-supported communication.
-              </p>
-              <p>
-                All services are delivered remotely from Sarasota, Florida to organizations across
-                the United States.
-              </p>
+            <SectionCard title={t("focusTitle")}>
+              <p>{t("focusP1")}</p>
+              <p>{t("focusP2")}</p>
             </SectionCard>
           </Reveal>
 
           <Reveal variant="up" delayMs={80}>
-            <SectionCard title="Professional Philosophy">
-              <p>
-                Reliable workflows are a form of care. When intake, scheduling, follow-up, and
-                communication behave predictably, staff spend less time correcting the system and
-                more time serving people.
-              </p>
-              <p>
-                I treat automation — including AI-supported communication — as one layer of a
-                broader operational system that must be documented, bounded, tested, and reviewed
-                by qualified human professionals. Automation earns its place by strengthening the
-                client journey, never by replacing professional judgment.
-              </p>
+            <SectionCard title={t("philosophyTitle")}>
+              <p>{t("philosophyP1")}</p>
+              <p>{t("philosophyP2")}</p>
             </SectionCard>
           </Reveal>
         </div>
@@ -345,14 +219,12 @@ export default function AboutPage() {
       <Section className="bg-white border-y border-hairline">
         <Reveal>
           <div className="max-w-2xl">
-            <div className="eyebrow">Research & Publications</div>
+            <div className="eyebrow">{t("pubsEyebrow")}</div>
             <h2 className="mt-3 font-display text-3xl text-graphite leading-tight">
-              Applied research in AI-enabled workflow systems and client journey automation.
+              {t("pubsTitle")}
             </h2>
             <p className="mt-4 text-muted-foreground leading-relaxed">
-              My research interests include CRM-enabled service delivery, healthcare and wellness
-              workflows, patient management systems, AI-mediated communication, and RAG-based
-              client journey automation.
+              {t("pubsLead")}
             </p>
           </div>
         </Reveal>
@@ -377,10 +249,7 @@ export default function AboutPage() {
         </div>
         <Reveal>
           <p className="mt-8 text-[13px] text-muted-foreground max-w-3xl leading-relaxed">
-            I also served as Conference Operations & Digital Workflow Coordinator for the
-            international scientific conference “Beyond Human: AI, Consciousness, Personality
-            and the Future of Human Development” (September 2026), supporting registration,
-            participant communications, speaker onboarding, and post-conference documentation.
+            {t("pubsNote")}
           </p>
         </Reveal>
       </Section>
@@ -389,21 +258,20 @@ export default function AboutPage() {
         <Reveal>
           <div className="rounded-2xl border border-hairline bg-white p-6 md:p-8 flex flex-col md:flex-row md:items-center gap-4 md:gap-8">
             <p className="text-[14.5px] text-muted-foreground leading-relaxed md:flex-1">
-              If you would like to discuss whether my approach fits your organization,
-              request a diagnostic Workflow Audit or reach me directly by email.
+              {t("bandBody")}
             </p>
             <div className="flex flex-col sm:flex-row flex-wrap gap-3 w-full md:w-auto">
               <Link
                 href="/contact"
                 className="cta-shimmer inline-flex w-full sm:w-auto items-center justify-center rounded-md bg-blue px-5 py-3 text-[14px] font-medium text-white hover:bg-blue/90"
               >
-                Request Workflow Audit
+                {common("requestAudit")}
               </Link>
               <Link
                 href="/method"
                 className="inline-flex w-full sm:w-auto items-center justify-center rounded-md border border-hairline bg-white px-5 py-3 text-[14px] font-medium text-graphite hover:bg-muted"
               >
-                Explore My Method
+                {common("exploreMethod")}
               </Link>
             </div>
           </div>

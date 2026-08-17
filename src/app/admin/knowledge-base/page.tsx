@@ -1,4 +1,5 @@
 import { asc } from "drizzle-orm";
+import { getTranslations } from "next-intl/server";
 import { requireAdmin } from "@/lib/admin/require-admin";
 import { getDb } from "@/lib/db";
 import { knowledgeBaseEntries } from "@/lib/db/schema";
@@ -9,23 +10,22 @@ const inputCls =
 
 export default async function KnowledgeBasePage() {
   await requireAdmin();
+  const t = await getTranslations("admin");
   const db = getDb();
   const entries = await db.select().from(knowledgeBaseEntries).orderBy(asc(knowledgeBaseEntries.sortOrder));
 
   return (
     <div>
-      <h1 className="font-display text-3xl">Knowledge base</h1>
-      <p className="mt-2 text-[14px] text-muted-foreground">
-        Approved answers used by the assistant. Inactive entries are excluded from the cached prompt.
-      </p>
+      <h1 className="font-display text-3xl">{t("kb.title")}</h1>
+      <p className="mt-2 text-[14px] text-muted-foreground">{t("kb.lead")}</p>
 
       <form action={createKbEntry} className="mt-8 space-y-3 rounded-xl border border-hairline bg-white p-5">
-        <h2 className="font-display text-lg">Add entry</h2>
-        <input className={inputCls} name="slug" placeholder="slug-for-analytics" required />
-        <input className={inputCls} name="intent" placeholder="User question / intent" required />
-        <textarea className={inputCls} name="approvedAnswer" rows={4} placeholder="Approved answer" required />
+        <h2 className="font-display text-lg">{t("kb.add")}</h2>
+        <input className={inputCls} name="slug" placeholder={t("kb.slug")} required />
+        <input className={inputCls} name="intent" placeholder={t("kb.intent")} required />
+        <textarea className={inputCls} name="approvedAnswer" rows={4} placeholder={t("kb.answer")} required />
         <button type="submit" className="rounded-md bg-blue px-4 py-2 text-[13.5px] font-medium text-white">
-          Add
+          {t("kb.add")}
         </button>
       </form>
 
@@ -38,14 +38,14 @@ export default async function KnowledgeBasePage() {
             <textarea className={inputCls} name="approvedAnswer" rows={4} defaultValue={entry.approvedAnswer} />
             <label className="flex items-center gap-2 text-[13px]">
               <input type="checkbox" name="active" defaultChecked={entry.active} />
-              Active
+              {t("kb.active")}
             </label>
             <div className="flex gap-2">
               <button type="submit" className="rounded-md bg-blue px-3 py-2 text-[13px] font-medium text-white">
-                Save
+                {t("kb.save")}
               </button>
               <button formAction={deleteKbEntry} className="rounded-md border border-hairline px-3 py-2 text-[13px]">
-                Delete
+                {t("kb.delete")}
               </button>
             </div>
           </form>

@@ -1,65 +1,35 @@
-import type { Metadata } from "next";
-import { PageHero, Section, CtaBand } from "@/components/page-shell";
+import { getTranslations } from "next-intl/server";
+import { PageHero, Section } from "@/components/page-shell";
+import { CtaBand } from "@/components/cta-band";
 import { CheckCircle2, XCircle } from "lucide-react";
 import { Reveal } from "@/components/reveal";
 import { ImagePlaceholder } from "@/components/image-placeholder";
-import { createPageMetadata } from "@/lib/seo";
+import { translatedPageMetadata } from "@/i18n/page-metadata";
 
-export const metadata: Metadata = createPageMetadata({
-  title: "Responsible AI — Bounded, QA-Validated Client Communication",
-  description:
-    "I scope AI-supported communication to approved informational, administrative, scheduling, preparation, and follow-up interactions — never diagnosis, clinical advice, or guaranteed outcomes.",
-  path: "/responsible-ai",
-  image: "/images/home-five-layer-system.webp",
-  imageAlt: "Responsible AI for healthcare and wellness client journeys",
-});
+export async function generateMetadata() {
+  return translatedPageMetadata({
+    namespace: "responsibleAi",
+    path: "/responsible-ai",
+    image: "/images/home-five-layer-system.webp",
+  });
+}
 
-const allowed = [
-  "Approved informational questions",
-  "Administrative communication",
-  "Scheduling and confirmations",
-  "Preparation instructions",
-  "Reminders",
-  "Follow-up touchpoints",
-];
+export default async function ResponsibleAiPage() {
+  const t = await getTranslations("responsibleAi");
+  const allowed = t.raw("allowed") as string[];
+  const notAllowed = t.raw("notAllowed") as string[];
+  const generic = t.raw("generic") as string[];
+  const calibrated = t.raw("calibrated") as string[];
 
-const notAllowed = [
-  "Diagnosis",
-  "Psychological assessment",
-  "Medical or clinical advice",
-  "Guaranteed outcomes",
-  "Pressure-based conversion",
-  "Replacement of licensed professionals",
-];
-
-const generic = [
-  "Unverified knowledge sources",
-  "Undefined response boundaries",
-  "No structured human review",
-  "No documented escalation path",
-  "No behavioral or drift testing",
-  "No access controls",
-];
-
-const calibrated = [
-  "Verified, versioned knowledge base",
-  "Defined response boundaries",
-  "Human review of ambiguous cases",
-  "Documented escalation paths",
-  "Response stability & drift testing",
-  "Access controls where appropriate",
-];
-
-export default function ResponsibleAiPage() {
   return (
     <>
       <PageHero
-        eyebrow="Responsible AI"
-        title="AI Should Support the Client Journey — Not Replace Professional Judgment."
-        lead="I place automation in the operational layer of the client journey. It handles routine, bounded, informational communication so licensed professionals can focus on clinical and therapeutic work."
+        eyebrow={t("eyebrow")}
+        title={t("title")}
+        lead={t("lead")}
         image={{
           filename: "home-five-layer-system.webp",
-          label: "Layered responsible AI system",
+          label: t("imageLabel"),
           tone: "blue",
         }}
       />
@@ -68,7 +38,7 @@ export default function ResponsibleAiPage() {
         <div className="grid gap-6 md:grid-cols-2">
           <Reveal variant="up">
             <div className="service-card h-full rounded-2xl border border-teal/40 bg-teal-soft/40 p-8">
-              <h2 className="font-display text-xl md:text-2xl text-graphite">AI-supported communication may assist with</h2>
+              <h2 className="font-display text-xl md:text-2xl text-graphite">{t("allowedTitle")}</h2>
               <ul className="mt-5 space-y-3">
                 {allowed.map((a) => (
                   <li key={a} className="flex gap-3 text-[15px] text-graphite leading-relaxed">
@@ -80,7 +50,7 @@ export default function ResponsibleAiPage() {
           </Reveal>
           <Reveal variant="up" delayMs={80}>
             <div className="service-card h-full rounded-2xl border border-hairline bg-white p-8">
-              <h2 className="font-display text-xl md:text-2xl text-graphite">AI must not independently provide</h2>
+              <h2 className="font-display text-xl md:text-2xl text-graphite">{t("notAllowedTitle")}</h2>
               <ul className="mt-5 space-y-3">
                 {notAllowed.map((a) => (
                   <li key={a} className="flex gap-3 text-[15px] text-graphite leading-relaxed">
@@ -97,19 +67,18 @@ export default function ResponsibleAiPage() {
         <div className="grid gap-10 lg:grid-cols-[1.1fr_0.9fr] items-end">
           <Reveal>
             <div className="max-w-2xl">
-              <div className="eyebrow">Comparison</div>
+              <div className="eyebrow">{t("compareEyebrow")}</div>
               <h2 className="mt-3 font-display text-3xl text-graphite leading-tight">
-                Generic Chatbot vs. Calibrated RAG Workflow
+                {t("compareTitle")}
               </h2>
               <p className="mt-4 text-muted-foreground leading-relaxed">
-                The same underlying technology can behave very differently depending on how it is scoped,
-                grounded, and monitored.
+                {t("compareLead")}
               </p>
             </div>
           </Reveal>
           <Reveal delayMs={80} className="hidden lg:block">
             <ImagePlaceholder
-              label="Calibrated RAG workflow atmosphere"
+              label={t("compareImage")}
               filename="home-service-automation-readiness.webp"
               aspect="landscape"
               tone="teal"
@@ -120,7 +89,7 @@ export default function ResponsibleAiPage() {
         <div className="mt-10 grid gap-6 md:grid-cols-2">
           <Reveal variant="up">
             <div className="service-card h-full rounded-2xl border border-hairline p-8 bg-white">
-              <div className="eyebrow" style={{ color: "#8a6a2b" }}>Generic Chatbot</div>
+              <div className="eyebrow" style={{ color: "#8a6a2b" }}>{t("genericEyebrow")}</div>
               <ul className="mt-5 space-y-3">
                 {generic.map((g) => (
                   <li key={g} className="text-[15px] text-muted-foreground leading-relaxed">· {g}</li>
@@ -130,7 +99,7 @@ export default function ResponsibleAiPage() {
           </Reveal>
           <Reveal variant="up" delayMs={80}>
             <div className="service-card h-full rounded-2xl border border-teal/40 bg-teal-soft/40 p-8">
-              <div className="eyebrow" style={{ color: "#2f6f77" }}>Calibrated RAG Workflow</div>
+              <div className="eyebrow" style={{ color: "#2f6f77" }}>{t("calibratedEyebrow")}</div>
               <ul className="mt-5 space-y-3">
                 {calibrated.map((g) => (
                   <li key={g} className="text-[15px] text-graphite leading-relaxed">· {g}</li>

@@ -3,7 +3,8 @@ import { eq } from "drizzle-orm";
 import { z } from "zod";
 import { getDb } from "@/lib/db";
 import { chatMessages, chatSessions, leads } from "@/lib/db/schema";
-import { getOrCreateChatSession, visitorIdFromRequest } from "@/lib/chat/session";
+import { getOrCreateChatSession, localeFromRequest, visitorIdFromRequest } from "@/lib/chat/session";
+import { getChatCatalog } from "@/i18n/catalog";
 import { newId } from "@/lib/id";
 import { notifyNewLead } from "@/lib/notify/leads";
 import { rateLimit } from "@/lib/rate-limit";
@@ -20,10 +21,12 @@ const leadSchema = z.object({
 
 export async function POST(request: Request) {
   try {
-    const { session, messages } = await getOrCreateChatSession(visitorIdFromRequest(request));
+    const locale = localeFromRequest(request);
+    const chat = getChatCatalog(locale);
+    const { session, messages } = await getOrCreateChatSession(visitorIdFromRequest(request), locale);
     const limited = rateLimit(`lead:${session.id}`, 5, 60 * 60 * 1000);
     if (!limited.ok) {
-      return NextResponse.json({ ok: false, error: "This assessment was already submitted." }, { status: 429 });
+      return NextResponse.json({ ok: false, error: chat.leadAlready }, { status: 429 });
     }
 
     if (session.leadId) {
@@ -32,7 +35,7 @@ export async function POST(request: Request) {
 
     const parsed = leadSchema.safeParse(await request.json());
     if (!parsed.success) {
-      return NextResponse.json({ ok: false, error: "Please complete the required contact fields." }, { status: 400 });
+      return NextResponse.json({ ok: false, error: chat.leadRequired }, { status: 400 });
     }
 
     const diagnostic = [...messages].reverse().find((message) => message.role === "assistant" && !message.ui)?.content;
@@ -80,8 +83,7 @@ export async function POST(request: Request) {
       id: newId(),
       sessionId: session.id,
       role: "assistant",
-      content:
-        "Thank you. Alona will review this and follow up at the email you provided. You can also reach Aponchuk Workflow Systems at info@aponchukworkflow.com.",
+      content: chat.thanks,
       ui: null,
       createdAt: now,
     };
@@ -104,7 +106,7 @@ export async function POST(request: Request) {
   } catch (error) {
     console.error("[chat/lead]", error);
     return NextResponse.json(
-      { ok: false, error: "We could not save your details. Please email info@aponchukworkflow.com." },
+      { ok: false, error: getChatCatalog(localeFromRequest(request)).leadSaveError },
       { status: 500 },
     );
   }

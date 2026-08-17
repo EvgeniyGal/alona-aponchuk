@@ -1,3 +1,4 @@
+import { sql } from "drizzle-orm";
 import {
   boolean,
   doublePrecision,
@@ -9,6 +10,7 @@ import {
   text,
   timestamp,
   uniqueIndex,
+  vector,
 } from "drizzle-orm/pg-core";
 
 export const leadStatusEnum = pgEnum("lead_status", [
@@ -102,6 +104,7 @@ export const authTokens = pgTable("auth_tokens", {
 export const chatSessions = pgTable("chat_sessions", {
   id: text("id").primaryKey(),
   visitorId: text("visitor_id"),
+  locale: text("locale").notNull().default("en"),
   mode: chatModeEnum("mode").notNull().default("welcome"),
   assessmentStep: text("assessment_step"),
   assessmentAnswers: jsonb("assessment_answers").$type<AssessmentAnswers>().notNull().default({}),
@@ -190,6 +193,36 @@ export const notificationSettings = pgTable("notification_settings", {
   updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
 });
 
+export const ragDocumentStatusEnum = pgEnum("rag_document_status", ["processing", "ready", "error"]);
+
+export const ragDocuments = pgTable("rag_documents", {
+  id: text("id").primaryKey(),
+  filename: text("filename").notNull(),
+  mimeType: text("mime_type").notNull(),
+  byteSize: integer("byte_size").notNull(),
+  status: ragDocumentStatusEnum("status").notNull().default("processing"),
+  errorMessage: text("error_message"),
+  chunkCount: integer("chunk_count").notNull().default(0),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+});
+
+export const ragChunks = pgTable("rag_chunks", {
+  id: text("id").primaryKey(),
+  documentId: text("document_id")
+    .notNull()
+    .references(() => ragDocuments.id, { onDelete: "cascade" }),
+  chunkIndex: integer("chunk_index").notNull(),
+  content: text("content").notNull(),
+  tokenCount: integer("token_count").notNull().default(0),
+  embedding: vector("embedding", { dimensions: 1536 }),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+}, (table) => [
+  index("rag_chunks_document_idx").on(table.documentId),
+  index("rag_chunks_embedding_hnsw").using("hnsw", table.embedding.op("vector_cosine_ops")),
+  index("rag_chunks_content_fts").using("gin", sql`to_tsvector('simple', content)`),
+]);
+
 export type User = typeof users.$inferSelect;
 export type Lead = typeof leads.$inferSelect;
 export type ChatSession = typeof chatSessions.$inferSelect;
@@ -197,3 +230,5 @@ export type ChatMessage = typeof chatMessages.$inferSelect;
 export type KnowledgeBaseEntry = typeof knowledgeBaseEntries.$inferSelect;
 export type AssistantSettings = typeof assistantSettings.$inferSelect;
 export type NotificationSettings = typeof notificationSettings.$inferSelect;
+export type RagDocument = typeof ragDocuments.$inferSelect;
+export type RagChunk = typeof ragChunks.$inferSelect;

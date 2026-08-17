@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { MessageCircle, Send, X } from "lucide-react";
+import { useLocale, useTranslations } from "next-intl";
 import {
   chatFetchHeaders,
   clearCache,
@@ -12,6 +13,7 @@ import {
 } from "@/lib/chat/client-storage";
 import { cn } from "@/lib/utils";
 import type { ChatMessageUi } from "@/lib/db/schema";
+import { LanguageSwitcher } from "@/components/language-switcher";
 
 type ChatMessage = {
   id: string;
@@ -39,6 +41,7 @@ function LeadForm({
   disabled?: boolean;
   onSubmit: (payload: Record<string, string | boolean>) => Promise<void>;
 }) {
+  const t = useTranslations("chat");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -62,20 +65,22 @@ function LeadForm({
             consent: form.get("consent") === "on",
           });
         } catch (err) {
-          setError(err instanceof Error ? err.message : "Could not submit.");
+          setError(err instanceof Error ? err.message : t("leadSubmitError"));
         } finally {
           setBusy(false);
         }
       }}
     >
-      {[
-        ["fullName", "Full Name", "text", true],
-        ["organizationName", "Organization Name", "text", true],
-        ["workEmail", "Work Email", "email", true],
-        ["phone", "Phone Number", "tel", false],
-        ["website", "Website URL", "text", false],
-        ["roleTitle", "Role / Title", "text", false],
-      ].map(([name, label, type, required]) => (
+      {(
+        [
+          ["fullName", t("fullName"), "text", true],
+          ["organizationName", t("organizationName"), "text", true],
+          ["workEmail", t("workEmail"), "email", true],
+          ["phone", t("phone"), "tel", false],
+          ["website", t("website"), "text", false],
+          ["roleTitle", t("roleTitle"), "text", false],
+        ] as const
+      ).map(([name, label, type, required]) => (
         <label key={String(name)} className="block">
           <span className="mb-1 block text-[11px] font-medium text-graphite/80">
             {label}
@@ -92,7 +97,7 @@ function LeadForm({
       ))}
       <label className="flex items-start gap-2 pt-1 text-[12px] text-muted-foreground">
         <input type="checkbox" name="consent" required disabled={disabled} className="mt-0.5" />
-        <span>I agree to be contacted about this inquiry. Please do not include patient-identifying information.</span>
+        <span>{t("consent")}</span>
       </label>
       {error ? <p className="text-[12px] text-destructive">{error}</p> : null}
       <button
@@ -100,7 +105,7 @@ function LeadForm({
         disabled={busy || disabled}
         className="inline-flex rounded-md bg-blue px-3 py-2 text-[13px] font-medium text-white hover:bg-blue/90 disabled:opacity-60"
       >
-        {busy ? "Sending…" : "Send to Alona"}
+        {busy ? t("sending") : t("sendToAlona")}
       </button>
     </form>
   );
@@ -119,6 +124,7 @@ function MessageBody({
   onAction: (payload: Incoming) => void;
   onLead: (payload: Record<string, string | boolean>) => Promise<void>;
 }) {
+  const t = useTranslations("chat");
   const ui = message.ui;
   const [selected, setSelected] = useState<string[]>([]);
   const [draft, setDraft] = useState("");
@@ -189,7 +195,7 @@ function MessageBody({
             onClick={() => ui.step && onAction({ type: "multi_done", step: ui.step, values: selected })}
             className="rounded-md bg-blue px-3 py-1.5 text-[12.5px] font-medium text-white disabled:opacity-50"
           >
-            Continue
+            {t("continue")}
           </button>
         </div>
       ) : null}
@@ -214,7 +220,7 @@ function MessageBody({
             <input
               value={draft}
               onChange={(event) => setDraft(event.target.value)}
-              placeholder={ui.placeholder || "Type your answer"}
+              placeholder={ui.placeholder || t("typeAnswer")}
               disabled={!interactive}
               inputMode={ui.inputMode === "numeric" ? "numeric" : "text"}
               className="min-w-0 flex-1 rounded-md border border-hairline px-2.5 py-2 text-[13px] outline-none focus:border-blue"
@@ -236,6 +242,8 @@ function MessageBody({
 }
 
 export function ChatWidget() {
+  const t = useTranslations("chat");
+  const locale = useLocale();
   const [open, setOpen] = useState(false);
   const [showHelpPrompt, setShowHelpPrompt] = useState(false);
   const [messages, setMessages] = useState<ChatMessage[]>(() => readCache()?.messages ?? []);
@@ -272,9 +280,9 @@ export function ChatWidget() {
       sessionId.current = cached.sessionId;
     }
 
-    const res = await fetch("/api/chat/session", { headers: chatFetchHeaders(visitorId.current) });
+    const res = await fetch("/api/chat/session", { headers: chatFetchHeaders(visitorId.current, locale) });
     const json = await res.json();
-    if (!json.ok) throw new Error(json.error || "Could not load the assistant.");
+    if (!json.ok) throw new Error(json.error || t("loadError"));
 
     const serverMessages = json.messages as ChatMessage[];
     setMessages(serverMessages);
@@ -284,13 +292,18 @@ export function ChatWidget() {
       clearCache();
     }
     persistCache(serverMessages, json.session.id);
-  }, [persistCache]);
+  }, [persistCache, locale, t]);
 
   useEffect(() => {
     if (!open || loaded.current) return;
     loaded.current = true;
-    load().catch(() => setError("Could not load the assistant."));
-  }, [open, load]);
+    load().catch(() => setError(t("loadError")));
+  }, [open, load, t]);
+
+  useEffect(() => {
+    if (!loaded.current) return;
+    load().catch(() => setError(t("loadError")));
+  }, [locale, load, t]);
 
   useEffect(() => {
     scroller.current?.scrollTo({ top: scroller.current.scrollHeight, behavior: "smooth" });
@@ -328,19 +341,19 @@ export function ChatWidget() {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          ...chatFetchHeaders(visitorId.current || getOrCreateVisitorId()),
+          ...chatFetchHeaders(visitorId.current || getOrCreateVisitorId(), locale),
         },
         body: JSON.stringify(payload),
       });
       const json = await res.json();
-      if (!res.ok || !json.ok) throw new Error(json.error || "Could not send.");
+      if (!res.ok || !json.ok) throw new Error(json.error || t("sendError"));
       setMessages((current) => {
         const next = [...current, ...(json.messages as ChatMessage[])];
         persistCache(next);
         return next;
       });
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Could not send.");
+      setError(err instanceof Error ? err.message : t("sendError"));
     } finally {
       setBusy(false);
     }
@@ -351,12 +364,12 @@ export function ChatWidget() {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        ...chatFetchHeaders(visitorId.current || getOrCreateVisitorId()),
+        ...chatFetchHeaders(visitorId.current || getOrCreateVisitorId(), locale),
       },
       body: JSON.stringify({ ...payload, consent: payload.consent === true }),
     });
     const json = await res.json();
-    if (!res.ok || !json.ok) throw new Error(json.error || "Could not submit.");
+    if (!res.ok || !json.ok) throw new Error(json.error || t("leadSubmitError"));
     if (json.message) {
       setMessages((current) => {
         const next = [...current, json.message as ChatMessage];
@@ -376,13 +389,13 @@ export function ChatWidget() {
               className="chat-help-prompt__body"
               onClick={openChat}
             >
-              <span className="chat-help-prompt__eyebrow">Workflow assistant</span>
-              <span className="chat-help-prompt__title">Need help?</span>
-              <span className="chat-help-prompt__copy">Ask about intake, CRM, follow-up, or start a quick assessment.</span>
+              <span className="chat-help-prompt__eyebrow">{t("helpEyebrow")}</span>
+              <span className="chat-help-prompt__title">{t("helpTitle")}</span>
+              <span className="chat-help-prompt__copy">{t("helpCopy")}</span>
             </button>
             <button
               type="button"
-              aria-label="Dismiss help prompt"
+              aria-label={t("dismissHelp")}
               className="chat-help-prompt__close"
               onClick={dismissHelpPrompt}
             >
@@ -392,26 +405,29 @@ export function ChatWidget() {
         ) : null}
         <button
           type="button"
-          aria-label={open ? "Close assistant" : "Open workflow assistant"}
+          aria-label={open ? t("close") : t("open")}
           aria-expanded={open}
           onClick={() => (open ? setOpen(false) : openChat())}
           className={cn("chat-launcher", open ? "chat-launcher--compact" : "chat-launcher--attention")}
         >
           <span className="chat-launcher__pulse" aria-hidden="true" />
           {open ? <X size={22} /> : <MessageCircle size={22} />}
-          {!open ? <span className="chat-launcher__label">Help</span> : null}
+          {!open ? <span className="chat-launcher__label">{t("help")}</span> : null}
         </button>
       </div>
       {open ? (
-        <section className="chat-panel" role="dialog" aria-label="Aponchuk Workflow Assistant">
+        <section className="chat-panel" role="dialog" aria-label={t("dialogLabel")}>
           <header className="flex items-center justify-between border-b border-hairline bg-ivory px-4 py-3">
             <div>
-              <p className="font-display text-[15px] font-semibold text-graphite">Aponchuk Workflow Assistant</p>
-              <p className="text-[11.5px] text-muted-foreground">Workflow, CRM, and client-journey questions</p>
+              <p className="font-display text-[15px] font-semibold text-graphite">{t("widgetTitle")}</p>
+              <p className="text-[11.5px] text-muted-foreground">{t("widgetSubtitle")}</p>
             </div>
-            <button type="button" aria-label="Close" onClick={() => setOpen(false)} className="text-graphite/70 hover:text-graphite">
-              <X size={16} />
-            </button>
+            <div className="flex items-center gap-2">
+              <LanguageSwitcher compact />
+              <button type="button" aria-label={t("closeShort")} onClick={() => setOpen(false)} className="text-graphite/70 hover:text-graphite">
+                <X size={16} />
+              </button>
+            </div>
           </header>
           <div ref={scroller} className="flex-1 space-y-3 overflow-y-auto bg-[#fbfaf6] px-3 py-3">
             {messages.map((message, index) => (
@@ -424,7 +440,7 @@ export function ChatWidget() {
                 onLead={submitLead}
               />
             ))}
-            {busy ? <p className="text-[12px] text-muted-foreground">Thinking…</p> : null}
+            {busy ? <p className="text-[12px] text-muted-foreground">{t("thinking")}</p> : null}
             {error ? <p className="text-[12px] text-destructive">{error}</p> : null}
           </div>
           <form
@@ -440,14 +456,14 @@ export function ChatWidget() {
             <input
               value={draft}
               onChange={(event) => setDraft(event.target.value)}
-              placeholder={lastAssistantHasInput ? "Or type a message" : "Ask a question"}
+              placeholder={lastAssistantHasInput ? t("orTypePlaceholder") : t("askPlaceholder")}
               className="min-w-0 flex-1 rounded-md border border-hairline px-3 py-2 text-[13.5px] outline-none focus:border-blue"
             />
             <button
               type="submit"
               disabled={busy || !draft.trim()}
               className="inline-flex h-10 w-10 items-center justify-center rounded-md bg-blue text-white disabled:opacity-50"
-              aria-label="Send"
+              aria-label={t("send")}
             >
               <Send size={16} />
             </button>

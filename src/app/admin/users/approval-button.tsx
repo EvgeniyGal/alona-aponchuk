@@ -1,10 +1,12 @@
 "use client";
 
 import { useTransition } from "react";
+import { useTranslations } from "next-intl";
 import { setUserApproved } from "./actions";
 import { cn } from "@/lib/utils";
 
 export function UserApprovalButton({ userId, approved }: { userId: string; approved: boolean }) {
+  const t = useTranslations("admin");
   const [pending, startTransition] = useTransition();
 
   return (
@@ -23,7 +25,7 @@ export function UserApprovalButton({ userId, approved }: { userId: string; appro
           : "border-hairline text-graphite hover:bg-ivory",
       )}
     >
-      {pending ? (approved ? "Revoking…" : "Restoring…") : approved ? "Revoke" : "Restore"}
+      {pending ? (approved ? t("users.revoking") : t("users.restoring")) : approved ? t("users.revoke") : t("users.restore")}
     </button>
   );
 }

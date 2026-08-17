@@ -2,6 +2,7 @@
 
 import { useCallback, useId, useRef, useState } from "react";
 import { AlertCircle, CheckCircle2, GripVertical, Share2 } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 type Row = { today: string; after: string };
 
@@ -10,6 +11,7 @@ type ContinuityRevealProps = {
 };
 
 export function ContinuityReveal({ rows }: ContinuityRevealProps) {
+  const t = useTranslations("home.reveal");
   const [progress, setProgress] = useState(42);
   const [copied, setCopied] = useState(false);
   const trackRef = useRef<HTMLDivElement>(null);
@@ -40,11 +42,10 @@ export function ContinuityReveal({ rows }: ContinuityRevealProps) {
   };
 
   const share = async () => {
-    const text =
-      "Today vs After Implementation — drag to reveal how structured workflows change client journey continuity.";
+    const text = t("shareText");
     try {
       if (navigator.share) {
-        await navigator.share({ title: "Workflow Continuity Reveal", text, url: window.location.href });
+        await navigator.share({ title: t("shareTitle"), text, url: window.location.href });
       } else {
         await navigator.clipboard.writeText(`${text} ${window.location.href}`);
         setCopied(true);
@@ -62,10 +63,8 @@ export function ContinuityReveal({ rows }: ContinuityRevealProps) {
     <div className="overflow-hidden rounded-2xl border border-hairline bg-white shadow-[0_24px_60px_-40px_rgba(31,41,51,0.35)]">
       <div className="flex flex-col gap-4 border-b border-hairline bg-gradient-to-r from-muted/80 via-white to-teal-soft/40 px-5 py-5 sm:flex-row sm:items-center sm:justify-between sm:px-7">
         <div>
-          <div className="eyebrow">Interactive Continuity Reveal</div>
-          <p className="mt-1 text-[14px] text-muted-foreground">
-            Drag the handle to move between Today and After Implementation.
-          </p>
+          <div className="eyebrow">{t("eyebrow")}</div>
+          <p className="mt-1 text-[14px] text-muted-foreground">{t("hint")}</p>
         </div>
         <button
           type="button"
@@ -73,7 +72,7 @@ export function ContinuityReveal({ rows }: ContinuityRevealProps) {
           className="inline-flex items-center justify-center gap-2 self-start rounded-md border border-hairline bg-white px-3.5 py-2 text-[13px] font-medium text-graphite transition-colors hover:border-blue/40 hover:text-blue"
         >
           <Share2 size={14} />
-          {copied ? "Link copied" : "Share this reveal"}
+          {copied ? t("copied") : t("share")}
         </button>
       </div>
 
@@ -91,7 +90,7 @@ export function ContinuityReveal({ rows }: ContinuityRevealProps) {
             style={{ opacity: todayOpacity }}
           >
             <div className="eyebrow" style={{ color: "#8a6a2b" }}>
-              Today
+              {t("today")}
             </div>
             <ul className="mt-5 space-y-4">
               {rows.map((row) => (
@@ -110,7 +109,7 @@ export function ContinuityReveal({ rows }: ContinuityRevealProps) {
             />
             <div className="relative">
               <div className="eyebrow" style={{ color: "#2f6f77" }}>
-                After Implementation
+                {t("after")}
               </div>
               <ul className="mt-5 space-y-4">
                 {rows.map((row) => (
@@ -137,7 +136,7 @@ export function ContinuityReveal({ rows }: ContinuityRevealProps) {
 
       <div className="border-t border-hairline bg-ivory/70 px-5 py-4 sm:px-7">
         <label htmlFor={labelId} className="sr-only">
-          Continuity reveal progress
+          {t("progressLabel")}
         </label>
         <input
           id={labelId}
@@ -147,12 +146,12 @@ export function ContinuityReveal({ rows }: ContinuityRevealProps) {
           value={progress}
           onChange={(e) => setProgress(Number(e.target.value))}
           className="continuity-range w-full"
-          aria-valuetext={`${Math.round(progress)} percent toward After Implementation`}
+          aria-valuetext={t("progressValue", { n: Math.round(progress) })}
         />
         <div className="mt-2 flex justify-between text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
-          <span style={{ color: "#8a6a2b" }}>Today</span>
+          <span style={{ color: "#8a6a2b" }}>{t("today")}</span>
           <span className="text-blue">{Math.round(progress)}%</span>
-          <span style={{ color: "#2f6f77" }}>After</span>
+          <span style={{ color: "#2f6f77" }}>{t("afterShort")}</span>
         </div>
       </div>
     </div>

@@ -1,4 +1,7 @@
 import type { AssessmentAnswers } from "@/lib/db/schema";
+import { getChatCatalog } from "@/i18n/catalog";
+import type { AppLocale } from "@/i18n/config";
+import { defaultLocale } from "@/i18n/config";
 
 function labelOf(answers: AssessmentAnswers, field: string) {
   const entry = answers[field];
@@ -13,8 +16,9 @@ function valueOf(answers: AssessmentAnswers, field: string) {
   return Array.isArray(entry.value) ? entry.value.join(",") : String(entry.value);
 }
 
-export function ruleBasedDiagnostic(answers: AssessmentAnswers) {
-  const problems = labelOf(answers, "main_problem") || "workflow gaps between inquiry and follow-up";
+export function ruleBasedDiagnostic(answers: AssessmentAnswers, locale: AppLocale = defaultLocale) {
+  const d = getChatCatalog(locale).diagnostic;
+  const problems = (labelOf(answers, "main_problem") || d.defaultProblems).toLowerCase();
   const dropoff = labelOf(answers, "client_dropoff_stage");
   const followup = valueOf(answers, "followup_method");
   const crm = valueOf(answers, "crm_status");
@@ -23,27 +27,26 @@ export function ruleBasedDiagnostic(answers: AssessmentAnswers) {
 
   const core =
     followup === "manual" || followup === "inconsistent" || followup === "no_process"
-      ? `Based on your answers, the main issue appears to be ${problems.toLowerCase()}, with follow-up that is still largely manual or inconsistent.`
-      : `Based on your answers, the main issue appears to be ${problems.toLowerCase()}.`;
+      ? d.coreManual.replace("{problems}", problems)
+      : d.coreDefault.replace("{problems}", problems);
 
   const why =
-    dropoff && dropoff !== "Not Sure"
-      ? ` Clients most often stall ${dropoff.toLowerCase()}, which can delay response time and leave qualified inquiries unworked.`
-      : ` When intake, scheduling, and follow-up are not tightly connected, staff repeat manual work and some inquiries never convert.`;
+    dropoff && dropoff !== "Not Sure" && dropoff !== "Не впевнений" && dropoff !== "Не уверен"
+      ? d.whyDropoff.replace("{dropoff}", dropoff.toLowerCase())
+      : d.whyDefault;
 
-  let secondary = "It may also be worth reviewing how inquiry data is captured and handed off between staff.";
+  let secondary = d.secondaryDefault;
   if (crm === "no" || tracking) {
     secondary = tracking
-      ? ` It may also be worth reviewing how inquiries are tracked today (${tracking.toLowerCase()}) and whether that process can support consistent handoffs.`
-      : " It may also be worth reviewing how inquiries are tracked without a structured CRM or EHR workflow.";
+      ? d.secondaryTracking.replace("{tracking}", tracking.toLowerCase())
+      : d.secondaryNoCrm;
   } else if (platform) {
-    secondary = ` It may also be worth reviewing how ${platform} is connected to scheduling and follow-up, so the system matches the real client journey.`;
+    secondary = d.secondaryPlatform.replace("{platform}", platform);
   } else if (crm === "yes") {
-    secondary =
-      " It may also be worth reviewing how your CRM and scheduling process are connected, so status changes and staff tasks stay aligned.";
+    secondary = d.secondaryCrm;
   }
 
-  return `${core}${why}${secondary} A Workflow Audit can help map this process and identify what can be improved or automated.`;
+  return `${core}${why}${secondary}${d.auditClose}`;
 }
 
 export function formatAnswerLabels(answers: AssessmentAnswers) {

@@ -1,0 +1,1364 @@
+{
+  "common": {
+    "language": "Language",
+    "requestAudit": "Request Workflow Audit",
+    "exploreMethod": "Explore My Method",
+    "learnMore": "Learn more",
+    "readMore": "Read more",
+    "toggleMenu": "Toggle menu",
+    "step": "Step {n}",
+    "yes": "Yes",
+    "no": "No",
+    "you": "You",
+    "all": "All",
+    "cancel": "Cancel",
+    "save": "Save",
+    "delete": "Delete",
+    "add": "Add",
+    "sending": "Sending…",
+    "saving": "Saving…",
+    "loading": "Loading…"
+  },
+  "nav": {
+    "home": "Home",
+    "mission": "Mission",
+    "method": "Method",
+    "services": "Services",
+    "caseStories": "Case Stories",
+    "responsibleAi": "Responsible AI",
+    "research": "Research",
+    "about": "About",
+    "logoAlt": "Alona Aponchuk — Aponchuk Workflow Systems LLC",
+    "tagline": "Aponchuk Workflow Systems LLC"
+  },
+  "footer": {
+    "blurb": "I work with healthcare and wellness organizations on reliable digital workflows, CRM optimization, client journey design, and responsible AI-supported communication. Based in Sarasota, Florida. Remote consulting available across the United States.",
+    "disclaimer": "Services are consulting, workflow analysis, QA validation, and implementation support. They do not constitute medical, legal, clinical, cybersecurity, HIPAA, accounting, or compliance certification.",
+    "navigate": "Navigate",
+    "contactLegal": "Contact & Legal",
+    "researchBasis": "Research Basis",
+    "aboutAlona": "About Alona",
+    "privacy": "Privacy Policy",
+    "terms": "Terms & Disclaimer",
+    "linkedin": "LinkedIn",
+    "location": "Sarasota, Florida",
+    "copyright": "© {year} Aponchuk Workflow Systems LLC. All rights reserved.",
+    "remote": "Sarasota, Florida · Remote consulting across the United States."
+  },
+  "cta": {
+    "title": "Ready to see where your client journey loses continuity?",
+    "body": "Request a Workflow Audit. I map your current CRM, intake, scheduling, and follow-up paths, and identify where structured workflows and responsible AI can strengthen continuity."
+  },
+  "notFound": {
+    "eyebrow": "404",
+    "title": "Page not found",
+    "body": "The page you're looking for doesn't exist or has been moved.",
+    "home": "Go home"
+  },
+  "home": {
+    "seo": {
+      "title": "Alona Aponchuk — CRM Workflow & Client Journey Consulting for Healthcare & Wellness",
+      "description": "I help healthcare and wellness organizations build reliable digital workflows: CRM optimization, client journey design, QA-validated communication, and RAG-ready automation. Sarasota, Florida — remote consulting across the United States.",
+      "imageAlt": "Client journey automation for healthcare and wellness organizations"
+    },
+    "heroEyebrow": "Reliable Workflows · Better Client Journeys · Responsible AI",
+    "heroTitle": "Client Journey Automation for Healthcare & Wellness Organizations",
+    "heroLead": "I help healthcare and wellness organizations build reliable digital workflows — CRM, scheduling, follow-up, and responsible AI-supported communication.",
+    "heroPoints": [
+      "Reliable intake and follow-up",
+      "Clearer CRM and scheduling logic",
+      "Structured knowledge for automation",
+      "QA-validated client communication"
+    ],
+    "locationLine": "Sarasota, Florida. Remote consulting across the United States.",
+    "journey": {
+      "eyebrow": "Client Journey",
+      "title": "Connected operational system",
+      "onTrack": "On track",
+      "needsReview": "Needs review",
+      "step": "Step {n}",
+      "crm": "CRM",
+      "scheduling": "Scheduling",
+      "messaging": "Messaging",
+      "steps": [
+        { "label": "First Contact", "meta": "Inquiry received" },
+        { "label": "Intake", "meta": "Verified form" },
+        { "label": "Consultation", "meta": "Prepared visit" },
+        { "label": "Scheduling", "meta": "Confirmed slot" },
+        { "label": "Service", "meta": "Delivered care" },
+        { "label": "Follow-up", "meta": "Structured touchpoint" },
+        { "label": "Repeat Visit", "meta": "Continuity" }
+      ]
+    },
+    "missionEyebrow": "Mission",
+    "missionTitle": "Reliable Digital Workflows for Human-Centered Care",
+    "missionBody": "The client journey is one connected operational system. When each layer is documented, validated, and calibrated, technology stops interrupting care and starts supporting it.",
+    "missionCta": "Read the full mission",
+    "missionImage": "Mission: connected care continuum",
+    "todayEyebrow": "Today vs. After Implementation",
+    "todayTitle": "What changes when workflows are documented, structured, and QA-validated.",
+    "todayNote": "Research-based modeled indicators, not guaranteed results. Actual outcomes depend on CRM configuration, data quality, staff processes, implementation scope, and adoption.",
+    "reveal": {
+      "eyebrow": "Interactive Continuity Reveal",
+      "hint": "Drag the handle to move between Today and After Implementation.",
+      "share": "Share this reveal",
+      "copied": "Link copied",
+      "shareTitle": "Workflow Continuity Reveal",
+      "shareText": "Today vs After Implementation — drag to reveal how structured workflows change client journey continuity.",
+      "today": "Today",
+      "after": "After Implementation",
+      "afterShort": "After",
+      "progressLabel": "Continuity reveal progress",
+      "progressValue": "{n} percent toward After Implementation"
+    },
+    "comparison": [
+      {
+        "today": "Staff manually answer the same routine questions every day.",
+        "after": "Approved automated responses handle routine questions within defined boundaries."
+      },
+      {
+        "today": "Clients submit a form and hear nothing.",
+        "after": "Structured follow-up reminds, confirms, and prepares the client for the next step."
+      },
+      {
+        "today": "Approximately 40 minutes to process one client.",
+        "after": "A modeled workflow may reduce this to approximately 15 minutes."
+      },
+      {
+        "today": "Approximately 40 hours across six staff for 60 clients.",
+        "after": "A modeled workflow may reduce this to approximately 15 hours."
+      },
+      {
+        "today": "Clients drop off because no one responds in time.",
+        "after": "A structured process supports continuity at every stage."
+      }
+    ],
+    "layersEyebrow": "The Five-Layer Solution",
+    "layersTitle": "AI is one layer of a broader, reliable workflow system.",
+    "layersImage": "Five-layer workflow system diagram",
+    "layers": [
+      { "title": "Client Journey Mapping", "body": "Document every touchpoint from first contact through repeat visit." },
+      { "title": "CRM Workflow Optimization", "body": "Clarify statuses, ownership, handoffs, and automation triggers." },
+      { "title": "Verified Knowledge Base", "body": "Structure approved answers, sources, and response boundaries." },
+      { "title": "RAG / Chatbot Readiness", "body": "Prepare content, retrieval, and guardrails for reliable automation." },
+      { "title": "QA & Behavioral Calibration", "body": "Behavioral Calibration Framework — RSI, IDS, and RCS — applied before launch." }
+    ],
+    "servicesEyebrow": "Services",
+    "servicesTitle": "Bounded engagements, calibrated to your operational context.",
+    "learnMoreAbout": "Learn more about {title}",
+    "services": [
+      { "title": "Workflow Audit", "body": "Structured review of intake, CRM, scheduling, follow-up, and existing automation.", "image": "home-service-workflow-audit.webp", "tone": "blue" },
+      { "title": "Automation Readiness", "body": "Knowledge base, retrieval structure, and response boundaries prepared for AI.", "image": "home-service-automation-readiness.webp", "tone": "teal" },
+      { "title": "Pilot Implementation", "body": "Guided pilot of a bounded, QA-validated communication workflow.", "image": "home-service-pilot-implementation.webp", "tone": "sage" },
+      { "title": "Optimization Retainer", "body": "Ongoing workflow calibration, monitoring, and refinement.", "image": "home-service-optimization-retainer.webp", "tone": "gold" }
+    ],
+    "feedbackEyebrow": "Client Feedback",
+    "feedbackTitle": "What collaborators and organizations say about working with me.",
+    "feedbackImage": "Client collaboration atmosphere",
+    "feedbackBody": "Client feedback will be added following publication approval. Testimonials are published only after written consent from the person and organization involved.",
+    "casesEyebrow": "Selected Case Stories",
+    "casesTitle": "How structured workflow analysis translates into practical operational improvements.",
+    "challenge": "Challenge",
+    "approach": "Approach",
+    "outcome": "Outcome",
+    "readCase": "Read Case Story",
+    "casesNote": "Case stories describe selected professional contributions based on available project records. Certain identifying, technical, operational, or client-confidential details may be omitted or generalized.",
+    "cases": [
+      {
+        "id": "integrative-health",
+        "title": "CRM/EHR & Clinical Workflow Optimization",
+        "org": "U.S.-based integrative medical center",
+        "challenge": "Clinical documentation and operational data moved between roles through inconsistent paths.",
+        "approach": "Standardized CharmHealth CRM/EHR configuration, intake forms, and clinical templates alongside inventory workflows.",
+        "outcome": "More standardized workflows, improved physician–staff coordination, and stronger operational reliability.",
+        "image": "home-case-integrative-health.webp",
+        "tone": "teal"
+      },
+      {
+        "id": "educational-research",
+        "title": "CRM & Registration Workflow Optimization",
+        "org": "U.S.-based educational and research organization",
+        "challenge": "Participant, registration, and reporting data were fragmented across tools and hard to rely on.",
+        "approach": "Rebuilt CRM logic around the participant journey with clearer forms, statuses, triggers, and reporting.",
+        "outcome": "Stronger workflow consistency and more reliable reporting across programs and international events.",
+        "image": "home-case-educational-research.webp",
+        "tone": "blue"
+      },
+      {
+        "id": "ai-digital-systems",
+        "title": "QA & Workflow Validation for AI-Supported Systems",
+        "org": "U.S.-based technology and digital-systems company",
+        "challenge": "AI-enabled workflows required structured validation of system logic and user journeys.",
+        "approach": "Contributed to workflow design and testing across AI-oriented platforms, including the PersonaMatrix project.",
+        "outcome": "Supported the reliability of AI-enabled workflows and strengthened QA and validation processes.",
+        "image": "home-case-ai-digital-systems.webp",
+        "tone": "sage"
+      }
+    ],
+    "researchEyebrow": "Research-Based Process Effectiveness",
+    "researchTitle": "Evidence behind my workflow methodology.",
+    "researchBody": "My consulting framework is informed by applied research in CRM workflow optimization, healthcare and wellness operations, RAG architectures, QA validation, and responsible AI-mediated communication.",
+    "researchImage": "Research methodology visual",
+    "metricsNote": "These figures are research-based modeled indicators, not guaranteed client results. Actual outcomes depend on CRM configuration, data quality, staff processes, implementation scope, organizational context, and adoption.",
+    "metrics": [
+      { "from": "~40 min", "to": "~15 min", "label": "Per-client workflow time" },
+      { "from": "~40 hrs", "to": "~15 hrs", "label": "For 60 clients" },
+      { "from": "~6.6 hrs", "to": "~2.5 hrs", "label": "Per employee" },
+      { "from": "$83", "to": "$66", "label": "Modeled CAC" }
+    ],
+    "pubsEyebrow": "Featured Publications",
+    "pubsTitle": "Peer-reviewed research supporting the methodology.",
+    "readPublication": "Read Publication",
+    "readPublicationAria": "Read publication (opens in new tab): {title}",
+    "exploreResearch": "Explore the Research Basis",
+    "publications": [
+      {
+        "role": "Author",
+        "year": "2026",
+        "title": "RAG-Based Automation of the Client Journey in Medical and Wellness Systems: Operational Efficiency, Client Retention, and Behavioral Calibration of AI-Mediated Communication",
+        "summary": "Examines how CRM systems, verified knowledge bases, RAG-supported communication, and QA calibration can support more reliable client journeys — while maintaining clear human-review and responsible AI boundaries.",
+        "url": "https://doi.org/10.69635/mssl.2026.2.2.45",
+        "doi": "10.69635/mssl.2026.2.2.45"
+      },
+      {
+        "role": "Co-Author",
+        "year": "2026",
+        "title": "Psychological Testing as an Instrument of Differentiated Support in Education, Healthcare Settings, and Crisis Life Transitions: Typological, Trait-Based, and Psychodynamic Approaches",
+        "summary": "Explores differentiated support approaches across education, healthcare, and crisis-related life transitions — part of the broader research context of structured, human-centered support systems.",
+        "url": "https://doi.org/10.69635/mssl.2026.2.2.38",
+        "doi": "10.69635/mssl.2026.2.2.38",
+        "venue": "Metaverse Science, Society and Law"
+      }
+    ],
+    "aboutEyebrow": "About Me",
+    "aboutTitle": "Applied specialist in CRM, patient management, and digital workflow systems.",
+    "aboutImage": "About atmosphere: consulting workspace",
+    "aboutP1": "I work with healthcare and wellness organizations on the practical layers of the client journey — CRM logic, intake, scheduling, staff handoffs, knowledge access, and responsible AI-supported communication.",
+    "aboutP2": "Aponchuk Workflow Systems LLC is based in Sarasota, Florida and delivers services remotely across the United States.",
+    "aboutCta": "Read more about me"
+  },
+  "mission": {
+    "seo": {
+      "title": "Mission — Reliable Digital Workflows for Human-Centered Care",
+      "description": "The client journey is one connected operational system. CRM, intake, scheduling, communication, knowledge, and automation must work together reliably.",
+      "imageAlt": "Reliable digital workflows for human-centered care"
+    },
+    "eyebrow": "Mission",
+    "title": "Reliable Digital Workflows for Human-Centered Care",
+    "lead": "I view the client journey as one connected operational system, not a collection of separate tools. When CRM, intake forms, scheduling, staff handoffs, communication, knowledge access, and automation work together reliably, technology stops interrupting care and starts supporting it.",
+    "imageLabel": "Connected care continuum",
+    "believeTitle": "What I believe",
+    "believe": [
+      "Continuity of the client journey is an operational responsibility, not a marketing outcome.",
+      "Every automation must sit on top of documented workflows and verified knowledge.",
+      "AI-mediated communication requires boundaries, testing, and human escalation.",
+      "Staff experience and client experience improve together — or not at all."
+    ],
+    "workTitle": "How I work",
+    "work": [
+      "I start from the real client journey, not the tool stack.",
+      "I document CRM logic, statuses, and handoffs before adding automation.",
+      "I structure a verified knowledge base as the foundation of AI-supported responses.",
+      "I validate every automated interaction against defined quality metrics.",
+      "I pilot changes in a controlled scope, then expand deliberately."
+    ]
+  },
+  "method": {
+    "seo": {
+      "title": "My Method — Workflow Discovery to Controlled Pilot",
+      "description": "Seven structured consulting steps: workflow discovery, client journey mapping, CRM logic optimization, knowledge base structuring, RAG readiness, QA calibration, and controlled pilot support.",
+      "imageAlt": "Seven structured steps from discovery to controlled pilot"
+    },
+    "eyebrow": "My Method",
+    "title": "Seven structured steps from discovery to controlled pilot.",
+    "lead": "Each step produces a specific artifact — a map, a document, a configuration, or a test result — that the next step depends on. Nothing is skipped for speed.",
+    "imageLabel": "Structured workflow discovery materials",
+    "stepLabel": "Step",
+    "steps": [
+      { "title": "Workflow Discovery", "body": "I begin with structured interviews with founders, operations, and front-desk staff. Together we document what actually happens today — including workarounds, shadow processes, and points of friction." },
+      { "title": "Client Journey Mapping", "body": "I map every touchpoint from first inquiry to repeat visit. Ownership, timing, and communication channel are made explicit for each step." },
+      { "title": "CRM Logic Optimization", "body": "I review statuses, pipelines, custom fields, handoffs, and automation triggers against the mapped journey, and recommend a simpler, more reliable model." },
+      { "title": "Knowledge Base Structuring", "body": "I organize approved answers, source documents, escalation rules, and out-of-scope topics into a retrievable, versioned knowledge base." },
+      { "title": "RAG / Chatbot Readiness", "body": "I define retrieval configuration, prompts, response scope, guardrails, and fallback paths so any AI-supported channel behaves predictably." },
+      { "title": "QA & Behavioral Calibration", "body": "I test automated responses against the Behavioral Calibration Framework — RSI (stability), IDS (interpretive drift), and RCS (response coherence and structure) — relative to defined policy and tone." },
+      { "title": "Controlled Pilot Support", "body": "I launch a bounded pilot with clear success criteria, monitoring, and human escalation. Expansion happens only after validated performance." }
+    ]
+  },
+  "servicesPage": {
+    "seo": {
+      "title": "Services — Workflow Audit, Automation Readiness, Pilot Support",
+      "description": "Workflow Audit, Automation Readiness Package, Pilot Implementation Support, and a Monthly Optimization Retainer for healthcare and wellness organizations.",
+      "imageAlt": "Bounded consulting engagements for healthcare and wellness workflows"
+    },
+    "eyebrow": "Services",
+    "title": "Bounded engagements, calibrated to your operational context.",
+    "lead": "Every engagement starts with a Workflow Audit. Pricing is scoped to the organization and shared during the diagnostic call — not published as a fixed catalog.",
+    "imageLabel": "Automation readiness workspace",
+    "who": "Who it's for",
+    "what": "What's included",
+    "outcome": "Outcome",
+    "items": [
+      {
+        "title": "Workflow Audit",
+        "who": "For founders, practice managers, and operations leaders who suspect that clients are getting lost between systems.",
+        "what": "A structured review of intake, CRM, scheduling, follow-up, and existing automation. Includes journey mapping, gap analysis, and prioritized recommendations.",
+        "outcome": "A documented view of where the client journey loses continuity — and where structured workflows can restore it.",
+        "image": "home-service-workflow-audit.webp",
+        "tone": "blue"
+      },
+      {
+        "title": "Automation Readiness Package",
+        "who": "For organizations preparing to deploy chatbots, RAG assistants, or AI-supported communication.",
+        "what": "Knowledge-base structuring, response boundary definition, retrieval configuration review, and escalation-path design.",
+        "outcome": "A verified foundation that responsible AI-mediated communication can safely sit on top of.",
+        "image": "home-service-automation-readiness.webp",
+        "tone": "teal"
+      },
+      {
+        "title": "Pilot Implementation Support",
+        "who": "For teams ready to launch a bounded pilot of an automated communication or workflow.",
+        "what": "Pilot scoping, QA test-set design, calibration reviews, and monitoring guidance during a controlled rollout.",
+        "outcome": "A pilot with defined success criteria, human escalation, and evidence-based decisions about expansion.",
+        "image": "home-service-pilot-implementation.webp",
+        "tone": "sage"
+      },
+      {
+        "title": "Monthly Optimization Retainer",
+        "who": "For organizations with live automation who need ongoing calibration and continuity oversight.",
+        "what": "Recurring reviews of workflow performance, knowledge-base updates, QA re-testing, and refinement of response boundaries.",
+        "outcome": "Sustained reliability of AI-mediated communication and CRM workflows over time.",
+        "image": "home-service-optimization-retainer.webp",
+        "tone": "gold"
+      }
+    ]
+  },
+  "caseStories": {
+    "seo": {
+      "title": "Case Stories — Selected Workflow Engagements",
+      "description": "Selected case stories from CRM, EHR, and workflow optimization engagements across integrative healthcare, educational research, and AI-supported digital systems.",
+      "imageAlt": "Selected CRM and workflow case stories"
+    },
+    "eyebrow": "Case Stories",
+    "title": "Selected professional contributions in CRM, workflow, and AI-supported systems.",
+    "lead": "Each case story describes a real engagement, anonymized where confidentiality applies. Structured to show context, approach, and practical contribution — not marketing outcomes.",
+    "imageLabel": "Clinical workflow operations",
+    "role": "My role: {role}",
+    "context": "Context",
+    "challenge": "Operational Challenge",
+    "approach": "Approach",
+    "systems": "Systems / Processes Involved",
+    "contribution": "Practical Contribution",
+    "outcome": "Outcome",
+    "scopeNote": "Scope & Confidentiality Note.",
+    "footerNote": "Case stories describe selected professional contributions based on available project records. Certain identifying, technical, operational, or client-confidential details may be omitted or generalized.",
+    "discussCta": "Discuss Your Workflow",
+    "stories": [
+      {
+        "id": "integrative-health",
+        "title": "CRM/EHR and Clinical Workflow Optimization for an Integrative Health Center",
+        "org": "U.S.-based integrative medical center",
+        "role": "CRM, EHR & Clinical Workflow Optimization Consultant",
+        "context": "The organization used digital systems for patient intake, appointment scheduling, clinical documentation, inventory management, staff coordination, and client communication.",
+        "challenge": "Operational information moved between physicians, clinical staff, and front-office roles through inconsistent paths, and clinical templates for IV therapies, injections, and laboratory procedures were not fully standardized.",
+        "approach": "Reviewed the CRM/EHR configuration end-to-end, standardized intake and clinical documentation, and aligned scheduling, inventory, and staff workflows with the actual client journey.",
+        "systems": "CharmHealth CRM/EHR, Blologic inventory management, patient intake forms, clinical templates, scheduling and communication tools.",
+        "contribution": [
+          "Administered and optimized the CharmHealth CRM/EHR configuration.",
+          "Developed and implemented patient intake forms and clinical documentation templates for IV therapy, IM injections, and laboratory procedures.",
+          "Validated patient-management and appointment-scheduling workflows.",
+          "Supported inventory and product-management processes in Blologic.",
+          "Delivered staff training and implementation support.",
+          "Provided ongoing website, digital communication, and operational-system support."
+        ],
+        "outcome": [
+          "More standardized clinical and operational workflows.",
+          "Improved coordination between physicians and clinical staff.",
+          "Fewer workflow inconsistencies and less manual transfer of operational information.",
+          "More centralized documentation and operational data.",
+          "Improved inventory-process visibility and stronger operational reliability."
+        ],
+        "note": "Scope covers workflow, documentation, and system-configuration contributions. No clinical outcomes are claimed.",
+        "image": "home-case-integrative-health.webp",
+        "tone": "teal"
+      },
+      {
+        "id": "educational-research",
+        "title": "CRM and Registration Workflow Optimization for an Educational and Research Organization",
+        "org": "U.S.-based nonprofit educational and research organization",
+        "role": "CRM Systems and Workflow Optimization Specialist",
+        "context": "The organization runs educational and research programs, including international scientific conferences, that depend on reliable registration, participant management, and communication.",
+        "challenge": "Registration, participant, and speaker information flowed through several tools, producing inconsistent statuses, uneven communication, and reporting that was difficult to rely on.",
+        "approach": "Rebuilt CRM logic around the actual participant journey — forms, statuses, triggers, and communication touchpoints — and introduced clearer reporting and data-quality controls.",
+        "systems": "CRM administration, registration and participant-management systems, forms, statuses, triggers, and reporting logic.",
+        "contribution": [
+          "Administered the CRM and optimized registration and participant-management workflows.",
+          "Structured forms, statuses, triggers, and communication processes.",
+          "Validated the participant journey and improved reporting logic.",
+          "Introduced CRM data-quality controls.",
+          "Supported digital workflows for international conference operations and speaker communications."
+        ],
+        "outcome": [
+          "Stronger workflow consistency across programs and events.",
+          "Clearer participant and speaker communication.",
+          "Improved CRM data quality and more reliable reporting logic.",
+          "Scalable digital support for educational, research, and event operations."
+        ],
+        "note": "Scope describes workflow and CRM contributions. No participant, revenue, or growth figures are claimed.",
+        "image": "home-case-educational-research.webp",
+        "tone": "blue"
+      },
+      {
+        "id": "ai-digital-systems",
+        "title": "QA and Workflow Validation for AI-Supported Digital Systems",
+        "org": "U.S.-based technology and digital-systems company",
+        "role": "AI and Digital Systems Subcontractor",
+        "context": "The company builds AI-oriented digital platforms, including knowledge-base-integrated environments and RAG-supported service workflows.",
+        "challenge": "AI-enabled workflows required careful validation of system logic, user journeys, and automation behavior before wider use.",
+        "approach": "Contributed to workflow design and testing across several AI-oriented systems, including the PersonaMatrix project, focusing on reliability and structured validation.",
+        "systems": "AI-oriented workflow design, automation processes, knowledge-base-integrated environments, RAG-supported service workflows.",
+        "contribution": [
+          "Supported AI-oriented workflow design and system-logic validation.",
+          "Tested digital platforms and automation processes for user-experience reliability.",
+          "Contributed to improvements in educational-system workflows.",
+          "Supported knowledge-base-integrated and RAG-supported workflows, including participation in the PersonaMatrix project."
+        ],
+        "outcome": [
+          "Supported the reliability of AI-enabled workflows.",
+          "Helped identify system-logic and user-journey issues.",
+          "Strengthened QA and validation processes.",
+          "Contributed to more structured automation environments."
+        ],
+        "note": "Contributions were collaborative. No product ownership or guaranteed performance is claimed.",
+        "image": "home-case-ai-digital-systems.webp",
+        "tone": "sage"
+      }
+    ]
+  },
+  "responsibleAi": {
+    "seo": {
+      "title": "Responsible AI — Bounded, QA-Validated Client Communication",
+      "description": "I scope AI-supported communication to approved informational, administrative, scheduling, preparation, and follow-up interactions — never diagnosis, clinical advice, or guaranteed outcomes.",
+      "imageAlt": "Responsible AI for healthcare and wellness client journeys"
+    },
+    "eyebrow": "Responsible AI",
+    "title": "AI Should Support the Client Journey — Not Replace Professional Judgment.",
+    "lead": "I place automation in the operational layer of the client journey. It handles routine, bounded, informational communication so licensed professionals can focus on clinical and therapeutic work.",
+    "imageLabel": "Layered responsible AI system",
+    "allowedTitle": "AI-supported communication may assist with",
+    "notAllowedTitle": "AI must not independently provide",
+    "allowed": [
+      "Approved informational questions",
+      "Administrative communication",
+      "Scheduling and confirmations",
+      "Preparation instructions",
+      "Reminders",
+      "Follow-up touchpoints"
+    ],
+    "notAllowed": [
+      "Diagnosis",
+      "Psychological assessment",
+      "Medical or clinical advice",
+      "Guaranteed outcomes",
+      "Pressure-based conversion",
+      "Replacement of licensed professionals"
+    ],
+    "compareEyebrow": "Comparison",
+    "compareTitle": "Generic Chatbot vs. Calibrated RAG Workflow",
+    "compareLead": "The same underlying technology can behave very differently depending on how it is scoped, grounded, and monitored.",
+    "compareImage": "Calibrated RAG workflow atmosphere",
+    "genericEyebrow": "Generic Chatbot",
+    "calibratedEyebrow": "Calibrated RAG Workflow",
+    "generic": [
+      "Unverified knowledge sources",
+      "Undefined response boundaries",
+      "No structured human review",
+      "No documented escalation path",
+      "No behavioral or drift testing",
+      "No access controls"
+    ],
+    "calibrated": [
+      "Verified, versioned knowledge base",
+      "Defined response boundaries",
+      "Human review of ambiguous cases",
+      "Documented escalation paths",
+      "Response stability & drift testing",
+      "Access controls where appropriate"
+    ]
+  },
+  "research": {
+    "seo": {
+      "title": "Research Basis — Quality Metrics for AI-Mediated Communication",
+      "description": "Applied research foundation for CRM workflow optimization and RAG-supported client communication, including RSI, IDS, and RCS quality metrics.",
+      "imageAlt": "Research basis for AI-mediated communication quality metrics"
+    },
+    "eyebrow": "Research Basis",
+    "title": "Applied research supporting reliable AI-mediated communication.",
+    "lead": "My method draws on applied research into retrieval-supported communication, response stability, and interpretive drift. Metrics are used as calibration signals — not as guarantees of outcomes.",
+    "imageLabel": "Research methodology materials",
+    "systemEyebrow": "System View",
+    "systemTitle": "The simplified system supporting responsible client communication.",
+    "systemLead": "Six connected layers — from the CRM system of record through QA calibration — form the operational backbone of reliable AI-mediated communication.",
+    "systemImage": "Five-layer system diagram",
+    "layer": "Layer {code}",
+    "layers": [
+      { "code": "01", "title": "CRM", "body": "System of record for the client relationship." },
+      { "code": "02", "title": "Client Data", "body": "Structured records, statuses, and history." },
+      { "code": "03", "title": "Verified Knowledge Base", "body": "Approved, versioned answers and sources." },
+      { "code": "04", "title": "RAG Layer", "body": "Retrieval-supported response generation." },
+      { "code": "05", "title": "Communication Channels", "body": "Email, SMS, chat, and staff handoff." },
+      { "code": "06", "title": "QA Calibration", "body": "Stability, drift, and calibration monitoring." }
+    ],
+    "diagramNote": "This diagram is a simplified reference model. Actual implementations vary by organization, data structure, tooling, and operational context.",
+    "metricsEyebrow": "Behavioral Calibration Framework",
+    "metricsTitle": "Three behavioral evaluation metrics for AI-mediated communication.",
+    "metricsLead": "RSI, IDS, and RCS are used together to assess and calibrate AI-supported responses against a verified knowledge base and defined communication policy.",
+    "metricsNote": "These metrics are used as internal calibration signals. They do not represent guaranteed performance and depend on the client's knowledge base, workflow scope, and operational context.",
+    "metrics": [
+      { "code": "RSI", "name": "Response Stability Index", "body": "Measures whether the same or rephrased question yields consistent, in-scope answers across repeated queries." },
+      { "code": "IDS", "name": "Interpretive Drift Score", "body": "Measures how far generated responses drift from the approved knowledge base and defined response boundaries." },
+      { "code": "RCS", "name": "Response Coherence / Structure Score", "body": "Measures structural coherence and alignment of tone, scope, refusal behavior, and escalation with the documented communication policy." }
+    ],
+    "pubsEyebrow": "Publications",
+    "pubsTitle": "Peer-reviewed research and professional contributions.",
+    "pubsNote": "Additional research activities include participation in the “Beyond Human: AI, Consciousness, Personality and the Future of Human Development” international scientific conference (September 2026) as Conference Operations & Digital Workflow Coordinator.",
+    "publications": [
+      {
+        "role": "Author",
+        "title": "RAG-Based Automation of the Client Journey in Medical and Wellness Systems: Operational Efficiency, Client Retention, and Behavioral Calibration of AI-Mediated Communication",
+        "doi": "10.69635/mssl.2026.2.2.45",
+        "url": "https://doi.org/10.69635/mssl.2026.2.2.45"
+      },
+      {
+        "role": "Co-Author",
+        "title": "Psychological Testing as an Instrument of Differentiated Support in Education, Healthcare Settings, and Crisis Life Transitions: Typological, Trait-Based, and Psychodynamic Approaches",
+        "venue": "Metaverse Science, Society and Law",
+        "doi": "10.69635/mssl.2026.2.2.38",
+        "url": "https://doi.org/10.69635/mssl.2026.2.2.38"
+      }
+    ]
+  },
+  "about": {
+    "seo": {
+      "title": "About Alona Aponchuk — CRM, Patient Management & Digital Workflow Systems",
+      "description": "Executive biography of Alona Aponchuk: QA engineer and workflow systems consultant specializing in CRM, patient management, healthcare and wellness workflows, RAG readiness, and responsible AI-supported communication.",
+      "imageAlt": "Portrait of Alona Aponchuk, workflow systems consultant"
+    },
+    "eyebrow": "About Me",
+    "name": "Alona Aponchuk",
+    "role": "QA Engineer · CRM, Patient Management & Digital Workflow Systems Specialist",
+    "lead": "I am the founder of Aponchuk Workflow Systems LLC. I help healthcare and wellness organizations build reliable digital workflows, optimize CRM and patient management processes, structure knowledge for responsible AI-supported communication, and validate client journeys through applied QA methods.",
+    "location": "Sarasota, Florida",
+    "orcid": "ORCID 0009-0008-3505-7871",
+    "linkedin": "LinkedIn",
+    "introTitle": "Professional Introduction",
+    "introP1": "For more than eight years I have worked at the intersection of software quality assurance, CRM administration, and workflow design. My focus is the operational reliability of systems that support people — patients, clients, program participants, and the staff who serve them.",
+    "introP2": "I work remotely with organizations across the United States and specialize in healthcare, wellness, and mission-driven service environments where continuity of the client journey directly affects the quality of care.",
+    "backgroundTitle": "Professional Background",
+    "backgroundP1": "My professional path began in enterprise QA engineering, validating complex platforms in staffing, education, digital health, and consumer applications. That work shaped a disciplined approach to requirements analysis, workflow validation, and cross-system data integrity.",
+    "backgroundP2": "Over time my focus shifted from testing software to designing the operational workflows the software is meant to support — CRM logic, patient intake, scheduling, staff handoffs, knowledge access, and responsible automation.",
+    "expertiseEyebrow": "Areas of Expertise",
+    "expertiseTitle": "Where my consulting work is concentrated.",
+    "expertise": [
+      "CRM Administration & Optimization",
+      "Patient Management Systems",
+      "Client Journey Design & Validation",
+      "Healthcare & Wellness Workflows",
+      "Scheduling & Intake Process Validation",
+      "Requirements Analysis",
+      "Functional & Regression Testing",
+      "Workflow Mapping",
+      "Digital Process Optimization",
+      "AI-Enabled Service Systems",
+      "RAG-Based Client Journey Automation",
+      "Knowledge Base Design",
+      "User Journey Validation",
+      "Data Consistency & Workflow Reliability",
+      "Agile / Scrum",
+      "Jira, Redmine, TestRail, Postman"
+    ],
+    "experienceEyebrow": "Professional Experience",
+    "experienceTitle": "Selected engagements across healthcare, wellness, education, and enterprise systems.",
+    "experience": [
+      {
+        "dates": "2026 – Present",
+        "role": "CRM & Workflow Systems Specialist",
+        "org": "International Institute of Psychological Maturity",
+        "location": "United States",
+        "body": "Independent contractor responsible for CRM administration, workflow optimization, registration and participant management systems, communication automation, reporting logic, and digital infrastructure supporting educational and scientific programs, including international conference operations."
+      },
+      {
+        "dates": "2026 – Present",
+        "role": "AI & Digital Systems Subcontractor",
+        "org": "Opulentia SC LLC",
+        "location": "Florida, USA",
+        "body": "Supporting the design and implementation of AI-based digital systems, workflow architectures, educational technologies, CRM-connected environments, knowledge-base supported platforms, and automation-oriented systems, including the PersonaMatrix project and RAG-supported workflow research."
+      },
+      {
+        "dates": "2025 – Present",
+        "role": "CRM, EHR & Clinical Workflow Consultant",
+        "org": "Health & Beauty Integrative Center",
+        "location": "Florida, USA",
+        "body": "Consultant supporting CharmHealth CRM/EHR administration, patient intake and medical form design, clinical templates for IV therapies, IM injections and laboratory procedures, scheduling and inventory workflows (Blologic), staff training, documentation processes, and operational workflow improvement across clinical and front-office teams."
+      },
+      {
+        "dates": "Dec 2020 – Jun 2021",
+        "role": "Manual QA Engineer",
+        "org": "BeWell Innovations — Well@Home™ digital health platform",
+        "location": "Remote",
+        "body": "Functional and regression testing of a clinically validated digital health platform used by hospitals, clinics, and private practices. Validated patient-facing workflows and system interactions and contributed to platform stability and consistency."
+      },
+      {
+        "dates": "May 2019 – Mar 2020",
+        "role": "Manual QA Engineer",
+        "org": "TEAM International — Adapt (U.S. staffing & recruitment platform)",
+        "location": "Remote",
+        "body": "Functional, regression, and system testing across a workflow-heavy enterprise platform integrating with data warehousing and third-party systems. Validated business workflows and cross-system data flow within Agile / Scrum delivery."
+      },
+      {
+        "dates": "Sep 2017 – May 2019",
+        "role": "Manual QA Engineer",
+        "org": "Mediasapiens — ASK E-Learning (20,000+ users) and Easy Fish mobile app",
+        "location": "Remote",
+        "body": "Requirements analysis, test documentation, workflow validation, and production quality assurance across a multilingual large-scale educational platform and a consumer mobile application."
+      },
+      {
+        "dates": "May 2017 – Aug 2017",
+        "role": "Junior Manual QA Engineer",
+        "org": "Itomych Studio — FitGrid Pro",
+        "location": "Remote",
+        "body": "Functional testing, requirements analysis, and validation of scheduling, instructor management, and client retention workflows — an early foundation for scheduling and client management systems work."
+      }
+    ],
+    "educationEyebrow": "Education",
+    "educationTitle": "Formal training in information science and computer science.",
+    "education": [
+      {
+        "degree": "Master of Science in Information Science",
+        "school": "National Technical University \"Kharkiv Polytechnic Institute\"",
+        "dates": "2014 – 2016",
+        "location": "Kharkiv, Ukraine"
+      },
+      {
+        "degree": "Bachelor of Science in Computer Science, with Honors",
+        "school": "National Technical University \"Kharkiv Polytechnic Institute\"",
+        "dates": "2010 – 2014",
+        "location": "Kharkiv, Ukraine"
+      }
+    ],
+    "focusTitle": "Current Consulting Focus",
+    "focusP1": "Today my work centers on medical practices, wellness centers, medspas, therapy practices, rehabilitation programs, aesthetics clinics, and integrative health organizations. Typical engagements involve CRM and EHR workflow optimization, patient intake and scheduling reliability, knowledge base structuring, RAG readiness, and QA validation of AI-supported communication.",
+    "focusP2": "All services are delivered remotely from Sarasota, Florida to organizations across the United States.",
+    "philosophyTitle": "Professional Philosophy",
+    "philosophyP1": "Reliable workflows are a form of care. When intake, scheduling, follow-up, and communication behave predictably, staff spend less time correcting the system and more time serving people.",
+    "philosophyP2": "I treat automation — including AI-supported communication — as one layer of a broader operational system that must be documented, bounded, tested, and reviewed by qualified human professionals. Automation earns its place by strengthening the client journey, never by replacing professional judgment.",
+    "pubsEyebrow": "Research & Publications",
+    "pubsTitle": "Applied research in AI-enabled workflow systems and client journey automation.",
+    "pubsLead": "My research interests include CRM-enabled service delivery, healthcare and wellness workflows, patient management systems, AI-mediated communication, and RAG-based client journey automation.",
+    "pubsNote": "I also served as Conference Operations & Digital Workflow Coordinator for the international scientific conference “Beyond Human: AI, Consciousness, Personality and the Future of Human Development” (September 2026), supporting registration, participant communications, speaker onboarding, and post-conference documentation.",
+    "publications": [
+      {
+        "role": "Author",
+        "title": "RAG-Based Automation of the Client Journey in Medical and Wellness Systems: Operational Efficiency, Client Retention, and Behavioral Calibration of AI-Mediated Communication",
+        "doi": "10.69635/mssl.2026.2.2.45",
+        "url": "https://doi.org/10.69635/mssl.2026.2.2.45"
+      },
+      {
+        "role": "Co-Author",
+        "title": "Psychological Testing as an Instrument of Differentiated Support in Education, Healthcare Settings, and Crisis Life Transitions: Typological, Trait-Based, and Psychodynamic Approaches",
+        "venue": "Metaverse Science, Society and Law",
+        "doi": "10.69635/mssl.2026.2.2.38",
+        "url": "https://doi.org/10.69635/mssl.2026.2.2.38"
+      }
+    ],
+    "bandBody": "If you would like to discuss whether my approach fits your organization, request a diagnostic Workflow Audit or reach me directly by email."
+  },
+  "contact": {
+    "seo": {
+      "title": "Request a Workflow Audit — Alona Aponchuk",
+      "description": "Request a diagnostic Workflow Audit. Share your CRM, scheduling, and communication setup to receive a structured review of where the client journey loses continuity.",
+      "imageAlt": "Request a diagnostic Workflow Audit"
+    },
+    "eyebrow": "Request Workflow Audit",
+    "title": "Tell me about your organization and current workflow.",
+    "lead": "This diagnostic form takes about 5 minutes. All fields help me scope the audit accurately — the more context you share, the more useful the first call will be.",
+    "receivedEyebrow": "Received",
+    "receivedTitle": "Thank you — your request has been submitted.",
+    "nextSteps": "Next steps",
+    "receivedBody": "I will review your submission and reach out to schedule a diagnostic call. If your request is time-sensitive, please email me directly at",
+    "submitAnother": "Submit another request",
+    "contactLegend": "Contact",
+    "orgLegend": "Organization",
+    "systemsLegend": "Current Systems",
+    "problemLegend": "Main Problem",
+    "volumeLegend": "Volume Indicators",
+    "diagnosticLegend": "Diagnostic Questions",
+    "fullName": "Full Name",
+    "organization": "Organization",
+    "email": "Email",
+    "phone": "Phone",
+    "website": "Website",
+    "role": "Role / Title",
+    "orgType": "Organization type",
+    "selectOne": "Select one…",
+    "crm": "CRM platform",
+    "crmPh": "e.g., HubSpot, Salesforce, Keap",
+    "scheduling": "Scheduling tool",
+    "schedulingPh": "e.g., Calendly, Jane, SimplePractice",
+    "ai": "Chatbot or AI use",
+    "aiPh": "e.g., Intercom, custom GPT, none",
+    "forms": "Website forms",
+    "formsPh": "e.g., Typeform, Gravity Forms",
+    "messaging": "Messaging channels",
+    "messagingPh": "e.g., SMS, WhatsApp, email",
+    "problem": "Primary problem area",
+    "leads": "Approximate monthly leads",
+    "consults": "Approximate monthly consultations",
+    "clients": "Approximate monthly clients or patients",
+    "staff": "Number of staff involved",
+    "lost": "Where do clients most often get lost?",
+    "followup": "Who currently handles follow-up?",
+    "afterForm": "What happens after a client submits a form?",
+    "improve": "What would a more reliable workflow improve for the organization?",
+    "consent": "By submitting this form you consent to being contacted regarding your inquiry. Please do not include protected health information (PHI) or identifying patient data in this form.",
+    "submit": "Request Workflow Audit",
+    "sending": "Sending…",
+    "error": "Something went wrong. Please email info@aponchukworkflow.com directly.",
+    "direct": "Direct Contact",
+    "location": "Sarasota, Florida. Remote consulting across the United States.",
+    "nextEyebrow": "What Happens Next",
+    "next1": "I review your submission within a few business days.",
+    "next2": "We schedule a diagnostic call to clarify scope.",
+    "next3": "You receive a written Workflow Audit proposal.",
+    "orgTypes": [
+      "Medical Practice",
+      "Wellness Center",
+      "Medspa",
+      "Therapy Practice",
+      "Rehabilitation Center",
+      "Aesthetics Clinic",
+      "Integrative Health Organization",
+      "Other"
+    ],
+    "problems": [
+      "Intake",
+      "Scheduling",
+      "Follow-up",
+      "Retention",
+      "Chatbot",
+      "Staff workload",
+      "CRM inconsistency",
+      "Other"
+    ]
+  },
+  "privacy": {
+    "seo": {
+      "title": "Privacy Policy — Aponchuk Workflow Systems LLC",
+      "description": "How Aponchuk Workflow Systems LLC collects, uses, and protects information submitted through this website."
+    },
+    "eyebrow": "Legal",
+    "title": "Privacy Policy",
+    "lead": "Effective date: {date}. Aponchuk Workflow Systems LLC, Sarasota, Florida.",
+    "effectiveDate": "January 1, 2026",
+    "sections": [
+      {
+        "title": "Introduction",
+        "body": "Aponchuk Workflow Systems LLC (\"we,\" \"our,\" or \"us\") respects your privacy. This Privacy Policy describes how we collect, use, and protect information that you provide when you use this website or communicate with us regarding our consulting services. By using this website, you agree to the practices described below."
+      },
+      {
+        "title": "Information We Collect",
+        "body": "We collect only the information you voluntarily submit through the Request Workflow Audit form or through direct correspondence with us. This may include your name, organization, email address, phone number, website, role, information about the systems your organization uses (such as CRM or scheduling tools), and descriptions of the workflow challenges you would like to discuss. We do not use this website to collect protected health information, patient records, financial account data, or government identifiers."
+      },
+      {
+        "title": "How We Use Information",
+        "body": "We use submitted information solely to respond to your inquiry, scope potential engagements, deliver requested consulting services, maintain professional records of client communications, and comply with applicable legal or regulatory obligations. We do not sell, rent, or trade your information."
+      },
+      {
+        "title": "Protected Health Information (PHI)",
+        "body": "This website is not designed for the transmission or storage of Protected Health Information as defined under HIPAA, patient identifiers, insurance information, or clinical records. Please do not submit any such information through this website. If a consulting engagement requires review of workflows that involve PHI, that work is scoped separately under a written agreement and, where required, an appropriate Business Associate Agreement or equivalent arrangement."
+      },
+      {
+        "title": "Cookies and Analytics",
+        "body": "This website uses essential cookies required for basic functionality, including a session cookie that keeps your chatbot conversation active when you return to the site. The chat assistant also stores a browser identifier and a local copy of your conversation in your browser's local storage so messages can appear quickly on repeat visits. This local data stays on your device and is not shared with third parties. Language preference is stored in local storage and an essential cookie so the site can remember English, Ukrainian, or Russian. If web analytics are introduced in the future, they will be limited to aggregated, non-identifying usage data, and this Privacy Policy will be updated to reflect that change."
+      },
+      {
+        "title": "Third-Party Service Providers",
+        "body": "We use standard third-party service providers to host this website, deliver email, and process contact form submissions. These providers are engaged only to the extent necessary to operate the website and communicate with you, and they are bound by their own contractual and legal obligations regarding data handling."
+      },
+      {
+        "title": "Data Retention",
+        "body": "We retain inquiry information only for as long as reasonably necessary to respond to your inquiry, deliver requested services, and meet legitimate business or legal recordkeeping needs. You may request deletion of your inquiry data at any time by contacting us at the address below."
+      },
+      {
+        "title": "Security",
+        "body": "We take reasonable administrative and technical measures to protect information submitted through this website. However, no method of transmission over the internet or electronic storage is completely secure, and we cannot guarantee absolute security."
+      },
+      {
+        "title": "Children's Privacy",
+        "body": "This website is intended for use by professionals and organizational representatives. We do not knowingly collect information from children under 13."
+      },
+      {
+        "title": "Changes to This Policy",
+        "body": "We may update this Privacy Policy periodically. Material changes will be reflected by updating the effective date at the top of this page."
+      },
+      {
+        "title": "Contact",
+        "body": "For privacy questions, data deletion requests, or corrections, contact Aponchuk Workflow Systems LLC at info@aponchukworkflow.com."
+      }
+    ]
+  },
+  "terms": {
+    "seo": {
+      "title": "Terms & Disclaimer — Aponchuk Workflow Systems LLC",
+      "description": "Terms of use and professional disclaimer covering the scope of consulting, workflow analysis, QA validation, and implementation-support services."
+    },
+    "eyebrow": "Legal",
+    "title": "Terms & Disclaimer",
+    "lead": "Effective date: {date}. Please read carefully. By engaging with Aponchuk Workflow Systems LLC, clients acknowledge the scope and limitations of the services described below.",
+    "effectiveDate": "January 1, 2026",
+    "sections": [
+      {
+        "title": "Acceptance of Terms",
+        "body": "By accessing this website or engaging Aponchuk Workflow Systems LLC (\"the Firm\") for consulting services, you acknowledge that you have read, understood, and agreed to these Terms and Disclaimer. If you do not agree, please do not use this website or engage the Firm."
+      },
+      {
+        "title": "Scope of Services",
+        "body": "The Firm provides consulting, workflow analysis, QA validation, and implementation-support services related to CRM systems, patient and client management workflows, knowledge base structuring, and responsible AI-supported communication. Services do not constitute medical, clinical, psychological, legal, cybersecurity, HIPAA, accounting, insurance, or compliance certification, and are not a substitute for advice from licensed professionals in those fields."
+      },
+      {
+        "title": "Client Responsibility for Compliance",
+        "body": "Clients are solely responsible for evaluating and ensuring that any workflow, automation, or communication system implemented in whole or in part based on the Firm's recommendations complies with all applicable federal, state, and local laws and regulations, including HIPAA, HITECH, state privacy laws, telehealth regulations, and any professional licensing requirements. Any implementation involving protected health information, patient records, insurance data, or clinical decision support must be reviewed and approved by the client's legal, compliance, privacy, and clinical leadership prior to deployment."
+      },
+      {
+        "title": "Human Escalation and Professional Oversight",
+        "body": "Any automated system that the Firm advises on or supports should include clearly documented escalation paths to qualified human staff. Automation is intended to support, not replace, licensed professionals. Clinical decisions, diagnostic determinations, and treatment recommendations must remain the responsibility of appropriately licensed individuals."
+      },
+      {
+        "title": "AI-Supported Communication",
+        "body": "AI-supported communication designed, reviewed, or supported by the Firm is intended to operate within approved informational, administrative, scheduling, preparation, and follow-up boundaries. Any broader use of AI-mediated communication — including any use that could be interpreted as diagnosis, psychological assessment, clinical advice, or a substitute for professional judgment — must be explicitly approved by the client's licensed professionals and legal or compliance advisors, and is undertaken at the client's own risk."
+      },
+      {
+        "title": "No Guarantees or Warranties",
+        "body": "Modeled workflow figures, efficiency estimates, retention indicators, and quality metrics shared on this website or during engagements are research-based indicators only. They are not guaranteed results. Actual outcomes depend on the client's systems, data quality, staff processes, implementation scope, operational context, and factors outside the Firm's control. The Firm makes no express or implied warranty of merchantability, fitness for a particular purpose, or non-infringement."
+      },
+      {
+        "title": "No Certification Claims",
+        "body": "The Firm does not provide HIPAA certification, medical device certification, cybersecurity certification, SOC audit certification, or any other regulatory certification, and does not certify or guarantee compliance with any regulatory framework."
+      },
+      {
+        "title": "Intellectual Property",
+        "body": "All content on this website, including text, graphics, diagrams, and logos, is the property of Aponchuk Workflow Systems LLC or its licensors and is protected by U.S. and international intellectual property laws. Deliverables produced during engagements are governed by the executed engagement agreement."
+      },
+      {
+        "title": "Limitation of Liability",
+        "body": "To the maximum extent permitted by applicable law, Aponchuk Workflow Systems LLC and its principals shall not be liable for any indirect, incidental, consequential, special, or exemplary damages, or for any loss of profits, revenue, data, or business opportunities, arising out of or related to the use of this website or the Firm's services. The Firm's total aggregate liability for any claim arising from an engagement is limited to the fees paid by the client for the specific engagement giving rise to the claim."
+      },
+      {
+        "title": "Governing Law",
+        "body": "These Terms are governed by the laws of the State of Florida, without regard to its conflict-of-laws principles. Any dispute arising from these Terms or from any engagement with the Firm shall be resolved in the state or federal courts located in Sarasota County, Florida, unless otherwise agreed in writing."
+      },
+      {
+        "title": "Changes to These Terms",
+        "body": "The Firm may update these Terms from time to time. Material changes will be reflected by updating the effective date at the top of this page."
+      },
+      {
+        "title": "Contact",
+        "body": "For questions about these Terms, contact Aponchuk Workflow Systems LLC at info@aponchukworkflow.com."
+      }
+    ]
+  },
+  "chat": {
+    "llmLanguageInstruction": "Always reply in English. Keep the same meaning if you rephrase approved knowledge. Do not switch languages unless the user writes in another language and clearly expects that reply.",
+    "widgetTitle": "Aponchuk Workflow Assistant",
+    "widgetSubtitle": "Workflow, CRM, and client-journey questions",
+    "open": "Open workflow assistant",
+    "close": "Close assistant",
+    "closeShort": "Close",
+    "help": "Help",
+    "helpEyebrow": "Workflow assistant",
+    "helpTitle": "Need help?",
+    "helpCopy": "Ask about intake, CRM, follow-up, or start a quick assessment.",
+    "dismissHelp": "Dismiss help prompt",
+    "dialogLabel": "Aponchuk Workflow Assistant",
+    "thinking": "Thinking…",
+    "askPlaceholder": "Ask a question",
+    "orTypePlaceholder": "Or type a message",
+    "typeAnswer": "Type your answer",
+    "send": "Send",
+    "continue": "Continue",
+    "loadError": "Could not load the assistant.",
+    "sendError": "Could not send.",
+    "rateLimit": "Please wait a moment before sending another message.",
+    "invalid": "Invalid message.",
+    "processError": "The assistant could not process that message.",
+    "unavailable": "The assistant is temporarily unavailable.",
+    "welcome": "Hi! I’m the Aponchuk Workflow Assistant.\n\nI can help you identify where clients may be getting lost between inquiry, scheduling, follow-up, and repeat visits.",
+    "startAssessment": "Start Workflow Assessment",
+    "askQuestion": "Ask a Question",
+    "learnServices": "Learn About Services",
+    "passToAlona": "Pass this to Alona",
+    "faqIntro": "Of course. Ask about services, the Workflow Audit, CRM and client-journey work, or responsible AI. Please don’t share patient-identifying information.",
+    "leadPrompt": "If you would like Alona to review this with you, share your contact details and we’ll follow up.",
+    "passPrompt": "I can pass this to Alona. Please share your contact details so she can follow up. Avoid patient-identifying information.",
+    "chooseOption": "Please choose one of the options above to continue the assessment. You can ask a general question after it wraps up.",
+    "otherPrompt": "Please enter a short description.",
+    "thanks": "Thank you. Alona will review this and follow up at the email you provided. You can also reach Aponchuk Workflow Systems at info@aponchukworkflow.com.",
+    "leadAlready": "This assessment was already submitted.",
+    "leadRequired": "Please complete the required contact fields.",
+    "leadSaveError": "We could not save your details. Please email info@aponchukworkflow.com.",
+    "leadSubmitError": "Could not submit.",
+    "sending": "Sending…",
+    "sendToAlona": "Send to Alona",
+    "consent": "I agree to be contacted about this inquiry. Please do not include patient-identifying information.",
+    "fullName": "Full Name",
+    "organizationName": "Organization Name",
+    "workEmail": "Work Email",
+    "phone": "Phone Number",
+    "website": "Website URL",
+    "roleTitle": "Role / Title",
+    "fallbackUnknown": "I don’t have enough verified information to answer that accurately. I can pass this question to Alona for review.",
+    "fallbackMedical": "I can help with workflow, CRM, scheduling, automation, and operational questions, but I can’t provide medical or clinical advice. Please contact a qualified healthcare professional for medical guidance.",
+    "fallbackPhi": "Please avoid sharing patient-identifying or medical information here. We can discuss the workflow or system process without using patient-specific data.",
+    "fallbackGuarantee": "Actual outcomes depend on your systems, data quality, staff workflows, implementation scope, and client behavior. We can identify improvement opportunities, but we do not guarantee specific financial or operational results.",
+    "servicesOverview": "We help healthcare and wellness organizations make the client journey more reliable from the first inquiry to the repeat visit.\n\nCore services include:\n• Workflow Audit — a structured review of intake, CRM/EHR logic, scheduling, follow-up, staff handoffs, and existing automation\n• CRM & Client Journey Optimization — improve the system you already use\n• Automation Readiness — prepare knowledge, rules, and QA before expanding AI\n• Chatbot / RAG Design & QA Validation — grounded assistants with tested boundaries\n• Pilot Implementation Support — a controlled test before broader rollout\n• Optimization Retainer — ongoing calibration and knowledge maintenance\n\nAI is optional. Many engagements start with workflow mapping and CRM cleanup. The usual first step is a Workflow Audit.",
+    "diagnostic": {
+      "coreManual": "Based on your answers, the main issue appears to be {problems}, with follow-up that is still largely manual or inconsistent.",
+      "coreDefault": "Based on your answers, the main issue appears to be {problems}.",
+      "defaultProblems": "workflow gaps between inquiry and follow-up",
+      "whyDropoff": " Clients most often stall {dropoff}, which can delay response time and leave qualified inquiries unworked.",
+      "whyDefault": " When intake, scheduling, and follow-up are not tightly connected, staff repeat manual work and some inquiries never convert.",
+      "secondaryDefault": "It may also be worth reviewing how inquiry data is captured and handed off between staff.",
+      "secondaryTracking": " It may also be worth reviewing how inquiries are tracked today ({tracking}) and whether that process can support consistent handoffs.",
+      "secondaryNoCrm": " It may also be worth reviewing how inquiries are tracked without a structured CRM or EHR workflow.",
+      "secondaryPlatform": " It may also be worth reviewing how {platform} is connected to scheduling and follow-up, so the system matches the real client journey.",
+      "secondaryCrm": " It may also be worth reviewing how your CRM and scheduling process are connected, so status changes and staff tasks stay aligned.",
+      "auditClose": " A Workflow Audit can help map this process and identify what can be improved or automated."
+    },
+    "questions": {
+      "q1": {
+        "prompt": "What type of organization do you represent?",
+        "otherPrompt": "Please describe your organization.",
+        "options": {
+          "medical_practice": "Medical Practice",
+          "wellness_center": "Wellness Center",
+          "medspa_aesthetics": "MedSpa / Aesthetics",
+          "integrative_health": "Integrative Health",
+          "therapy_mental_health": "Therapy / Mental Health",
+          "rehabilitation": "Rehabilitation",
+          "other": "Other"
+        }
+      },
+      "q2": {
+        "prompt": "What is your role in the organization?",
+        "otherPrompt": "Please describe your role.",
+        "options": {
+          "owner_founder": "Owner / Founder",
+          "practice_manager": "Practice Manager",
+          "operations_manager": "Operations Manager",
+          "administrator": "Administrator",
+          "other": "Other"
+        }
+      },
+      "q3": {
+        "prompt": "What is the biggest workflow problem right now?",
+        "otherPrompt": "Please describe the main workflow problem.",
+        "options": {
+          "slow_lead_response": "Slow Lead Response",
+          "form_dropoff": "Form Drop-Off",
+          "scheduling_issues": "Scheduling Issues",
+          "too_many_noshows": "Too Many No-Shows",
+          "repetitive_questions": "Too Many Repetitive Questions",
+          "weak_followup": "Weak Follow-Up",
+          "crm_disorganized": "CRM Is Disorganized",
+          "systems_disconnected": "Systems Are Disconnected",
+          "chatbot_poor": "Chatbot Works Poorly",
+          "ai_unsure": "Not Sure Where to Start with AI",
+          "other": "Other"
+        }
+      },
+      "q4": {
+        "prompt": "Where do clients most often get lost or stop moving forward?",
+        "options": {
+          "after_first_inquiry": "After First Inquiry",
+          "after_form": "After Form Submission",
+          "before_booking": "Before Booking",
+          "before_visit": "Before the Visit",
+          "after_first_visit": "After the First Visit",
+          "during_followup": "During Follow-Up",
+          "before_repeat_visit": "Before Repeat Visit",
+          "not_sure": "Not Sure"
+        }
+      },
+      "q5": {
+        "prompt": "Do you currently use a CRM, EHR, or patient management system?",
+        "options": {
+          "yes": "Yes",
+          "no": "No",
+          "not_sure": "Not Sure"
+        }
+      },
+      "q5_crm": {
+        "prompt": "Which system do you use?",
+        "placeholder": "Platform name"
+      },
+      "q5_tracking": {
+        "prompt": "How do you track inquiries and follow-up?",
+        "otherPrompt": "Please describe how you track inquiries and follow-up.",
+        "options": {
+          "spreadsheet": "Spreadsheet",
+          "email": "Email",
+          "phone_notes": "Phone Notes",
+          "scheduling_tool": "Scheduling Tool",
+          "messaging_apps": "Messaging Apps",
+          "several_tools": "Several Tools",
+          "no_structured_system": "No Structured System",
+          "other": "Other"
+        }
+      },
+      "q6": {
+        "prompt": "How is follow-up handled today?",
+        "options": {
+          "manual": "Mostly Manual",
+          "partly_automated": "Partly Automated",
+          "mostly_automated": "Mostly Automated",
+          "inconsistent": "Different for Each Staff Member",
+          "no_process": "No Set Process",
+          "not_sure": "Not Sure"
+        }
+      },
+      "q6_who": {
+        "prompt": "Who usually handles it?",
+        "otherPrompt": "Please describe who handles follow-up.",
+        "options": {
+          "front_desk": "Front Desk",
+          "practice_manager": "Practice Manager",
+          "owner": "Owner",
+          "provider": "Provider",
+          "several_people": "Several People",
+          "other": "Other"
+        }
+      },
+      "q7": {
+        "prompt": "Do you currently use a chatbot, automated replies, or AI-supported communication?",
+        "options": {
+          "yes": "Yes",
+          "no": "No",
+          "in_progress": "In Progress",
+          "not_sure": "Not Sure"
+        }
+      },
+      "q7a": {
+        "prompt": "What is the main problem with your current chatbot or automation?",
+        "otherPrompt": "Please describe the main problem with your current chatbot or automation.",
+        "options": {
+          "generic_answers": "Answers Are Too Generic",
+          "wrong_answers": "Sometimes Gives Wrong Answers",
+          "no_business_context": "Doesn’t Use Our Business Info",
+          "no_staff_handoff": "No Staff Handoff",
+          "no_crm_integration": "Not Connected to CRM",
+          "hard_to_update": "Hard to Update",
+          "low_engagement": "Clients Don’t Use It",
+          "not_tested": "Not Tested Enough",
+          "other": "Other / Enter My Own"
+        },
+        "compact": {
+          "generic_answers": "Too Generic",
+          "wrong_answers": "Wrong Answers",
+          "no_business_context": "No Business Context",
+          "no_staff_handoff": "No Staff Handoff",
+          "no_crm_integration": "No CRM Link",
+          "hard_to_update": "Hard to Update",
+          "low_engagement": "Low Engagement",
+          "not_tested": "Not Tested",
+          "other": "Other"
+        }
+      },
+      "q8": {
+        "prompt": "About how many new inquiries do you receive per month?",
+        "otherPrompt": "About how many new inquiries do you receive per month? You can also type “Not sure”.",
+        "placeholder": "e.g. 40 or Not sure",
+        "options": {
+          "1_25": "1–25",
+          "26_100": "26–100",
+          "100_plus": "100+",
+          "custom": "Enter My Own"
+        }
+      },
+      "q9": {
+        "prompt": "What would you most like to improve first?",
+        "otherPrompt": "What would you most like to improve first?",
+        "options": {
+          "response_followup": "Faster Response & Follow-Up",
+          "reduce_manual_work": "Less Manual Staff Work",
+          "crm_automation": "Better CRM & Automation",
+          "custom": "Enter My Own"
+        }
+      }
+    }
+  },
+  "admin": {
+    "brand": "Aponchuk Admin",
+    "tagline": "Lead and assistant console",
+    "signOut": "Sign out",
+    "nav": {
+      "leads": "Leads",
+      "sessions": "Sessions",
+      "knowledgeBase": "Knowledge base",
+      "rag": "RAG",
+      "settings": "Assistant",
+      "notifications": "Notifications",
+      "users": "Users"
+    },
+    "login": {
+      "eyebrow": "Admin",
+      "title": "Sign in",
+      "lead": "Invite-only access for Aponchuk Workflow Systems.",
+      "email": "Email",
+      "password": "Password",
+      "submit": "Sign in",
+      "pending": "Signing in…",
+      "forgot": "Forgot password"
+    },
+    "forgot": {
+      "title": "Reset password",
+      "lead": "We’ll email a reset link if the account exists.",
+      "email": "Email",
+      "submit": "Send reset link",
+      "pending": "Sending…",
+      "back": "Back to sign in"
+    },
+    "reset": {
+      "title": "Choose a new password",
+      "password": "New password",
+      "submit": "Save password",
+      "pending": "Saving…"
+    },
+    "invite": {
+      "title": "Set your admin password",
+      "name": "Name",
+      "password": "Password",
+      "submit": "Activate account",
+      "pending": "Saving…"
+    },
+    "leads": {
+      "title": "Leads",
+      "lead": "Chat assessments and contact-form requests. Click a row to open the full lead profile.",
+      "count": "{count} lead",
+      "countPlural": "{count} leads",
+      "all": "All",
+      "name": "Name",
+      "organization": "Organization",
+      "email": "Email",
+      "source": "Source",
+      "status": "Status",
+      "created": "Created",
+      "empty": "No leads match the current filters.",
+      "showing": "Showing {from} – {to} of {total}",
+      "rows": "Rows",
+      "page": "Page {current} of {total}",
+      "prev": "Previous page",
+      "next": "Next page",
+      "updateStatus": "Update lead status",
+      "sourceChat": "Chat assessment",
+      "sourceContact": "Contact form",
+      "statusNew": "New",
+      "statusContacted": "Contacted",
+      "statusCallScheduled": "Call Scheduled",
+      "statusQualified": "Qualified",
+      "statusClosed": "Closed"
+    },
+    "leadDetail": {
+      "back": "Back to leads",
+      "title": "Lead",
+      "delete": "Delete lead",
+      "deleteTitle": "Delete lead?",
+      "deleteBody": "This will permanently remove the lead record for {name}. The linked chat session transcript will be kept.",
+      "deleting": "Deleting…",
+      "deleteError": "Could not delete this lead."
+    },
+    "sessions": {
+      "title": "Sessions",
+      "lead": "All chatbot conversations, including those that never became leads. Click a row to open the full transcript.",
+      "count": "{count} session",
+      "countPlural": "{count} sessions",
+      "all": "All",
+      "withLead": "With lead",
+      "noLead": "No lead",
+      "empty": "No sessions match the current filters.",
+      "lastActivity": "Last activity",
+      "mode": "Mode",
+      "messages": "Messages",
+      "visitor": "Visitor",
+      "linkedLead": "Lead",
+      "started": "Started",
+      "modes": {
+        "welcome": "Welcome",
+        "assessment": "Assessment",
+        "faq": "FAQ",
+        "services": "Services",
+        "diagnostic": "Diagnostic",
+        "lead_capture": "Lead capture",
+        "done": "Done"
+      }
+    },
+    "sessionDetail": {
+      "back": "Back to sessions",
+      "title": "Chat session",
+      "lastActive": "{mode} · Last active {date}",
+      "mode": "Mode",
+      "started": "Started",
+      "lastActivity": "Last activity",
+      "linkedLead": "Linked lead",
+      "none": "None",
+      "metadata": "Session metadata",
+      "sessionId": "Session ID",
+      "visitorId": "Visitor ID",
+      "notLinked": "Not linked",
+      "messages": "Messages",
+      "assessment": "Assessment answers",
+      "conversation": "Chat conversation",
+      "empty": "No messages recorded for this session."
+    },
+    "kb": {
+      "title": "Knowledge base",
+      "lead": "Approved answers used by the assistant. Inactive entries are excluded from the cached prompt.",
+      "add": "Add entry",
+      "slug": "slug-for-analytics",
+      "intent": "User question / intent",
+      "answer": "Approved answer",
+      "active": "Active",
+      "save": "Save",
+      "delete": "Delete"
+    },
+    "settings": {
+      "title": "Assistant settings",
+      "lead": "Model, prompts, and fallbacks. Saving refreshes the cached assistant config.",
+      "model": "OpenAI model",
+      "temperature": "Temperature",
+      "systemPrompt": "System prompt",
+      "faqPrompt": "FAQ prompt",
+      "diagnosticPrompt": "Diagnostic prompt",
+      "fallbackUnknown": "Unknown fallback",
+      "fallbackMedical": "Medical fallback",
+      "fallbackPhi": "PHI fallback",
+      "fallbackGuarantee": "Guarantee fallback",
+      "save": "Save settings"
+    },
+    "notifications": {
+      "title": "Notifications",
+      "lead": "Configure where new lead emails and Telegram alerts are delivered. Telegram alerts include a short summary and a link to the lead profile. Full transcripts stay in the admin panel.",
+      "emailsTitle": "Lead notification emails",
+      "emailsLead": "New chat assessment leads and contact-form submissions are emailed to every address listed here.",
+      "addEmail": "Add email",
+      "removeEmail": "Remove email",
+      "saved": "Saved {count} notification email.",
+      "savedPlural": "Saved {count} notification emails.",
+      "saveEmails": "Save emails",
+      "removeEmailTitle": "Remove email?",
+      "removeEmailBody": "Remove {email} from the notification list? Click Save emails to apply changes.",
+      "removeEmptyEmail": "Remove this empty email row?",
+      "remove": "Remove",
+      "telegramTitle": "Telegram alerts",
+      "telegramLead": "Every connected Telegram account receives a short summary when a workflow audit or chat assessment lead is submitted. Additional accounts do not need admin logins.",
+      "addTelegram": "Add Telegram",
+      "webhookUnhealthy": "Telegram webhook is not healthy, so connect links will not work yet.",
+      "webhookError": "Error: {error}",
+      "expectedUrl": "Expected webhook URL:",
+      "currentUrl": "Current webhook URL:",
+      "pendingUpdates": "{count} pending Telegram updates.",
+      "webhookHint": "After deploying, run npm run telegram:set-webhook with NEXT_PUBLIC_SITE_URL set to your public site URL.",
+      "colTelegram": "Telegram",
+      "colConnectedAs": "Connected as",
+      "colLinked": "Linked",
+      "colType": "Type",
+      "colActions": "Actions",
+      "emptyTelegram": "No Telegram accounts are connected yet.",
+      "linkedAccount": "Linked account",
+      "adminLabel": "Admin",
+      "notificationOnly": "Notification only",
+      "yourAccountType": "Your account",
+      "additional": "Additional",
+      "managedByAdmin": "Managed by that admin",
+      "removeRecipientAria": "Remove Telegram recipient",
+      "yourAccount": "Your account:",
+      "linked": "Linked",
+      "linkedAs": "Linked as @{username}",
+      "notLinked": "Not linked",
+      "reconnect": "Reconnect your Telegram",
+      "connect": "Connect your Telegram",
+      "sendTest": "Send test alert",
+      "testSent": "Sent a test alert to {count} Telegram account.",
+      "testSentPlural": "Sent a test alert to {count} Telegram accounts.",
+      "refreshWebhook": "Refresh webhook status",
+      "shareLink": "Share this link with the person who should receive alerts. They must open it in Telegram within 10 minutes:",
+      "openLink": "Open this link in Telegram within 10 minutes:",
+      "waitingLink": "Waiting for Telegram to confirm the link… Press Start in the bot if prompted.",
+      "createLinkError": "Could not create link.",
+      "testError": "Could not send test alert.",
+      "removeTelegramTitle": "Remove Telegram?",
+      "removeTelegramBody": "{name} will stop receiving lead alerts.",
+      "thisAccount": "This Telegram account",
+      "removeTelegramError": "Could not remove Telegram."
+    },
+    "users": {
+      "title": "Users",
+      "lead": "Invite-only admin access. Revoking approval blocks login and Telegram alerts.",
+      "email": "Email",
+      "name": "Name",
+      "approved": "Approved",
+      "telegram": "Telegram",
+      "actions": "Actions",
+      "invitePh": "new-admin@email.com",
+      "invite": "Send invite",
+      "sending": "Sending…",
+      "linked": "Linked",
+      "notLinked": "Not linked",
+      "revoke": "Revoke",
+      "restore": "Restore",
+      "revoking": "Revoking…",
+      "restoring": "Restoring…"
+    },
+    "rag": {
+      "title": "RAG documents",
+      "lead": "Upload TXT, PDF, DOC, or DOCX files. Text is extracted, chunked, and indexed for hybrid retrieval (semantic + keyword). Use the test panel to ask questions against selected documents.",
+      "upload": "Upload document",
+      "choose": "Choose file",
+      "formats": "TXT, PDF, DOC, DOCX · max 4 MB",
+      "uploading": "Processing…",
+      "empty": "No documents yet.",
+      "filename": "File",
+      "status": "Status",
+      "chunks": "Chunks",
+      "uploaded": "Uploaded",
+      "actions": "Actions",
+      "delete": "Delete",
+      "deleting": "Deleting…",
+      "statusProcessing": "Processing",
+      "statusReady": "Ready",
+      "statusError": "Error",
+      "testTitle": "Test retrieval",
+      "testLead": "Choose all documents or a subset, then ask a question. Retrieval combines vector similarity and keyword search, then reranks the best chunks.",
+      "allDocs": "All ready documents",
+      "selectDocs": "Documents",
+      "question": "Question",
+      "questionPh": "Ask a question about the selected documents",
+      "ask": "Ask",
+      "asking": "Retrieving…",
+      "answer": "Answer",
+      "sources": "Retrieved chunks",
+      "noSources": "No matching chunks were found.",
+      "score": "Score {score}",
+      "matchVector": "semantic",
+      "matchKeyword": "keyword",
+      "selectOne": "Select at least one ready document, or use all documents.",
+      "needQuestion": "Enter a question.",
+      "noReady": "Upload and wait until at least one document is ready before testing."
+    },
+    "table": {
+      "showing": "Showing {from} – {to} of {total}",
+      "rows": "Rows",
+      "page": "Page {current} of {total}",
+      "prev": "Previous page",
+      "next": "Next page"
+    }
+  }
+}

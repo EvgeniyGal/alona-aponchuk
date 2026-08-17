@@ -2,6 +2,14 @@ export const LEAD_STATUSES = ["new", "contacted", "call_scheduled", "qualified",
 
 export type LeadStatus = (typeof LEAD_STATUSES)[number];
 
+export const LEAD_STATUS_I18N_KEYS = {
+  new: "statusNew",
+  contacted: "statusContacted",
+  call_scheduled: "statusCallScheduled",
+  qualified: "statusQualified",
+  closed: "statusClosed",
+} as const;
+
 export const LEAD_STATUS_CONFIG: Record<
   LeadStatus,
   { label: string; badge: string; dot: string; select: string }

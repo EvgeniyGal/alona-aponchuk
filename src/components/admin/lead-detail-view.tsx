@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
+import { useTranslations } from "next-intl";
 import { ArrowLeft } from "lucide-react";
 import { updateLeadStatusById } from "@/app/admin/leads/actions";
 import { DeleteLeadButton } from "@/components/admin/delete-lead-button";
@@ -14,10 +15,10 @@ import {
   displayAssessmentAnswer,
 } from "@/lib/admin/lead-fields";
 import {
-  formatLeadSource,
   isLeadStatus,
   LEAD_STATUSES,
   LEAD_STATUS_CONFIG,
+  LEAD_STATUS_I18N_KEYS,
   type LeadStatus,
 } from "@/lib/admin/lead-status";
 import { formatAdminDateTime } from "@/lib/admin/format-date";
@@ -108,6 +109,8 @@ function AssessmentSections({
 }
 
 function StatusEditor({ leadId, initialStatus }: { leadId: string; initialStatus: LeadStatus }) {
+  const t = useTranslations("admin");
+  const common = useTranslations("common");
   const [status, setStatus] = useState(initialStatus);
   const [pending, startTransition] = useTransition();
   const config = LEAD_STATUS_CONFIG[status];
@@ -133,16 +136,17 @@ function StatusEditor({ leadId, initialStatus }: { leadId: string; initialStatus
       >
         {LEAD_STATUSES.map((item) => (
           <option key={item} value={item}>
-            {LEAD_STATUS_CONFIG[item].label}
+            {t(`leads.${LEAD_STATUS_I18N_KEYS[item]}`)}
           </option>
         ))}
       </select>
-      {pending ? <span className="text-[12px] text-muted-foreground">Saving…</span> : null}
+      {pending ? <span className="text-[12px] text-muted-foreground">{common("saving")}</span> : null}
     </div>
   );
 }
 
 export function LeadDetailView({ lead }: { lead: LeadDetailData }) {
+  const t = useTranslations("admin");
   const router = useRouter();
   const transcriptLines =
     lead.chatMessages.length > 0
@@ -162,7 +166,7 @@ export function LeadDetailView({ lead }: { lead: LeadDetailData }) {
             className="inline-flex items-center gap-1.5 text-[13px] text-blue hover:underline"
           >
             <ArrowLeft size={14} />
-            Back to leads
+            {t("leadDetail.back")}
           </Link>
           <p className="eyebrow mt-4">Lead profile</p>
           <h1 className="mt-2 font-display text-3xl">{lead.fullName}</h1>
@@ -181,7 +185,10 @@ export function LeadDetailView({ lead }: { lead: LeadDetailData }) {
 
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         {[
-          { label: "Source", value: formatLeadSource(lead.source) },
+          {
+            label: t("leads.source"),
+            value: lead.source === "contact_form" ? t("leads.sourceContact") : t("leads.sourceChat"),
+          },
           { label: "Submitted", value: formatAdminDateTime(lead.createdAt) },
           { label: "Consent", value: formatAdminDateTime(lead.consentAt) },
           {

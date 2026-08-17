@@ -5,16 +5,18 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { Menu, X } from "lucide-react";
+import { useTranslations } from "next-intl";
+import { LanguageSwitcher } from "@/components/language-switcher";
 
 const nav = [
-  { to: "/", label: "Home" },
-  { to: "/mission", label: "Mission" },
-  { to: "/method", label: "Method" },
-  { to: "/services", label: "Services" },
-  { to: "/case-stories", label: "Case Stories" },
-  { to: "/responsible-ai", label: "Responsible AI" },
-  { to: "/research", label: "Research" },
-  { to: "/about", label: "About" },
+  { to: "/", key: "home" },
+  { to: "/mission", key: "mission" },
+  { to: "/method", key: "method" },
+  { to: "/services", key: "services" },
+  { to: "/case-stories", key: "caseStories" },
+  { to: "/responsible-ai", key: "responsibleAi" },
+  { to: "/research", key: "research" },
+  { to: "/about", key: "about" },
 ] as const;
 
 function isActive(pathname: string, to: string) {
@@ -25,6 +27,8 @@ function isActive(pathname: string, to: string) {
 export function SiteHeader() {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
+  const t = useTranslations("nav");
+  const common = useTranslations("common");
 
   return (
     <header className="sticky top-0 z-40 border-b border-hairline bg-ivory/90 backdrop-blur">
@@ -32,7 +36,7 @@ export function SiteHeader() {
         <Link href="/" className="flex min-w-0 items-center gap-3" onClick={() => setOpen(false)}>
           <Image
             src="/logo.webp"
-            alt="Alona Aponchuk — Aponchuk Workflow Systems LLC"
+            alt={t("logoAlt")}
             width={48}
             height={48}
             className="h-12 w-12 shrink-0 object-contain"
@@ -40,9 +44,7 @@ export function SiteHeader() {
           />
           <span className="font-display text-[15.5px] font-semibold leading-tight text-graphite hidden sm:block">
             Alona Aponchuk
-            <span className="block text-[11.5px] font-normal text-muted-foreground">
-              Aponchuk Workflow Systems LLC
-            </span>
+            <span className="block text-[11.5px] font-normal text-muted-foreground">{t("tagline")}</span>
           </span>
         </Link>
 
@@ -52,25 +54,24 @@ export function SiteHeader() {
               key={n.to}
               href={n.to}
               className={`text-[14px] transition-colors ${
-                isActive(pathname, n.to)
-                  ? "text-blue font-medium"
-                  : "text-graphite/80 hover:text-blue"
+                isActive(pathname, n.to) ? "text-blue font-medium" : "text-graphite/80 hover:text-blue"
               }`}
             >
-              {n.label}
+              {t(n.key)}
             </Link>
           ))}
         </nav>
 
         <div className="flex items-center gap-3">
+          <LanguageSwitcher />
           <Link
             href="/contact"
             className="hidden md:inline-flex items-center rounded-md bg-blue px-4 py-2.5 text-[13.5px] font-medium text-white hover:bg-blue/90 transition-colors"
           >
-            Request Workflow Audit
+            {common("requestAudit")}
           </Link>
           <button
-            aria-label="Toggle menu"
+            aria-label={common("toggleMenu")}
             className="lg:hidden inline-flex h-11 w-11 items-center justify-center rounded-md border border-hairline text-graphite"
             onClick={() => setOpen((v) => !v)}
           >
@@ -91,7 +92,7 @@ export function SiteHeader() {
                 }`}
                 onClick={() => setOpen(false)}
               >
-                {n.label}
+                {t(n.key)}
               </Link>
             ))}
             <Link
@@ -99,7 +100,7 @@ export function SiteHeader() {
               className="mt-4 mb-2 inline-flex justify-center rounded-md bg-blue px-4 py-3 text-[14px] font-medium text-white"
               onClick={() => setOpen(false)}
             >
-              Request Workflow Audit
+              {common("requestAudit")}
             </Link>
           </div>
         </div>

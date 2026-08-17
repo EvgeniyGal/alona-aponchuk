@@ -1,16 +1,13 @@
 import type { AssessmentAnswer, AssessmentAnswers, ChatMessageUi } from "@/lib/db/schema";
-import {
-  FIRST_STEP,
-  QUESTIONS,
-  SERVICES_OVERVIEW,
-  WELCOME_MESSAGE,
-  nextStep,
-  optionByValue,
-  type QuestionStep,
-} from "@/lib/chat/questionnaire";
+import { FIRST_STEP, nextStep, type QuestionStep } from "@/lib/chat/questionnaire";
+import { localizedQuestions } from "@/lib/chat/localize";
 import { getAssistantConfig } from "@/lib/chat/config-cache";
 import { answerFaq, generateDiagnostic } from "@/lib/chat/openai";
 import { classifyRisk } from "@/lib/chat/safety";
+import { getChatCatalog } from "@/i18n/catalog";
+import type { AppLocale } from "@/i18n/config";
+import { defaultLocale, parseAppLocale } from "@/i18n/config";
+import { formatRetrievedContext, retrieveChunks } from "@/lib/rag/retrieve";
 
 export type ChatMode =
   | "welcome"
@@ -32,6 +29,7 @@ export type EngineSession = {
   assessmentStep: string | null;
   assessmentAnswers: AssessmentAnswers;
   pendingOtherField: string | null;
+  locale: AppLocale;
 };
 
 export type EngineMessage = {
@@ -40,27 +38,34 @@ export type EngineMessage = {
   ui?: ChatMessageUi | null;
 };
 
-const FOLLOWUP_CTAS: ChatMessageUi = {
-  kind: "followup_ctas",
-  options: [
-    { label: "Start Workflow Assessment", value: "start_assessment" },
-    { label: "Pass this to Alona", value: "pass_to_alona" },
-  ],
-};
+function followupCtas(locale: AppLocale): ChatMessageUi {
+  const chat = getChatCatalog(locale);
+  return {
+    kind: "followup_ctas",
+    options: [
+      { label: chat.startAssessment, value: "start_assessment" },
+      { label: chat.passToAlona, value: "pass_to_alona" },
+    ],
+  };
+}
 
-const WELCOME_UI: ChatMessageUi = {
-  kind: "welcome_ctas",
-  options: [
-    { label: "Start Workflow Assessment", value: "start_assessment" },
-    { label: "Ask a Question", value: "ask_question" },
-    { label: "Learn About Services", value: "learn_services" },
-  ],
-};
+function welcomeUi(locale: AppLocale): ChatMessageUi {
+  const chat = getChatCatalog(locale);
+  return {
+    kind: "welcome_ctas",
+    options: [
+      { label: chat.startAssessment, value: "start_assessment" },
+      { label: chat.askQuestion, value: "ask_question" },
+      { label: chat.learnServices, value: "learn_services" },
+    ],
+  };
+}
 
 const LEAD_FORM_UI: ChatMessageUi = { kind: "lead_form" };
 
-export function welcomeMessages(): EngineMessage[] {
-  return [{ role: "assistant", content: WELCOME_MESSAGE, ui: WELCOME_UI }];
+export function welcomeMessages(locale: AppLocale = defaultLocale): EngineMessage[] {
+  const chat = getChatCatalog(locale);
+  return [{ role: "assistant", content: chat.welcome, ui: welcomeUi(locale) }];
 }
 
 function questionUi(step: QuestionStep): ChatMessageUi {
@@ -87,15 +92,16 @@ function questionUi(step: QuestionStep): ChatMessageUi {
   };
 }
 
-function questionMessage(stepId: string): EngineMessage {
-  const step = QUESTIONS[stepId];
+function questionMessage(locale: AppLocale, stepId: string): EngineMessage {
+  const step = localizedQuestions(locale)[stepId];
   return { role: "assistant", content: step.prompt, ui: questionUi(step) };
 }
 
-function otherMessage(step: QuestionStep): EngineMessage {
+function otherMessage(locale: AppLocale, step: QuestionStep): EngineMessage {
+  const chat = getChatCatalog(locale);
   return {
     role: "assistant",
-    content: step.otherPrompt || "Please enter a short description.",
+    content: step.otherPrompt || chat.otherPrompt,
     ui: {
       kind: "text_input",
       step: step.id,
@@ -119,13 +125,13 @@ function storeAnswer(
 
 async function afterAnswer(session: EngineSession, currentId: string, messages: EngineMessage[]) {
   const nxt = nextStep(currentId, session.assessmentAnswers);
+  const chat = getChatCatalog(session.locale);
   if (nxt === "complete") {
-    const diagnostic = await generateDiagnostic(session.assessmentAnswers);
+    const diagnostic = await generateDiagnostic(session.assessmentAnswers, session.locale);
     messages.push({ role: "assistant", content: diagnostic });
     messages.push({
       role: "assistant",
-      content:
-        "If you would like Alona to review this with you, share your contact details and we’ll follow up.",
+      content: chat.leadPrompt,
       ui: LEAD_FORM_UI,
     });
     return {
@@ -138,7 +144,7 @@ async function afterAnswer(session: EngineSession, currentId: string, messages: 
       messages,
     };
   }
-  messages.push(questionMessage(nxt));
+  messages.push(questionMessage(session.locale, nxt));
   return {
     session: { ...session, mode: "assessment" as const, assessmentStep: nxt, pendingOtherField: null },
     messages,
@@ -150,6 +156,11 @@ export async function processTurn(
   history: Array<{ role: "user" | "assistant"; content: string }>,
   input: IncomingMessage,
 ): Promise<{ session: EngineSession; messages: EngineMessage[] }> {
+  const locale = parseAppLocale(session.locale);
+  session = { ...session, locale };
+  const chat = getChatCatalog(locale);
+  const questions = localizedQuestions(locale);
+
   if (input.type === "cta") {
     if (input.value === "restart") {
       return {
@@ -158,35 +169,31 @@ export async function processTurn(
           assessmentStep: null,
           assessmentAnswers: {},
           pendingOtherField: null,
+          locale,
         },
-        messages: welcomeMessages(),
+        messages: welcomeMessages(locale),
       };
     }
     if (input.value === "start_assessment") {
-      const next = {
+      return {
         session: {
           ...session,
-          mode: "assessment" as const,
+          mode: "assessment",
           assessmentStep: FIRST_STEP,
           pendingOtherField: null,
         },
         messages: [
-          { role: "user" as const, content: "Start Workflow Assessment" },
-          questionMessage(FIRST_STEP),
+          { role: "user", content: chat.startAssessment },
+          questionMessage(locale, FIRST_STEP),
         ],
       };
-      return next;
     }
     if (input.value === "ask_question") {
       return {
         session: { ...session, mode: "faq" },
         messages: [
-          { role: "user", content: "Ask a Question" },
-          {
-            role: "assistant",
-            content:
-              "Of course. Ask about services, the Workflow Audit, CRM and client-journey work, or responsible AI. Please don’t share patient-identifying information.",
-          },
+          { role: "user", content: chat.askQuestion },
+          { role: "assistant", content: chat.faqIntro },
         ],
       };
     }
@@ -194,8 +201,8 @@ export async function processTurn(
       return {
         session: { ...session, mode: "services" },
         messages: [
-          { role: "user", content: "Learn About Services" },
-          { role: "assistant", content: SERVICES_OVERVIEW, ui: FOLLOWUP_CTAS },
+          { role: "user", content: chat.learnServices },
+          { role: "assistant", content: chat.servicesOverview, ui: followupCtas(locale) },
         ],
       };
     }
@@ -203,11 +210,10 @@ export async function processTurn(
       return {
         session: { ...session, mode: "lead_capture" },
         messages: [
-          { role: "user", content: "Pass this to Alona" },
+          { role: "user", content: chat.passToAlona },
           {
             role: "assistant",
-            content:
-              "I can pass this to Alona. Please share your contact details so she can follow up. Avoid patient-identifying information.",
+            content: chat.passPrompt,
             ui: LEAD_FORM_UI,
           },
         ],
@@ -216,7 +222,7 @@ export async function processTurn(
   }
 
   if (session.pendingOtherField && input.type === "text") {
-    const step = QUESTIONS[session.pendingOtherField];
+    const step = questions[session.pendingOtherField];
     const existing = session.assessmentAnswers[step.field];
     const extra = input.value.trim();
     const updated = storeAnswer(session, step.field, {
@@ -228,11 +234,11 @@ export async function processTurn(
   }
 
   if (input.type === "select" && session.mode === "assessment") {
-    const step = QUESTIONS[input.step];
+    const step = questions[input.step];
     if (!step || step.id !== session.assessmentStep) {
       return { session, messages: [] };
     }
-    const option = optionByValue(step, input.value);
+    const option = step.options?.find((item) => item.value === input.value);
     if (!option && !step.freeText) {
       return { session, messages: [] };
     }
@@ -243,7 +249,7 @@ export async function processTurn(
       });
       return {
         session: { ...nextSession, pendingOtherField: step.id },
-        messages: [{ role: "user", content: option.label }, otherMessage(step)],
+        messages: [{ role: "user", content: option.label }, otherMessage(locale, step)],
       };
     }
     const label = option?.label ?? input.value;
@@ -252,13 +258,13 @@ export async function processTurn(
   }
 
   if (input.type === "multi_done" && session.mode === "assessment") {
-    const step = QUESTIONS[input.step];
+    const step = questions[input.step];
     if (!step?.multi || step.id !== session.assessmentStep) {
       return { session, messages: [] };
     }
     const values = input.values.slice(0, step.maxSelect ?? 3);
     const options = values
-      .map((value) => optionByValue(step, value))
+      .map((value) => step.options?.find((item) => item.value === value))
       .filter((option): option is NonNullable<typeof option> => Boolean(option));
     const labels = options.map((option) => option.compactLabel || option.label);
     const updated = storeAnswer(session, step.field, {
@@ -269,7 +275,7 @@ export async function processTurn(
     if (includesOther) {
       return {
         session: { ...updated, pendingOtherField: step.id },
-        messages: [{ role: "user", content: labels.join(", ") }, otherMessage(step)],
+        messages: [{ role: "user", content: labels.join(", ") }, otherMessage(locale, step)],
       };
     }
     return afterAnswer(updated, step.id, [{ role: "user", content: labels.join(", ") }]);
@@ -280,7 +286,7 @@ export async function processTurn(
     if (!text) return { session, messages: [] };
 
     if (session.mode === "assessment" && session.assessmentStep) {
-      const step = QUESTIONS[session.assessmentStep];
+      const step = questions[session.assessmentStep];
       if (step?.freeText) {
         const updated = storeAnswer(session, step.field, { value: "custom", label: text });
         return afterAnswer(updated, step.id, [{ role: "user", content: text }]);
@@ -289,10 +295,7 @@ export async function processTurn(
         session,
         messages: [
           { role: "user", content: text },
-          {
-            role: "assistant",
-            content: "Please choose one of the options above to continue the assessment. You can ask a general question after it wraps up.",
-          },
+          { role: "assistant", content: chat.chooseOption },
         ],
       };
     }
@@ -307,20 +310,27 @@ export async function processTurn(
       const config = await getAssistantConfig();
       const fallback =
         risk === "phi"
-          ? config.fallbackPhi
+          ? chat.fallbackPhi || config.fallbackPhi
           : risk === "medical"
-            ? config.fallbackMedical
-            : config.fallbackGuarantee;
+            ? chat.fallbackMedical || config.fallbackMedical
+            : chat.fallbackGuarantee || config.fallbackGuarantee;
       return {
         session: { ...session, mode: session.mode === "assessment" ? session.mode : "faq" },
-        messages: [userMessage, { role: "assistant", content: fallback, ui: FOLLOWUP_CTAS }],
+        messages: [userMessage, { role: "assistant", content: fallback, ui: followupCtas(locale) }],
       };
     }
 
-    const reply = await answerFaq(text, [...history, { role: "user", content: text }]);
+    let retrieved = "";
+    try {
+      const chunks = await retrieveChunks({ query: text, documentIds: "all", limit: 6 });
+      retrieved = formatRetrievedContext(chunks);
+    } catch (error) {
+      console.error("[rag] retrieval skipped:", error);
+    }
+    const reply = await answerFaq(text, [...history, { role: "user", content: text }], locale, retrieved);
     return {
       session: { ...session, mode: "faq" },
-      messages: [userMessage, { role: "assistant", content: reply, ui: FOLLOWUP_CTAS }],
+      messages: [userMessage, { role: "assistant", content: reply, ui: followupCtas(locale) }],
     };
   }
 

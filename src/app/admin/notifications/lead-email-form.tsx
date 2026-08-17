@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import { useTranslations } from "next-intl";
 import { Plus, Trash2 } from "lucide-react";
 import { saveLeadNotificationEmails } from "@/app/admin/notifications/actions";
 import { cn } from "@/lib/utils";
@@ -9,6 +10,8 @@ const fieldCls =
   "w-full rounded-md border border-hairline bg-white px-3 py-2.5 text-[14px] outline-none focus:border-blue";
 
 export function LeadEmailsForm({ initialEmails }: { initialEmails: string[] }) {
+  const t = useTranslations("admin");
+  const common = useTranslations("common");
   const [emails, setEmails] = useState(initialEmails.length > 0 ? initialEmails : [""]);
   const [message, setMessage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -32,16 +35,18 @@ export function LeadEmailsForm({ initialEmails }: { initialEmails: string[] }) {
             return;
           }
           setEmails(result.leadEmails);
-          setMessage(`Saved ${result.leadEmails.length} notification email${result.leadEmails.length === 1 ? "" : "s"}.`);
+          setMessage(
+            result.leadEmails.length === 1
+              ? t("notifications.saved", { count: result.leadEmails.length })
+              : t("notifications.savedPlural", { count: result.leadEmails.length }),
+          );
         });
       }}
     >
       <div className="flex items-start justify-between gap-4">
         <div>
-          <h2 className="font-display text-lg">Lead notification emails</h2>
-          <p className="mt-1 text-[13.5px] text-muted-foreground">
-            New chat assessment leads and contact-form submissions are emailed to every address listed here.
-          </p>
+          <h2 className="font-display text-lg">{t("notifications.emailsTitle")}</h2>
+          <p className="mt-1 text-[13.5px] text-muted-foreground">{t("notifications.emailsLead")}</p>
         </div>
         <button
           type="button"
@@ -50,7 +55,7 @@ export function LeadEmailsForm({ initialEmails }: { initialEmails: string[] }) {
           className="inline-flex shrink-0 items-center gap-1.5 text-[13px] font-medium text-blue hover:underline disabled:opacity-60"
         >
           <Plus size={14} />
-          Add email
+          {t("notifications.addEmail")}
         </button>
       </div>
 
@@ -72,7 +77,7 @@ export function LeadEmailsForm({ initialEmails }: { initialEmails: string[] }) {
               type="button"
               disabled={emails.length === 1 || pending}
               onClick={() => setRemoveIndex(index)}
-              aria-label="Remove email"
+              aria-label={t("notifications.removeEmail")}
               className={cn(
                 "inline-flex h-[42px] w-[42px] shrink-0 items-center justify-center rounded-md border border-hairline text-muted-foreground hover:border-destructive/40 hover:bg-destructive/5 hover:text-destructive disabled:opacity-40",
               )}
@@ -91,7 +96,7 @@ export function LeadEmailsForm({ initialEmails }: { initialEmails: string[] }) {
         disabled={pending}
         className="mt-4 rounded-md bg-blue px-4 py-2.5 text-[14px] font-medium text-white disabled:opacity-60"
       >
-        {pending ? "Saving…" : "Save emails"}
+        {pending ? common("saving") : t("notifications.saveEmails")}
       </button>
 
       {removeIndex !== null ? (
@@ -107,17 +112,12 @@ export function LeadEmailsForm({ initialEmails }: { initialEmails: string[] }) {
             onClick={(event) => event.stopPropagation()}
           >
             <h3 id="remove-email-title" className="font-display text-xl text-graphite">
-              Remove email?
+              {t("notifications.removeEmailTitle")}
             </h3>
             <p className="mt-2 text-[14px] leading-relaxed text-muted-foreground">
-              {emailToRemove?.trim() ? (
-                <>
-                  Remove <span className="font-medium text-graphite">{emailToRemove.trim()}</span> from the
-                  notification list? Click Save emails to apply changes.
-                </>
-              ) : (
-                <>Remove this empty email row?</>
-              )}
+              {emailToRemove?.trim()
+                ? t("notifications.removeEmailBody", { email: emailToRemove.trim() })
+                : t("notifications.removeEmptyEmail")}
             </p>
             <div className="mt-5 flex justify-end gap-2">
               <button
@@ -125,7 +125,7 @@ export function LeadEmailsForm({ initialEmails }: { initialEmails: string[] }) {
                 onClick={() => setRemoveIndex(null)}
                 className="rounded-md border border-hairline px-3 py-2 text-[13px] font-medium text-graphite hover:bg-ivory"
               >
-                Cancel
+                {common("cancel")}
               </button>
               <button
                 type="button"
@@ -136,7 +136,7 @@ export function LeadEmailsForm({ initialEmails }: { initialEmails: string[] }) {
                 className="inline-flex items-center gap-1.5 rounded-md bg-destructive px-3 py-2 text-[13px] font-medium text-white hover:bg-destructive/90"
               >
                 <Trash2 size={14} />
-                Remove
+                {t("notifications.remove")}
               </button>
             </div>
           </div>

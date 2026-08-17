@@ -3,19 +3,21 @@
 import { useActionState } from "react";
 import { useSearchParams } from "next/navigation";
 import { Suspense } from "react";
+import { useTranslations } from "next-intl";
 import { resetPassword } from "./actions";
 
 function ResetForm() {
+  const t = useTranslations("admin");
   const params = useSearchParams();
   const token = params.get("token") || "";
   const [error, action, pending] = useActionState(resetPassword, undefined);
 
   return (
     <form action={action} className="w-full max-w-md rounded-2xl border border-hairline bg-white p-8">
-      <h1 className="font-display text-2xl">Choose a new password</h1>
+      <h1 className="font-display text-2xl">{t("reset.title")}</h1>
       <input type="hidden" name="token" value={token} />
       <label className="mt-6 block">
-        <span className="mb-1.5 block text-[13px] font-medium">New password</span>
+        <span className="mb-1.5 block text-[13px] font-medium">{t("reset.password")}</span>
         <input
           className="w-full rounded-md border border-hairline px-3 py-2.5 text-[14px] outline-none focus:border-blue"
           type="password"
@@ -30,7 +32,7 @@ function ResetForm() {
         disabled={pending || !token}
         className="mt-6 w-full rounded-md bg-blue py-2.5 text-[14px] font-medium text-white disabled:opacity-60"
       >
-        {pending ? "Saving…" : "Save password"}
+        {pending ? t("reset.pending") : t("reset.submit")}
       </button>
     </form>
   );

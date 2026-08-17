@@ -1,7 +1,8 @@
 import Link from "next/link";
 import { count, desc, eq } from "drizzle-orm";
+import { getTranslations } from "next-intl/server";
 import { requireAdmin } from "@/lib/admin/require-admin";
-import { CHAT_MODES, formatChatMode } from "@/lib/admin/chat-session";
+import { CHAT_MODES } from "@/lib/admin/chat-session";
 import { SessionsTable, type SessionRow } from "@/components/admin/sessions-table";
 import { getDb } from "@/lib/db";
 import { chatMessages, chatSessions, leads } from "@/lib/db/schema";
@@ -13,6 +14,7 @@ export default async function SessionsPage({
   searchParams: Promise<{ lead?: string; mode?: string }>;
 }) {
   await requireAdmin();
+  const t = await getTranslations("admin");
   const params = await searchParams;
   const db = getDb();
 
@@ -66,14 +68,13 @@ export default async function SessionsPage({
     <div>
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <h1 className="font-display text-3xl">Sessions</h1>
-          <p className="mt-2 text-[14px] text-muted-foreground">
-            All chatbot conversations, including those that never became leads. Click a row to open the full transcript.
-          </p>
+          <h1 className="font-display text-3xl">{t("sessions.title")}</h1>
+          <p className="mt-2 text-[14px] text-muted-foreground">{t("sessions.lead")}</p>
         </div>
         <p className="text-[13px] text-muted-foreground">
-          <span className="font-medium text-graphite">{filtered.length}</span> session
-          {filtered.length === 1 ? "" : "s"}
+          {filtered.length === 1
+            ? t("sessions.count", { count: filtered.length })
+            : t("sessions.countPlural", { count: filtered.length })}
         </p>
       </div>
 
@@ -85,7 +86,7 @@ export default async function SessionsPage({
             !params.lead ? "border-blue bg-blue-soft/50 text-blue" : "border-hairline",
           )}
         >
-          All
+          {t("sessions.all")}
         </Link>
         <Link
           href="/admin/sessions?lead=linked"
@@ -94,7 +95,7 @@ export default async function SessionsPage({
             params.lead === "linked" ? "border-blue bg-blue-soft/50 text-blue" : "border-hairline",
           )}
         >
-          With lead
+          {t("sessions.withLead")}
         </Link>
         <Link
           href="/admin/sessions?lead=none"
@@ -103,7 +104,7 @@ export default async function SessionsPage({
             params.lead === "none" ? "border-blue bg-blue-soft/50 text-blue" : "border-hairline",
           )}
         >
-          No lead
+          {t("sessions.noLead")}
         </Link>
         {CHAT_MODES.map((mode) => (
           <Link
@@ -114,7 +115,7 @@ export default async function SessionsPage({
               params.mode === mode ? "border-blue bg-blue-soft/50 text-blue" : "border-hairline",
             )}
           >
-            {formatChatMode(mode)}
+            {t(`sessions.modes.${mode}`)}
           </Link>
         ))}
       </div>

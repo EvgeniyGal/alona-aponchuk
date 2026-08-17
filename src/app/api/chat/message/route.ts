@@ -4,7 +4,9 @@ import { z } from "zod";
 import { getDb } from "@/lib/db";
 import { chatMessages, chatSessions } from "@/lib/db/schema";
 import { processTurn, type IncomingMessage } from "@/lib/chat/engine";
-import { getOrCreateChatSession, publicMessage, visitorIdFromRequest } from "@/lib/chat/session";
+import { getOrCreateChatSession, localeFromRequest, publicMessage, visitorIdFromRequest } from "@/lib/chat/session";
+import { getChatCatalog } from "@/i18n/catalog";
+import { parseAppLocale } from "@/i18n/config";
 import { newId } from "@/lib/id";
 import { rateLimit } from "@/lib/rate-limit";
 
@@ -31,18 +33,20 @@ const payloadSchema = z.discriminatedUnion("type", [
 
 export async function POST(request: Request) {
   try {
-    const { session, messages } = await getOrCreateChatSession(visitorIdFromRequest(request));
+    const locale = localeFromRequest(request);
+    const chat = getChatCatalog(locale);
+    const { session, messages } = await getOrCreateChatSession(visitorIdFromRequest(request), locale);
     const limited = rateLimit(`chat:${session.id}`, 40, 10 * 60 * 1000);
     if (!limited.ok) {
       return NextResponse.json(
-        { ok: false, error: "Please wait a moment before sending another message." },
+        { ok: false, error: chat.rateLimit },
         { status: 429 },
       );
     }
 
     const parsed = payloadSchema.safeParse(await request.json());
     if (!parsed.success) {
-      return NextResponse.json({ ok: false, error: "Invalid message." }, { status: 400 });
+      return NextResponse.json({ ok: false, error: chat.invalid }, { status: 400 });
     }
 
     const history = messages
@@ -58,6 +62,7 @@ export async function POST(request: Request) {
         assessmentStep: session.assessmentStep,
         assessmentAnswers: session.assessmentAnswers,
         pendingOtherField: session.pendingOtherField,
+        locale: parseAppLocale(session.locale),
       },
       history,
       parsed.data as IncomingMessage,
@@ -85,6 +90,7 @@ export async function POST(request: Request) {
         assessmentStep: result.session.assessmentStep,
         assessmentAnswers: result.session.assessmentAnswers,
         pendingOtherField: result.session.pendingOtherField,
+        locale: result.session.locale,
         updatedAt: new Date(),
       })
       .where(eq(chatSessions.id, session.id));
@@ -97,7 +103,7 @@ export async function POST(request: Request) {
   } catch (error) {
     console.error("[chat/message]", error);
     return NextResponse.json(
-      { ok: false, error: "The assistant could not process that message." },
+      { ok: false, error: getChatCatalog(localeFromRequest(request)).processError },
       { status: 500 },
     );
   }

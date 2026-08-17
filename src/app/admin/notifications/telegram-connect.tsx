@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { Plus, Trash2 } from "lucide-react";
 import {
   createTelegramLink,
@@ -28,6 +29,8 @@ export function TelegramConnect({
   recipients: TelegramRecipientView[];
   webhookStatus: TelegramWebhookStatus;
 }) {
+  const t = useTranslations("admin");
+  const common = useTranslations("common");
   const router = useRouter();
   const [linked, setLinked] = useState(initialLinked);
   const [username, setUsername] = useState(initialUsername);
@@ -84,11 +87,8 @@ export function TelegramConnect({
     <div className="mt-6 space-y-4 rounded-xl border border-hairline bg-white p-6">
       <div className="flex items-start justify-between gap-4">
         <div>
-          <h2 className="font-display text-lg">Telegram alerts</h2>
-          <p className="mt-1 text-[13.5px] text-muted-foreground">
-            Every connected Telegram account receives a short summary when a workflow audit or chat assessment lead is
-            submitted. Additional accounts do not need admin logins.
-          </p>
+          <h2 className="font-display text-lg">{t("notifications.telegramTitle")}</h2>
+          <p className="mt-1 text-[13.5px] text-muted-foreground">{t("notifications.telegramLead")}</p>
         </div>
         <button
           type="button"
@@ -104,7 +104,7 @@ export function TelegramConnect({
               setLinkKind("extra");
               setWaitingForLink(true);
             } catch (err) {
-              setError(err instanceof Error ? err.message : "Could not create link.");
+              setError(err instanceof Error ? err.message : t("notifications.createLinkError"));
             } finally {
               setBusy(false);
             }
@@ -112,29 +112,26 @@ export function TelegramConnect({
           className="inline-flex shrink-0 items-center gap-1.5 text-[13px] font-medium text-blue hover:underline disabled:opacity-60"
         >
           <Plus size={14} />
-          Add Telegram
+          {t("notifications.addTelegram")}
         </button>
       </div>
 
       {!webhookHealthy ? (
         <div className="rounded-md border border-destructive/30 bg-destructive/5 px-3 py-3 text-[13px] text-destructive">
-          <p className="font-medium">Telegram webhook is not healthy, so connect links will not work yet.</p>
-          {webhookStatus.lastError ? <p className="mt-1">Error: {webhookStatus.lastError}</p> : null}
+          <p className="font-medium">{t("notifications.webhookUnhealthy")}</p>
+          {webhookStatus.lastError ? <p className="mt-1">{t("notifications.webhookError", { error: webhookStatus.lastError })}</p> : null}
           <p className="mt-1 text-graphite/80">
-            Expected webhook URL: <span className="font-mono text-[12px]">{webhookStatus.expectedUrl}</span>
+            {t("notifications.expectedUrl")} <span className="font-mono text-[12px]">{webhookStatus.expectedUrl}</span>
           </p>
           {webhookStatus.url && webhookStatus.url !== webhookStatus.expectedUrl ? (
             <p className="mt-1 text-graphite/80">
-              Current webhook URL: <span className="font-mono text-[12px]">{webhookStatus.url}</span>
+              {t("notifications.currentUrl")} <span className="font-mono text-[12px]">{webhookStatus.url}</span>
             </p>
           ) : null}
           {webhookStatus.pendingUpdates > 0 ? (
-            <p className="mt-1 text-graphite/80">{webhookStatus.pendingUpdates} pending Telegram updates.</p>
+            <p className="mt-1 text-graphite/80">{t("notifications.pendingUpdates", { count: webhookStatus.pendingUpdates })}</p>
           ) : null}
-          <p className="mt-2 text-graphite/80">
-            After deploying, run <span className="font-mono text-[12px]">npm run telegram:set-webhook</span> with{" "}
-            <span className="font-mono text-[12px]">NEXT_PUBLIC_SITE_URL</span> set to your public site URL.
-          </p>
+          <p className="mt-2 text-graphite/80">{t("notifications.webhookHint")}</p>
         </div>
       ) : null}
 
@@ -142,41 +139,45 @@ export function TelegramConnect({
         <table className="w-full min-w-[640px] text-left text-[13.5px]">
           <thead className="border-b border-hairline bg-ivory/80 text-[12px] uppercase tracking-wide text-muted-foreground">
             <tr>
-              <th className="px-4 py-3">Telegram</th>
-              <th className="px-4 py-3">Connected as</th>
-              <th className="px-4 py-3">Linked</th>
-              <th className="px-4 py-3">Type</th>
-              <th className="px-4 py-3">Actions</th>
+              <th className="px-4 py-3">{t("notifications.colTelegram")}</th>
+              <th className="px-4 py-3">{t("notifications.colConnectedAs")}</th>
+              <th className="px-4 py-3">{t("notifications.colLinked")}</th>
+              <th className="px-4 py-3">{t("notifications.colType")}</th>
+              <th className="px-4 py-3">{t("notifications.colActions")}</th>
             </tr>
           </thead>
           <tbody>
             {recipients.length === 0 ? (
               <tr>
                 <td colSpan={5} className="px-4 py-6 text-muted-foreground">
-                  No Telegram accounts are connected yet.
+                  {t("notifications.emptyTelegram")}
                 </td>
               </tr>
             ) : (
               recipients.map((recipient) => (
                 <tr key={recipient.key} className="border-b border-hairline last:border-0">
                   <td className="px-4 py-3 font-medium text-blue">
-                    {recipient.telegramUsername ? `@${recipient.telegramUsername}` : "Linked account"}
+                    {recipient.telegramUsername ? `@${recipient.telegramUsername}` : t("notifications.linkedAccount")}
                   </td>
                   <td className="px-4 py-3">
                     {recipient.source === "admin" ? (
                       <div>
-                        <p>{recipient.adminName || "Admin"}</p>
+                        <p>{recipient.adminName || t("notifications.adminLabel")}</p>
                         <p className="text-[12px] text-muted-foreground">{recipient.adminEmail}</p>
                       </div>
                     ) : (
-                      <span className="text-muted-foreground">Notification only</span>
+                      <span className="text-muted-foreground">{t("notifications.notificationOnly")}</span>
                     )}
                   </td>
                   <td className="px-4 py-3 text-muted-foreground">
                     {recipient.linkedAt ? formatAdminDateTime(recipient.linkedAt) : "—"}
                   </td>
                   <td className="px-4 py-3">
-                    {recipient.isCurrentUser ? "Your account" : recipient.source === "admin" ? "Admin" : "Additional"}
+                    {recipient.isCurrentUser
+                      ? t("notifications.yourAccountType")
+                      : recipient.source === "admin"
+                        ? t("notifications.adminLabel")
+                        : t("notifications.additional")}
                   </td>
                   <td className="px-4 py-3">
                     {recipient.isCurrentUser || recipient.source === "extra" ? (
@@ -184,13 +185,13 @@ export function TelegramConnect({
                         type="button"
                         disabled={busy}
                         onClick={() => setRemoveKey(recipient.key)}
-                        aria-label="Remove Telegram recipient"
+                        aria-label={t("notifications.removeRecipientAria")}
                         className="inline-flex h-8 w-8 items-center justify-center rounded-md border border-hairline text-muted-foreground hover:border-destructive/40 hover:bg-destructive/5 hover:text-destructive disabled:opacity-40"
                       >
                         <Trash2 size={14} />
                       </button>
                     ) : (
-                      <span className="text-[12px] text-muted-foreground">Managed by that admin</span>
+                      <span className="text-[12px] text-muted-foreground">{t("notifications.managedByAdmin")}</span>
                     )}
                   </td>
                 </tr>
@@ -201,14 +202,14 @@ export function TelegramConnect({
       </div>
 
       <p className="text-[14px]">
-        Your account:{" "}
+        {t("notifications.yourAccount")}{" "}
         {linked ? (
           <span className="font-medium text-blue">
-            Linked{username ? ` as @${username}` : ""}
+            {username ? t("notifications.linkedAs", { username }) : t("notifications.linked")}
             {linkedAt ? ` · ${formatAdminDateTime(linkedAt)}` : ""}
           </span>
         ) : (
-          <span className="text-muted-foreground">Not linked</span>
+          <span className="text-muted-foreground">{t("notifications.notLinked")}</span>
         )}
       </p>
 
@@ -227,14 +228,14 @@ export function TelegramConnect({
               setLinkKind("self");
               setWaitingForLink(true);
             } catch (err) {
-              setError(err instanceof Error ? err.message : "Could not create link.");
+              setError(err instanceof Error ? err.message : t("notifications.createLinkError"));
             } finally {
               setBusy(false);
             }
           }}
           className="rounded-md bg-blue px-4 py-2.5 text-[14px] font-medium text-white disabled:opacity-60"
         >
-          {linked ? "Reconnect your Telegram" : "Connect your Telegram"}
+          {linked ? t("notifications.reconnect") : t("notifications.connect")}
         </button>
         <button
           type="button"
@@ -245,16 +246,20 @@ export function TelegramConnect({
             setMessage(null);
             try {
               const result = await sendTestTelegramAlert();
-              setMessage(`Sent a test alert to ${result.sent} Telegram account${result.sent === 1 ? "" : "s"}.`);
+              setMessage(
+                result.sent === 1
+                  ? t("notifications.testSent", { count: result.sent })
+                  : t("notifications.testSentPlural", { count: result.sent }),
+              );
             } catch (err) {
-              setError(err instanceof Error ? err.message : "Could not send test alert.");
+              setError(err instanceof Error ? err.message : t("notifications.testError"));
             } finally {
               setBusy(false);
             }
           }}
           className="rounded-md border border-hairline px-4 py-2.5 text-[14px] disabled:opacity-60"
         >
-          Send test alert
+          {t("notifications.sendTest")}
         </button>
         <button
           type="button"
@@ -270,23 +275,19 @@ export function TelegramConnect({
           }}
           className="rounded-md border border-hairline px-4 py-2.5 text-[14px]"
         >
-          Refresh webhook status
+          {t("notifications.refreshWebhook")}
         </button>
       </div>
       {url ? (
         <div className="space-y-2 text-[14px]">
           <p>
-            {linkKind === "extra"
-              ? "Share this link with the person who should receive alerts. They must open it in Telegram within 10 minutes:"
-              : "Open this link in Telegram within 10 minutes:"}{" "}
+            {linkKind === "extra" ? t("notifications.shareLink") : t("notifications.openLink")}{" "}
             <a href={url} className="break-all text-blue hover:underline" target="_blank" rel="noreferrer">
               {url}
             </a>
           </p>
           {waitingForLink ? (
-            <p className="text-[13px] text-muted-foreground">
-              Waiting for Telegram to confirm the link… Press Start in the bot if prompted.
-            </p>
+            <p className="text-[13px] text-muted-foreground">{t("notifications.waitingLink")}</p>
           ) : null}
         </div>
       ) : null}
@@ -303,11 +304,12 @@ export function TelegramConnect({
             onClick={(event) => event.stopPropagation()}
           >
             <h3 id="remove-telegram-title" className="font-display text-xl text-graphite">
-              Remove Telegram?
+              {t("notifications.removeTelegramTitle")}
             </h3>
             <p className="mt-2 text-[14px] leading-relaxed text-muted-foreground">
-              {toRemove.telegramUsername ? `@${toRemove.telegramUsername}` : "This Telegram account"} will stop receiving
-              lead alerts.
+              {t("notifications.removeTelegramBody", {
+                name: toRemove.telegramUsername ? `@${toRemove.telegramUsername}` : t("notifications.thisAccount"),
+              })}
             </p>
             <div className="mt-5 flex justify-end gap-2">
               <button
@@ -315,7 +317,7 @@ export function TelegramConnect({
                 onClick={() => setRemoveKey(null)}
                 className="rounded-md border border-hairline px-3 py-2 text-[13px] font-medium text-graphite hover:bg-ivory"
               >
-                Cancel
+                {common("cancel")}
               </button>
               <button
                 type="button"
@@ -328,7 +330,7 @@ export function TelegramConnect({
                     setRemoveKey(null);
                     router.refresh();
                   } catch (err) {
-                    setError(err instanceof Error ? err.message : "Could not remove Telegram.");
+                    setError(err instanceof Error ? err.message : t("notifications.removeTelegramError"));
                   } finally {
                     setBusy(false);
                   }
@@ -336,7 +338,7 @@ export function TelegramConnect({
                 className="inline-flex items-center gap-1.5 rounded-md bg-destructive px-3 py-2 text-[13px] font-medium text-white hover:bg-destructive/90"
               >
                 <Trash2 size={14} />
-                Remove
+                {t("notifications.remove")}
               </button>
             </div>
           </div>

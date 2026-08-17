@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { getTranslations } from "next-intl/server";
 import { ArrowLeft } from "lucide-react";
 import { ChatTranscript } from "@/components/admin/chat-transcript";
 import {
@@ -7,7 +8,7 @@ import {
   displayAssessmentAnswer,
 } from "@/lib/admin/lead-fields";
 import { formatAdminDateTime } from "@/lib/admin/format-date";
-import { formatChatMode, truncateId } from "@/lib/admin/chat-session";
+import { truncateId } from "@/lib/admin/chat-session";
 import type { AssessmentAnswers, ChatSession } from "@/lib/db/schema";
 
 export type SessionDetailData = {
@@ -37,12 +38,14 @@ function InfoRow({ label, value }: { label: string; value: React.ReactNode }) {
   );
 }
 
-export function SessionDetailView({ session }: { session: SessionDetailData }) {
+export async function SessionDetailView({ session }: { session: SessionDetailData }) {
+  const t = await getTranslations("admin");
   const assessmentItems = CHAT_ASSESSMENT_SECTIONS.flatMap((section) =>
     section.fields
       .map((field) => ({ field, answer: session.assessmentAnswers[field] }))
       .filter((item) => item.answer && displayAssessmentAnswer(item.answer) !== "—"),
   );
+  const modeLabel = t(`sessions.modes.${session.mode}`);
 
   return (
     <div className="space-y-8">
@@ -52,28 +55,28 @@ export function SessionDetailView({ session }: { session: SessionDetailData }) {
           className="inline-flex items-center gap-1.5 text-[13px] text-blue hover:underline"
         >
           <ArrowLeft size={14} />
-          Back to sessions
+          {t("sessionDetail.back")}
         </Link>
-        <p className="eyebrow mt-4">Chat session</p>
+        <p className="eyebrow mt-4">{t("sessionDetail.title")}</p>
         <h1 className="mt-2 font-display text-3xl">{truncateId(session.id, 12)}</h1>
         <p className="text-[15px] text-muted-foreground">
-          {formatChatMode(session.mode)} · Last active {formatAdminDateTime(session.updatedAt)}
+          {t("sessionDetail.lastActive", { mode: modeLabel, date: formatAdminDateTime(session.updatedAt) })}
         </p>
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         {[
-          { label: "Mode", value: formatChatMode(session.mode) },
-          { label: "Started", value: formatAdminDateTime(session.createdAt) },
-          { label: "Last activity", value: formatAdminDateTime(session.updatedAt) },
+          { label: t("sessionDetail.mode"), value: modeLabel },
+          { label: t("sessionDetail.started"), value: formatAdminDateTime(session.createdAt) },
+          { label: t("sessionDetail.lastActivity"), value: formatAdminDateTime(session.updatedAt) },
           {
-            label: "Linked lead",
+            label: t("sessionDetail.linkedLead"),
             value: session.leadId ? (
               <Link href={`/admin/leads/${session.leadId}`} className="text-blue hover:underline">
                 {session.leadName || session.leadEmail || truncateId(session.leadId)}
               </Link>
             ) : (
-              "None"
+              t("sessionDetail.none")
             ),
           },
         ].map((item) => (
@@ -85,26 +88,26 @@ export function SessionDetailView({ session }: { session: SessionDetailData }) {
       </div>
 
       <section className="rounded-xl border border-hairline bg-white p-5">
-        <h2 className="font-display text-lg">Session metadata</h2>
+        <h2 className="font-display text-lg">{t("sessionDetail.metadata")}</h2>
         <dl className="mt-4 space-y-3">
-          <InfoRow label="Session ID" value={<span className="font-mono text-[13px]">{session.id}</span>} />
+          <InfoRow label={t("sessionDetail.sessionId")} value={<span className="font-mono text-[13px]">{session.id}</span>} />
           <InfoRow
-            label="Visitor ID"
+            label={t("sessionDetail.visitorId")}
             value={
               session.visitorId ? (
                 <span className="font-mono text-[13px]">{session.visitorId}</span>
               ) : (
-                "Not linked"
+                t("sessionDetail.notLinked")
               )
             }
           />
-          <InfoRow label="Messages" value={String(session.chatMessages.length)} />
+          <InfoRow label={t("sessionDetail.messages")} value={String(session.chatMessages.length)} />
         </dl>
       </section>
 
       {assessmentItems.length > 0 ? (
         <section className="rounded-xl border border-hairline bg-white p-5">
-          <h2 className="font-display text-lg">Assessment answers</h2>
+          <h2 className="font-display text-lg">{t("sessionDetail.assessment")}</h2>
           <dl className="mt-4 space-y-3">
             {assessmentItems.map(({ field, answer }) => (
               <InfoRow
@@ -118,13 +121,13 @@ export function SessionDetailView({ session }: { session: SessionDetailData }) {
       ) : null}
 
       <ChatTranscript
-        title="Chat conversation"
+        title={t("sessionDetail.conversation")}
         lines={session.chatMessages.map((message) => ({
           role: message.role,
           content: message.content,
           createdAt: message.createdAt,
         }))}
-        emptyMessage="No messages recorded for this session."
+        emptyMessage={t("sessionDetail.empty")}
       />
     </div>
   );

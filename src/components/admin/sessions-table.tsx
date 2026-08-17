@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import {
   flexRender,
   getCoreRowModel,
@@ -14,7 +15,7 @@ import {
 import { ArrowDown, ArrowUp, ArrowUpDown, ChevronLeft, ChevronRight } from "lucide-react";
 import Link from "next/link";
 import { formatAdminDateTime } from "@/lib/admin/format-date";
-import { formatChatMode, truncateId } from "@/lib/admin/chat-session";
+import { truncateId } from "@/lib/admin/chat-session";
 import type { ChatSession } from "@/lib/db/schema";
 
 export type SessionRow = {
@@ -36,6 +37,7 @@ function SortIcon({ direction }: { direction: false | "asc" | "desc" }) {
 }
 
 export function SessionsTable({ data }: { data: SessionRow[] }) {
+  const t = useTranslations("admin");
   const router = useRouter();
   const [sorting, setSorting] = useState<SortingState>([{ id: "updatedAt", desc: true }]);
   const [rows, setRows] = useState(data);
@@ -54,7 +56,7 @@ export function SessionsTable({ data }: { data: SessionRow[] }) {
             className="inline-flex items-center gap-1.5 font-medium hover:text-blue"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
-            Last activity
+            {t("sessions.lastActivity")}
             <SortIcon direction={column.getIsSorted()} />
           </button>
         ),
@@ -66,10 +68,10 @@ export function SessionsTable({ data }: { data: SessionRow[] }) {
       },
       {
         accessorKey: "mode",
-        header: "Mode",
+        header: t("sessions.mode"),
         cell: ({ getValue }) => (
           <span className="rounded-full bg-ivory px-2 py-0.5 text-[12px] text-muted-foreground">
-            {formatChatMode(getValue() as SessionRow["mode"])}
+            {t(`sessions.modes.${getValue() as SessionRow["mode"]}`)}
           </span>
         ),
       },
@@ -81,7 +83,7 @@ export function SessionsTable({ data }: { data: SessionRow[] }) {
             className="inline-flex items-center gap-1.5 font-medium hover:text-blue"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
-            Messages
+            {t("sessions.messages")}
             <SortIcon direction={column.getIsSorted()} />
           </button>
         ),
@@ -89,7 +91,7 @@ export function SessionsTable({ data }: { data: SessionRow[] }) {
       },
       {
         accessorKey: "visitorId",
-        header: "Visitor",
+        header: t("sessions.visitor"),
         enableSorting: false,
         cell: ({ getValue }) => (
           <span className="font-mono text-[12px] text-muted-foreground">{truncateId(String(getValue() ?? ""))}</span>
@@ -97,7 +99,7 @@ export function SessionsTable({ data }: { data: SessionRow[] }) {
       },
       {
         id: "lead",
-        header: "Lead",
+        header: t("sessions.linkedLead"),
         enableSorting: false,
         cell: ({ row }) => {
           if (!row.original.leadId) {
@@ -122,7 +124,7 @@ export function SessionsTable({ data }: { data: SessionRow[] }) {
             className="inline-flex items-center gap-1.5 font-medium hover:text-blue"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
-            Started
+            {t("sessions.started")}
             <SortIcon direction={column.getIsSorted()} />
           </button>
         ),
@@ -133,7 +135,7 @@ export function SessionsTable({ data }: { data: SessionRow[] }) {
           new Date(a.original.createdAt).getTime() - new Date(b.original.createdAt).getTime(),
       },
     ],
-    [],
+    [t],
   );
 
   const table = useReactTable({
@@ -152,10 +154,16 @@ export function SessionsTable({ data }: { data: SessionRow[] }) {
   if (rows.length === 0) {
     return (
       <div className="rounded-xl border border-hairline bg-white px-6 py-12 text-center text-muted-foreground">
-        No sessions match the current filters.
+        {t("sessions.empty")}
       </div>
     );
   }
+
+  const from = table.getState().pagination.pageIndex * table.getState().pagination.pageSize + 1;
+  const to = Math.min(
+    (table.getState().pagination.pageIndex + 1) * table.getState().pagination.pageSize,
+    rows.length,
+  );
 
   return (
     <div className="space-y-4">
@@ -192,22 +200,11 @@ export function SessionsTable({ data }: { data: SessionRow[] }) {
 
       <div className="flex flex-wrap items-center justify-between gap-3 text-[13px] text-muted-foreground">
         <p>
-          Showing{" "}
-          <span className="font-medium text-graphite">
-            {table.getState().pagination.pageIndex * table.getState().pagination.pageSize + 1}
-          </span>
-          {" – "}
-          <span className="font-medium text-graphite">
-            {Math.min(
-              (table.getState().pagination.pageIndex + 1) * table.getState().pagination.pageSize,
-              rows.length,
-            )}
-          </span>{" "}
-          of <span className="font-medium text-graphite">{rows.length}</span>
+          {t("table.showing", { from, to, total: rows.length })}
         </p>
         <div className="flex items-center gap-2">
           <label className="flex items-center gap-2">
-            Rows
+            {t("table.rows")}
             <select
               value={table.getState().pagination.pageSize}
               onChange={(event) => table.setPageSize(Number(event.target.value))}
@@ -225,19 +222,19 @@ export function SessionsTable({ data }: { data: SessionRow[] }) {
             onClick={() => table.previousPage()}
             disabled={!table.getCanPreviousPage()}
             className="inline-flex h-8 w-8 items-center justify-center rounded-md border border-hairline bg-white disabled:opacity-40"
-            aria-label="Previous page"
+            aria-label={t("table.prev")}
           >
             <ChevronLeft size={16} />
           </button>
           <span className="min-w-20 text-center text-graphite">
-            Page {table.getState().pagination.pageIndex + 1} of {table.getPageCount()}
+            {t("table.page", { current: table.getState().pagination.pageIndex + 1, total: table.getPageCount() })}
           </span>
           <button
             type="button"
             onClick={() => table.nextPage()}
             disabled={!table.getCanNextPage()}
             className="inline-flex h-8 w-8 items-center justify-center rounded-md border border-hairline bg-white disabled:opacity-40"
-            aria-label="Next page"
+            aria-label={t("table.next")}
           >
             <ChevronRight size={16} />
           </button>

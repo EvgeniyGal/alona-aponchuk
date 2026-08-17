@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import {
   flexRender,
   getCoreRowModel,
@@ -15,10 +16,10 @@ import { ArrowDown, ArrowUp, ArrowUpDown, ChevronLeft, ChevronRight } from "luci
 import { updateLeadStatusById } from "@/app/admin/leads/actions";
 import { DeleteLeadButton } from "@/components/admin/delete-lead-button";
 import {
-  formatLeadSource,
   isLeadStatus,
   LEAD_STATUSES,
   LEAD_STATUS_CONFIG,
+  LEAD_STATUS_I18N_KEYS,
   type LeadStatus,
 } from "@/lib/admin/lead-status";
 import { formatAdminDateTime } from "@/lib/admin/format-date";
@@ -49,6 +50,7 @@ function StatusSelect({
   status: LeadStatus;
   onUpdated: (status: LeadStatus) => void;
 }) {
+  const t = useTranslations("admin");
   const [pending, startTransition] = useTransition();
   const config = LEAD_STATUS_CONFIG[status];
 
@@ -69,11 +71,11 @@ function StatusSelect({
         "w-full min-w-[9.5rem] rounded-md border px-2.5 py-1.5 text-[12.5px] font-medium outline-none focus:ring-2 focus:ring-blue/20 disabled:opacity-60",
         config.select,
       )}
-      aria-label="Update lead status"
+      aria-label={t("leads.updateStatus")}
     >
       {LEAD_STATUSES.map((item) => (
         <option key={item} value={item}>
-          {LEAD_STATUS_CONFIG[item].label}
+          {t(`leads.${LEAD_STATUS_I18N_KEYS[item]}`)}
         </option>
       ))}
     </select>
@@ -81,6 +83,7 @@ function StatusSelect({
 }
 
 export function LeadsTable({ data }: { data: LeadRow[] }) {
+  const t = useTranslations("admin");
   const router = useRouter();
   const [sorting, setSorting] = useState<SortingState>([{ id: "createdAt", desc: true }]);
   const [rows, setRows] = useState(data);
@@ -93,14 +96,14 @@ export function LeadsTable({ data }: { data: LeadRow[] }) {
     () => [
       {
         accessorKey: "fullName",
-        header: "Name",
+        header: t("leads.name"),
         cell: ({ row }) => (
           <span className="font-medium text-graphite group-hover:text-blue">{row.original.fullName}</span>
         ),
       },
       {
         accessorKey: "organizationName",
-        header: "Organization",
+        header: t("leads.organization"),
         cell: ({ getValue }) => <span className="text-graphite/90">{String(getValue())}</span>,
       },
       {
@@ -111,7 +114,7 @@ export function LeadsTable({ data }: { data: LeadRow[] }) {
             className="inline-flex items-center gap-1.5 font-medium hover:text-blue"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
-            Email
+            {t("leads.email")}
             <SortIcon direction={column.getIsSorted()} />
           </button>
         ),
@@ -120,16 +123,16 @@ export function LeadsTable({ data }: { data: LeadRow[] }) {
       },
       {
         accessorKey: "source",
-        header: "Source",
+        header: t("leads.source"),
         cell: ({ getValue }) => (
           <span className="rounded-full bg-ivory px-2 py-0.5 text-[12px] text-muted-foreground">
-            {formatLeadSource(getValue() as LeadRow["source"])}
+            {getValue() === "contact_form" ? t("leads.sourceContact") : t("leads.sourceChat")}
           </span>
         ),
       },
       {
         accessorKey: "status",
-        header: "Status",
+        header: t("leads.status"),
         enableSorting: false,
         cell: ({ row }) => (
           <StatusSelect
@@ -151,7 +154,7 @@ export function LeadsTable({ data }: { data: LeadRow[] }) {
             className="inline-flex items-center gap-1.5 font-medium hover:text-blue"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
-            Created
+            {t("leads.created")}
             <SortIcon direction={column.getIsSorted()} />
           </button>
         ),
@@ -178,7 +181,7 @@ export function LeadsTable({ data }: { data: LeadRow[] }) {
         ),
       },
     ],
-    [],
+    [t],
   );
 
   const table = useReactTable({
@@ -197,10 +200,16 @@ export function LeadsTable({ data }: { data: LeadRow[] }) {
   if (rows.length === 0) {
     return (
       <div className="rounded-xl border border-hairline bg-white px-6 py-12 text-center text-muted-foreground">
-        No leads match the current filters.
+        {t("leads.empty")}
       </div>
     );
   }
+
+  const from = table.getState().pagination.pageIndex * table.getState().pagination.pageSize + 1;
+  const to = Math.min(
+    (table.getState().pagination.pageIndex + 1) * table.getState().pagination.pageSize,
+    rows.length,
+  );
 
   return (
     <div className="space-y-4">
@@ -237,22 +246,11 @@ export function LeadsTable({ data }: { data: LeadRow[] }) {
 
       <div className="flex flex-wrap items-center justify-between gap-3 text-[13px] text-muted-foreground">
         <p>
-          Showing{" "}
-          <span className="font-medium text-graphite">
-            {table.getState().pagination.pageIndex * table.getState().pagination.pageSize + 1}
-          </span>
-          {" – "}
-          <span className="font-medium text-graphite">
-            {Math.min(
-              (table.getState().pagination.pageIndex + 1) * table.getState().pagination.pageSize,
-              rows.length,
-            )}
-          </span>{" "}
-          of <span className="font-medium text-graphite">{rows.length}</span>
+          {t("leads.showing", { from, to, total: rows.length })}
         </p>
         <div className="flex items-center gap-2">
           <label className="flex items-center gap-2">
-            Rows
+            {t("leads.rows")}
             <select
               value={table.getState().pagination.pageSize}
               onChange={(event) => table.setPageSize(Number(event.target.value))}
@@ -270,19 +268,19 @@ export function LeadsTable({ data }: { data: LeadRow[] }) {
             onClick={() => table.previousPage()}
             disabled={!table.getCanPreviousPage()}
             className="inline-flex h-8 w-8 items-center justify-center rounded-md border border-hairline bg-white disabled:opacity-40"
-            aria-label="Previous page"
+            aria-label={t("leads.prev")}
           >
             <ChevronLeft size={16} />
           </button>
           <span className="min-w-20 text-center text-graphite">
-            Page {table.getState().pagination.pageIndex + 1} of {table.getPageCount()}
+            {t("leads.page", { current: table.getState().pagination.pageIndex + 1, total: table.getPageCount() })}
           </span>
           <button
             type="button"
             onClick={() => table.nextPage()}
             disabled={!table.getCanNextPage()}
             className="inline-flex h-8 w-8 items-center justify-center rounded-md border border-hairline bg-white disabled:opacity-40"
-            aria-label="Next page"
+            aria-label={t("leads.next")}
           >
             <ChevronRight size={16} />
           </button>

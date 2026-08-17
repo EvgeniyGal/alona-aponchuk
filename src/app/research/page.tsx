@@ -1,74 +1,40 @@
-import type { Metadata } from "next";
-import { PageHero, Section, CtaBand } from "@/components/page-shell";
+import { getTranslations } from "next-intl/server";
+import { PageHero, Section } from "@/components/page-shell";
+import { CtaBand } from "@/components/cta-band";
 import { ArrowRight, ChevronDown, ExternalLink } from "lucide-react";
 import { Reveal } from "@/components/reveal";
 import { ImagePlaceholder } from "@/components/image-placeholder";
-import { createPageMetadata } from "@/lib/seo";
+import { translatedPageMetadata } from "@/i18n/page-metadata";
 
-export const metadata: Metadata = createPageMetadata({
-  title: "Research Basis — Quality Metrics for AI-Mediated Communication",
-  description:
-    "Applied research foundation for CRM workflow optimization and RAG-supported client communication, including RSI, IDS, and RCS quality metrics.",
-  path: "/research",
-  image: "/images/home-research-methodology.webp",
-  imageAlt: "Research basis for AI-mediated communication quality metrics",
-});
+export async function generateMetadata() {
+  return translatedPageMetadata({
+    namespace: "research",
+    path: "/research",
+    image: "/images/home-research-methodology.webp",
+  });
+}
 
-const layers = [
-  { code: "01", title: "CRM", body: "System of record for the client relationship." },
-  { code: "02", title: "Client Data", body: "Structured records, statuses, and history." },
-  { code: "03", title: "Verified Knowledge Base", body: "Approved, versioned answers and sources." },
-  { code: "04", title: "RAG Layer", body: "Retrieval-supported response generation." },
-  { code: "05", title: "Communication Channels", body: "Email, SMS, chat, and staff handoff." },
-  { code: "06", title: "QA Calibration", body: "Stability, drift, and calibration monitoring." },
-];
+export default async function ResearchPage() {
+  const t = await getTranslations("research");
+  const layers = t.raw("layers") as Array<{ code: string; title: string; body: string }>;
+  const metrics = t.raw("metrics") as Array<{ code: string; name: string; body: string }>;
+  const publications = t.raw("publications") as Array<{
+    role: string;
+    title: string;
+    doi: string;
+    url: string;
+    venue?: string;
+  }>;
 
-const metrics = [
-  {
-    code: "RSI",
-    name: "Response Stability Index",
-    body: "Measures whether the same or rephrased question yields consistent, in-scope answers across repeated queries.",
-  },
-  {
-    code: "IDS",
-    name: "Interpretive Drift Score",
-    body: "Measures how far generated responses drift from the approved knowledge base and defined response boundaries.",
-  },
-  {
-    code: "RCS",
-    name: "Response Coherence / Structure Score",
-    body: "Measures structural coherence and alignment of tone, scope, refusal behavior, and escalation with the documented communication policy.",
-  },
-];
-
-const publications = [
-  {
-    role: "Author",
-    title:
-      "RAG-Based Automation of the Client Journey in Medical and Wellness Systems: Operational Efficiency, Client Retention, and Behavioral Calibration of AI-Mediated Communication",
-    doi: "10.69635/mssl.2026.2.2.45",
-    url: "https://doi.org/10.69635/mssl.2026.2.2.45",
-  },
-  {
-    role: "Co-Author",
-    title:
-      "Psychological Testing as an Instrument of Differentiated Support in Education, Healthcare Settings, and Crisis Life Transitions: Typological, Trait-Based, and Psychodynamic Approaches",
-    venue: "Metaverse Science, Society and Law",
-    doi: "10.69635/mssl.2026.2.2.38",
-    url: "https://doi.org/10.69635/mssl.2026.2.2.38",
-  },
-];
-
-export default function ResearchPage() {
   return (
     <>
       <PageHero
-        eyebrow="Research Basis"
-        title="Applied research supporting reliable AI-mediated communication."
-        lead="My method draws on applied research into retrieval-supported communication, response stability, and interpretive drift. Metrics are used as calibration signals — not as guarantees of outcomes."
+        eyebrow={t("eyebrow")}
+        title={t("title")}
+        lead={t("lead")}
         image={{
           filename: "home-research-methodology.webp",
-          label: "Research methodology materials",
+          label: t("imageLabel"),
           tone: "teal",
         }}
       />
@@ -77,19 +43,18 @@ export default function ResearchPage() {
         <div className="grid gap-10 lg:grid-cols-[1.1fr_0.9fr] items-end">
           <Reveal>
             <div className="max-w-2xl">
-              <div className="eyebrow">System View</div>
+              <div className="eyebrow">{t("systemEyebrow")}</div>
               <h2 className="mt-3 font-display text-3xl text-graphite leading-tight">
-                The simplified system supporting responsible client communication.
+                {t("systemTitle")}
               </h2>
               <p className="mt-4 text-muted-foreground leading-relaxed">
-                Six connected layers — from the CRM system of record through QA calibration —
-                form the operational backbone of reliable AI-mediated communication.
+                {t("systemLead")}
               </p>
             </div>
           </Reveal>
           <Reveal delayMs={80} className="hidden lg:block">
             <ImagePlaceholder
-              label="Five-layer system diagram"
+              label={t("systemImage")}
               filename="home-five-layer-system.webp"
               aspect="landscape"
               tone="blue"
@@ -102,7 +67,7 @@ export default function ResearchPage() {
           {layers.map((l, i) => (
             <Reveal key={l.code} delayMs={i * 40} variant="up" className="relative flex">
               <div className="layer-card w-full rounded-xl border border-hairline bg-white p-4 lg:p-5 flex flex-col">
-                <div className="text-[11px] font-semibold text-blue">Layer {l.code}</div>
+                <div className="text-[11px] font-semibold text-blue">{t("layer", { code: l.code })}</div>
                 <div className="mt-2 font-display text-[15px] lg:text-[16px] font-semibold text-graphite leading-snug">
                   {l.title}
                 </div>
@@ -126,7 +91,7 @@ export default function ResearchPage() {
               <li key={l.code}>
                 <Reveal delayMs={i * 40}>
                   <div className="w-full rounded-2xl border border-hairline bg-white p-5">
-                    <div className="text-[11px] font-semibold text-blue">Layer {l.code}</div>
+                    <div className="text-[11px] font-semibold text-blue">{t("layer", { code: l.code })}</div>
                     <div className="mt-1.5 font-display text-[16px] font-semibold text-graphite">{l.title}</div>
                     <p className="mt-2 text-[13.5px] text-muted-foreground leading-relaxed">{l.body}</p>
                   </div>
@@ -143,8 +108,7 @@ export default function ResearchPage() {
 
         <Reveal>
           <p className="mt-8 text-[13px] text-muted-foreground max-w-3xl leading-relaxed">
-            This diagram is a simplified reference model. Actual implementations vary by
-            organization, data structure, tooling, and operational context.
+            {t("diagramNote")}
           </p>
         </Reveal>
       </Section>
@@ -152,13 +116,12 @@ export default function ResearchPage() {
       <Section className="bg-white border-y border-hairline">
         <Reveal>
           <div className="max-w-2xl">
-            <div className="eyebrow">Behavioral Calibration Framework</div>
+            <div className="eyebrow">{t("metricsEyebrow")}</div>
             <h2 className="mt-3 font-display text-3xl text-graphite leading-tight">
-              Three behavioral evaluation metrics for AI-mediated communication.
+              {t("metricsTitle")}
             </h2>
             <p className="mt-4 text-muted-foreground leading-relaxed">
-              RSI, IDS, and RCS are used together to assess and calibrate AI-supported responses
-              against a verified knowledge base and defined communication policy.
+              {t("metricsLead")}
             </p>
           </div>
         </Reveal>
@@ -177,8 +140,7 @@ export default function ResearchPage() {
         </div>
         <Reveal>
           <p className="mt-8 text-[13px] text-muted-foreground max-w-3xl leading-relaxed">
-            These metrics are used as internal calibration signals. They do not represent guaranteed
-            performance and depend on the client&apos;s knowledge base, workflow scope, and operational context.
+            {t("metricsNote")}
           </p>
         </Reveal>
       </Section>
@@ -186,9 +148,9 @@ export default function ResearchPage() {
       <Section>
         <Reveal>
           <div className="max-w-2xl">
-            <div className="eyebrow">Publications</div>
+            <div className="eyebrow">{t("pubsEyebrow")}</div>
             <h2 className="mt-3 font-display text-3xl text-graphite leading-tight">
-              Peer-reviewed research and professional contributions.
+              {t("pubsTitle")}
             </h2>
           </div>
         </Reveal>
@@ -213,9 +175,7 @@ export default function ResearchPage() {
         </div>
         <Reveal>
           <p className="mt-6 text-[13px] text-muted-foreground max-w-3xl leading-relaxed">
-            Additional research activities include participation in the “Beyond Human: AI, Consciousness,
-            Personality and the Future of Human Development” international scientific conference
-            (September 2026) as Conference Operations & Digital Workflow Coordinator.
+            {t("pubsNote")}
           </p>
         </Reveal>
       </Section>

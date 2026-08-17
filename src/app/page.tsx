@@ -1,4 +1,3 @@
-import type { Metadata } from "next";
 import Link from "next/link";
 import {
   ArrowRight,
@@ -11,148 +10,63 @@ import {
   Workflow,
   ExternalLink,
 } from "lucide-react";
+import { getTranslations } from "next-intl/server";
 import { JourneyDiagram } from "@/components/journey-diagram";
-import { CtaBand } from "@/components/page-shell";
+import { CtaBand } from "@/components/cta-band";
 import { ImagePlaceholder } from "@/components/image-placeholder";
 import { ContinuityReveal } from "@/components/continuity-reveal";
 import { Reveal } from "@/components/reveal";
 import { MetricPulse } from "@/components/metric-pulse";
 import { HeroAtmosphere } from "@/components/hero-atmosphere";
-import { createPageMetadata } from "@/lib/seo";
+import { translatedPageMetadata } from "@/i18n/page-metadata";
 
-export const metadata: Metadata = createPageMetadata({
-  title: "Alona Aponchuk — CRM Workflow & Client Journey Consulting for Healthcare & Wellness",
-  description:
-    "I help healthcare and wellness organizations build reliable digital workflows: CRM optimization, client journey design, QA-validated communication, and RAG-ready automation. Sarasota, Florida — remote consulting across the United States.",
-  path: "/",
-  absoluteTitle: true,
-  image: "/images/home-hero-operations.webp",
-  imageAlt: "Client journey automation for healthcare and wellness organizations",
-});
+export async function generateMetadata() {
+  return translatedPageMetadata({
+    namespace: "home",
+    path: "/",
+    absoluteTitle: true,
+    image: "/images/home-hero-operations.webp",
+  });
+}
 
-const comparison = [
-  {
-    today: "Staff manually answer the same routine questions every day.",
-    after: "Approved automated responses handle routine questions within defined boundaries.",
-  },
-  {
-    today: "Clients submit a form and hear nothing.",
-    after: "Structured follow-up reminds, confirms, and prepares the client for the next step.",
-  },
-  {
-    today: "Approximately 40 minutes to process one client.",
-    after: "A modeled workflow may reduce this to approximately 15 minutes.",
-  },
-  {
-    today: "Approximately 40 hours across six staff for 60 clients.",
-    after: "A modeled workflow may reduce this to approximately 15 hours.",
-  },
-  {
-    today: "Clients drop off because no one responds in time.",
-    after: "A structured process supports continuity at every stage.",
-  },
-];
+const layerIcons = [Workflow, Layers, BookOpen, Bot, ShieldCheck];
 
-const layers = [
-  { icon: Workflow, title: "Client Journey Mapping", body: "Document every touchpoint from first contact through repeat visit." },
-  { icon: Layers, title: "CRM Workflow Optimization", body: "Clarify statuses, ownership, handoffs, and automation triggers." },
-  { icon: BookOpen, title: "Verified Knowledge Base", body: "Structure approved answers, sources, and response boundaries." },
-  { icon: Bot, title: "RAG / Chatbot Readiness", body: "Prepare content, retrieval, and guardrails for reliable automation." },
-  { icon: ShieldCheck, title: "QA & Behavioral Calibration", body: "Behavioral Calibration Framework — RSI, IDS, and RCS — applied before launch." },
-];
+type ImageTone = "blue" | "teal" | "sage" | "gold" | "ivory";
 
-const services = [
-  {
-    title: "Workflow Audit",
-    body: "Structured review of intake, CRM, scheduling, follow-up, and existing automation.",
-    image: "home-service-workflow-audit.webp",
-    tone: "blue" as const,
-  },
-  {
-    title: "Automation Readiness",
-    body: "Knowledge base, retrieval structure, and response boundaries prepared for AI.",
-    image: "home-service-automation-readiness.webp",
-    tone: "teal" as const,
-  },
-  {
-    title: "Pilot Implementation",
-    body: "Guided pilot of a bounded, QA-validated communication workflow.",
-    image: "home-service-pilot-implementation.webp",
-    tone: "sage" as const,
-  },
-  {
-    title: "Optimization Retainer",
-    body: "Ongoing workflow calibration, monitoring, and refinement.",
-    image: "home-service-optimization-retainer.webp",
-    tone: "gold" as const,
-  },
-];
+export default async function HomePage() {
+  const t = await getTranslations("home");
+  const common = await getTranslations("common");
 
-const caseStories = [
-  {
-    id: "integrative-health",
-    title: "CRM/EHR & Clinical Workflow Optimization",
-    org: "U.S.-based integrative medical center",
-    challenge: "Clinical documentation and operational data moved between roles through inconsistent paths.",
-    approach: "Standardized CharmHealth CRM/EHR configuration, intake forms, and clinical templates alongside inventory workflows.",
-    outcome: "More standardized workflows, improved physician–staff coordination, and stronger operational reliability.",
-    image: "home-case-integrative-health.webp",
-    tone: "teal" as const,
-  },
-  {
-    id: "educational-research",
-    title: "CRM & Registration Workflow Optimization",
-    org: "U.S.-based educational and research organization",
-    challenge: "Participant, registration, and reporting data were fragmented across tools and hard to rely on.",
-    approach: "Rebuilt CRM logic around the participant journey with clearer forms, statuses, triggers, and reporting.",
-    outcome: "Stronger workflow consistency and more reliable reporting across programs and international events.",
-    image: "home-case-educational-research.webp",
-    tone: "blue" as const,
-  },
-  {
-    id: "ai-digital-systems",
-    title: "QA & Workflow Validation for AI-Supported Systems",
-    org: "U.S.-based technology and digital-systems company",
-    challenge: "AI-enabled workflows required structured validation of system logic and user journeys.",
-    approach: "Contributed to workflow design and testing across AI-oriented platforms, including the PersonaMatrix project.",
-    outcome: "Supported the reliability of AI-enabled workflows and strengthened QA and validation processes.",
-    image: "home-case-ai-digital-systems.webp",
-    tone: "sage" as const,
-  },
-];
+  const heroPoints = t.raw("heroPoints") as string[];
+  const comparison = t.raw("comparison") as Array<{ today: string; after: string }>;
+  const layers = t.raw("layers") as Array<{ title: string; body: string }>;
+  const services = t.raw("services") as Array<{
+    title: string;
+    body: string;
+    image: string;
+    tone: ImageTone;
+  }>;
+  const caseStories = t.raw("cases") as Array<{
+    id: string;
+    title: string;
+    org: string;
+    challenge: string;
+    approach: string;
+    outcome: string;
+    image: string;
+    tone: ImageTone;
+  }>;
+  const metrics = t.raw("metrics") as Array<{ from: string; to: string; label: string }>;
+  const publications = t.raw("publications") as Array<{
+    role: string;
+    year: string;
+    title: string;
+    summary: string;
+    url: string;
+    doi: string;
+    venue?: string;
+  }>;
 
-const metrics = [
-  { from: "~40 min", to: "~15 min", label: "Per-client workflow time" },
-  { from: "~40 hrs", to: "~15 hrs", label: "For 60 clients" },
-  { from: "~6.6 hrs", to: "~2.5 hrs", label: "Per employee" },
-  { from: "$83", to: "$66", label: "Modeled CAC" },
-];
-
-const publications = [
-  {
-    role: "Author",
-    year: "2026",
-    title:
-      "RAG-Based Automation of the Client Journey in Medical and Wellness Systems: Operational Efficiency, Client Retention, and Behavioral Calibration of AI-Mediated Communication",
-    summary:
-      "Examines how CRM systems, verified knowledge bases, RAG-supported communication, and QA calibration can support more reliable client journeys — while maintaining clear human-review and responsible AI boundaries.",
-    url: "https://doi.org/10.69635/mssl.2026.2.2.45",
-    doi: "10.69635/mssl.2026.2.2.45",
-  },
-  {
-    role: "Co-Author",
-    year: "2026",
-    title:
-      "Psychological Testing as an Instrument of Differentiated Support in Education, Healthcare Settings, and Crisis Life Transitions: Typological, Trait-Based, and Psychodynamic Approaches",
-    summary:
-      "Explores differentiated support approaches across education, healthcare, and crisis-related life transitions — part of the broader research context of structured, human-centered support systems.",
-    url: "https://doi.org/10.69635/mssl.2026.2.2.38",
-    doi: "10.69635/mssl.2026.2.2.38",
-    venue: "Metaverse Science, Society and Law",
-  },
-];
-
-export default function HomePage() {
   return (
     <>
       {/* HERO — full-bleed visual plane + brand composition */}
@@ -161,22 +75,16 @@ export default function HomePage() {
 
         <div className="relative z-10 container-page py-16 md:py-24 lg:py-28 grid gap-12 lg:grid-cols-[1.1fr_0.9fr] items-center">
           <Reveal variant="up" className="w-full min-w-0">
-            <div className="eyebrow">Reliable Workflows · Better Client Journeys · Responsible AI</div>
+            <div className="eyebrow">{t("heroEyebrow")}</div>
             <h1 className="mt-5 font-display text-[40px] sm:text-[44px] md:text-[64px] leading-[1.03] font-semibold text-graphite tracking-tight">
-              Client Journey Automation for Healthcare & Wellness Organizations
+              {t("heroTitle")}
             </h1>
             <p className="mt-7 text-lg text-muted-foreground w-full max-w-none lg:max-w-xl leading-relaxed">
-              I help healthcare and wellness organizations build reliable digital workflows —
-              CRM, scheduling, follow-up, and responsible AI-supported communication.
+              {t("heroLead")}
             </p>
 
             <ul className="mt-8 grid sm:grid-cols-2 gap-3 w-full max-w-none lg:max-w-xl">
-              {[
-                "Reliable intake and follow-up",
-                "Clearer CRM and scheduling logic",
-                "Structured knowledge for automation",
-                "QA-validated client communication",
-              ].map((v) => (
+              {heroPoints.map((v) => (
                 <li key={v} className="flex items-start gap-2.5 text-[14.5px] text-graphite">
                   <CheckCircle2 size={18} className="mt-0.5 text-teal shrink-0" />
                   <span>{v}</span>
@@ -189,19 +97,19 @@ export default function HomePage() {
                 href="/contact"
                 className="cta-shimmer inline-flex w-full sm:w-auto items-center justify-center gap-2 rounded-md bg-blue px-6 py-3.5 text-[14.5px] font-medium text-white hover:bg-blue/90 transition-colors"
               >
-                Request Workflow Audit <ArrowRight size={16} />
+                {common("requestAudit")} <ArrowRight size={16} />
               </Link>
               <Link
                 href="/method"
                 className="inline-flex w-full sm:w-auto items-center justify-center gap-2 rounded-md border border-hairline bg-white/90 px-6 py-3.5 text-[14.5px] font-medium text-graphite hover:bg-muted transition-colors backdrop-blur-sm"
               >
-                Explore My Method
+                {common("exploreMethod")}
               </Link>
             </div>
 
             <div className="mt-8 flex items-center gap-2 text-[13px] text-muted-foreground">
               <MapPin size={14} className="text-blue" />
-              Sarasota, Florida. Remote consulting across the United States.
+              {t("locationLine")}
             </div>
           </Reveal>
 
@@ -215,23 +123,20 @@ export default function HomePage() {
       <section className="py-20 bg-white border-b border-hairline overflow-hidden">
         <div className="container-page grid gap-12 lg:grid-cols-[1fr_1.05fr] items-center">
           <Reveal variant="left">
-            <div className="eyebrow">Mission</div>
+            <div className="eyebrow">{t("missionEyebrow")}</div>
             <h2 className="mt-3 font-display text-3xl md:text-4xl text-graphite leading-tight">
-              Reliable Digital Workflows for Human-Centered Care
+              {t("missionTitle")}
             </h2>
             <div className="mt-6 text-[16px] text-muted-foreground leading-relaxed space-y-5">
-              <p>
-                The client journey is one connected operational system. When each layer is documented,
-                validated, and calibrated, technology stops interrupting care and starts supporting it.
-              </p>
+              <p>{t("missionBody")}</p>
               <Link href="/mission" className="inline-flex items-center gap-1.5 text-blue font-medium hover:underline">
-                Read the full mission <ArrowRight size={14} />
+                {t("missionCta")} <ArrowRight size={14} />
               </Link>
             </div>
           </Reveal>
           <Reveal variant="right" delayMs={100}>
             <ImagePlaceholder
-              label="Mission: connected care continuum"
+              label={t("missionImage")}
               filename="home-mission-continuum.webp"
               aspect="landscape"
               tone="sage"
@@ -250,9 +155,9 @@ export default function HomePage() {
         <div className="container-page relative">
           <Reveal>
             <div className="max-w-3xl">
-              <div className="eyebrow">Today vs. After Implementation</div>
+              <div className="eyebrow">{t("todayEyebrow")}</div>
               <h2 className="mt-3 font-display text-3xl md:text-4xl text-graphite leading-tight">
-                What changes when workflows are documented, structured, and QA-validated.
+                {t("todayTitle")}
               </h2>
             </div>
           </Reveal>
@@ -263,8 +168,7 @@ export default function HomePage() {
 
           <Reveal delayMs={140}>
             <p className="mt-6 text-[13px] text-muted-foreground max-w-3xl leading-relaxed">
-              Research-based modeled indicators, not guaranteed results. Actual outcomes depend on
-              CRM configuration, data quality, staff processes, implementation scope, and adoption.
+              {t("todayNote")}
             </p>
           </Reveal>
         </div>
@@ -276,15 +180,15 @@ export default function HomePage() {
           <div className="grid gap-10 lg:grid-cols-[1fr_1.1fr] items-end">
             <Reveal>
               <div className="max-w-2xl">
-                <div className="eyebrow">The Five-Layer Solution</div>
+                <div className="eyebrow">{t("layersEyebrow")}</div>
                 <h2 className="mt-3 font-display text-3xl md:text-4xl text-graphite leading-tight">
-                  AI is one layer of a broader, reliable workflow system.
+                  {t("layersTitle")}
                 </h2>
               </div>
             </Reveal>
             <Reveal delayMs={80} variant="fade">
               <ImagePlaceholder
-                label="Five-layer workflow system diagram"
+                label={t("layersImage")}
                 filename="home-five-layer-system.webp"
                 aspect="wide"
                 tone="blue"
@@ -293,18 +197,21 @@ export default function HomePage() {
             </Reveal>
           </div>
           <div className="mt-12 grid gap-5 md:grid-cols-3 lg:grid-cols-5">
-            {layers.map(({ icon: Icon, title, body }, i) => (
-              <Reveal key={title} delayMs={i * 70} variant="up">
-                <div className="layer-card h-full rounded-xl border border-hairline p-6 bg-ivory/60">
-                  <div className="text-[11px] font-semibold text-blue">0{i + 1}</div>
-                  <div className="layer-icon mt-3 flex h-10 w-10 items-center justify-center rounded-md bg-blue text-white">
-                    <Icon size={18} />
+            {layers.map(({ title, body }, i) => {
+              const Icon = layerIcons[i] ?? Workflow;
+              return (
+                <Reveal key={title} delayMs={i * 70} variant="up">
+                  <div className="layer-card h-full rounded-xl border border-hairline p-6 bg-ivory/60">
+                    <div className="text-[11px] font-semibold text-blue">0{i + 1}</div>
+                    <div className="layer-icon mt-3 flex h-10 w-10 items-center justify-center rounded-md bg-blue text-white">
+                      <Icon size={18} />
+                    </div>
+                    <h3 className="mt-5 font-display text-[15.5px] font-semibold text-graphite">{title}</h3>
+                    <p className="mt-2 text-[13px] text-muted-foreground leading-relaxed">{body}</p>
                   </div>
-                  <h3 className="mt-5 font-display text-[15.5px] font-semibold text-graphite">{title}</h3>
-                  <p className="mt-2 text-[13px] text-muted-foreground leading-relaxed">{body}</p>
-                </div>
-              </Reveal>
-            ))}
+                </Reveal>
+              );
+            })}
           </div>
         </div>
       </section>
@@ -314,9 +221,9 @@ export default function HomePage() {
         <div className="container-page">
           <Reveal>
             <div className="max-w-2xl">
-              <div className="eyebrow">Services</div>
+              <div className="eyebrow">{t("servicesEyebrow")}</div>
               <h2 className="mt-3 font-display text-3xl md:text-4xl text-graphite leading-tight">
-                Bounded engagements, calibrated to your operational context.
+                {t("servicesTitle")}
               </h2>
             </div>
           </Reveal>
@@ -338,7 +245,7 @@ export default function HomePage() {
                       href="/services"
                       className="mt-5 inline-flex items-center gap-1.5 text-blue text-[13.5px] font-medium hover:underline"
                     >
-                      Learn more about {s.title} <ArrowRight size={13} />
+                      {t("learnMoreAbout", { title: s.title })} <ArrowRight size={13} />
                     </Link>
                   </div>
                 </div>
@@ -353,16 +260,16 @@ export default function HomePage() {
         <div className="container-page">
           <Reveal>
             <div className="max-w-2xl">
-              <div className="eyebrow">Client Feedback</div>
+              <div className="eyebrow">{t("feedbackEyebrow")}</div>
               <h2 className="mt-3 font-display text-3xl md:text-4xl text-graphite leading-tight">
-                What collaborators and organizations say about working with me.
+                {t("feedbackTitle")}
               </h2>
             </div>
           </Reveal>
           <Reveal delayMs={80}>
             <div className="mt-10 overflow-hidden rounded-2xl border border-dashed border-hairline bg-ivory/50">
               <ImagePlaceholder
-                label="Client collaboration atmosphere"
+                label={t("feedbackImage")}
                 filename="home-client-feedback.webp"
                 aspect="wide"
                 tone="ivory"
@@ -370,8 +277,7 @@ export default function HomePage() {
               />
               <div className="p-10 text-center border-t border-hairline">
                 <p className="text-[15px] text-muted-foreground leading-relaxed max-w-xl mx-auto">
-                  Client feedback will be added following publication approval. Testimonials are
-                  published only after written consent from the person and organization involved.
+                  {t("feedbackBody")}
                 </p>
               </div>
             </div>
@@ -384,9 +290,9 @@ export default function HomePage() {
         <div className="container-page">
           <Reveal>
             <div className="max-w-2xl">
-              <div className="eyebrow">Selected Case Stories</div>
+              <div className="eyebrow">{t("casesEyebrow")}</div>
               <h2 className="mt-3 font-display text-3xl md:text-4xl text-graphite leading-tight">
-                How structured workflow analysis translates into practical operational improvements.
+                {t("casesTitle")}
               </h2>
             </div>
           </Reveal>
@@ -408,15 +314,15 @@ export default function HomePage() {
                     </h3>
                     <dl className="mt-5 space-y-4 text-[13.5px] flex-1">
                       <div>
-                        <dt className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Challenge</dt>
+                        <dt className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">{t("challenge")}</dt>
                         <dd className="mt-1 text-muted-foreground leading-relaxed">{c.challenge}</dd>
                       </div>
                       <div>
-                        <dt className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Approach</dt>
+                        <dt className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">{t("approach")}</dt>
                         <dd className="mt-1 text-muted-foreground leading-relaxed">{c.approach}</dd>
                       </div>
                       <div>
-                        <dt className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Outcome</dt>
+                        <dt className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">{t("outcome")}</dt>
                         <dd className="mt-1 text-graphite leading-relaxed">{c.outcome}</dd>
                       </div>
                     </dl>
@@ -424,7 +330,7 @@ export default function HomePage() {
                       href={`/case-stories#${c.id}`}
                       className="mt-6 inline-flex items-center gap-1.5 text-blue text-[13.5px] font-medium hover:underline"
                     >
-                      Read Case Story <ArrowRight size={13} />
+                      {t("readCase")} <ArrowRight size={13} />
                     </Link>
                   </div>
                 </article>
@@ -433,9 +339,7 @@ export default function HomePage() {
           </div>
           <Reveal>
             <p className="mt-6 text-[13px] text-muted-foreground max-w-3xl leading-relaxed">
-              Case stories describe selected professional contributions based on available project
-              records. Certain identifying, technical, operational, or client-confidential details
-              may be omitted or generalized.
+              {t("casesNote")}
             </p>
           </Reveal>
         </div>
@@ -447,20 +351,18 @@ export default function HomePage() {
           <div className="grid gap-10 lg:grid-cols-[1.1fr_0.9fr] items-start">
             <Reveal>
               <div className="max-w-2xl">
-                <div className="eyebrow">Research-Based Process Effectiveness</div>
+                <div className="eyebrow">{t("researchEyebrow")}</div>
                 <h2 className="mt-3 font-display text-3xl md:text-4xl text-graphite leading-tight">
-                  Evidence behind my workflow methodology.
+                  {t("researchTitle")}
                 </h2>
                 <p className="mt-5 text-muted-foreground leading-relaxed">
-                  My consulting framework is informed by applied research in CRM workflow optimization,
-                  healthcare and wellness operations, RAG architectures, QA validation, and responsible
-                  AI-mediated communication.
+                  {t("researchBody")}
                 </p>
               </div>
             </Reveal>
             <Reveal variant="right" delayMs={90}>
               <ImagePlaceholder
-                label="Research methodology visual"
+                label={t("researchImage")}
                 filename="home-research-methodology.webp"
                 aspect="landscape"
                 tone="teal"
@@ -477,18 +379,16 @@ export default function HomePage() {
 
           <Reveal>
             <p className="mt-6 text-[13px] text-muted-foreground max-w-3xl leading-relaxed">
-              These figures are research-based modeled indicators, not guaranteed client results.
-              Actual outcomes depend on CRM configuration, data quality, staff processes,
-              implementation scope, organizational context, and adoption.
+              {t("metricsNote")}
             </p>
           </Reveal>
 
           <div className="mt-16">
             <Reveal>
               <div className="max-w-2xl">
-                <div className="eyebrow">Featured Publications</div>
+                <div className="eyebrow">{t("pubsEyebrow")}</div>
                 <h3 className="mt-3 font-display text-2xl md:text-3xl text-graphite leading-tight">
-                  Peer-reviewed research supporting the methodology.
+                  {t("pubsTitle")}
                 </h3>
               </div>
             </Reveal>
@@ -513,10 +413,10 @@ export default function HomePage() {
                       href={p.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      aria-label={`Read publication (opens in new tab): ${p.title}`}
+                      aria-label={t("readPublicationAria", { title: p.title })}
                       className="mt-5 inline-flex items-center gap-1.5 text-[13.5px] font-medium text-blue hover:underline"
                     >
-                      Read Publication <ExternalLink size={12} aria-hidden />
+                      {t("readPublication")} <ExternalLink size={12} aria-hidden />
                     </a>
                   </article>
                 </Reveal>
@@ -525,7 +425,7 @@ export default function HomePage() {
             <Reveal>
               <div className="mt-8">
                 <Link href="/research" className="inline-flex items-center gap-1.5 text-blue font-medium hover:underline">
-                  Explore the Research Basis <ArrowRight size={14} />
+                  {t("exploreResearch")} <ArrowRight size={14} />
                 </Link>
               </div>
             </Reveal>
@@ -538,7 +438,7 @@ export default function HomePage() {
         <div className="container-page grid gap-12 lg:grid-cols-[0.9fr_1.1fr] items-center">
           <Reveal variant="left" className="hidden lg:block">
             <ImagePlaceholder
-              label="About atmosphere: consulting workspace"
+              label={t("aboutImage")}
               filename="home-about-workspace.webp"
               aspect="portrait"
               tone="sage"
@@ -547,23 +447,16 @@ export default function HomePage() {
           </Reveal>
           <Reveal variant="right" delayMs={80}>
             <div>
-              <div className="eyebrow">About Me</div>
+              <div className="eyebrow">{t("aboutEyebrow")}</div>
               <h2 className="mt-3 font-display text-3xl md:text-4xl text-graphite leading-tight">
-                Applied specialist in CRM, patient management, and digital workflow systems.
+                {t("aboutTitle")}
               </h2>
             </div>
             <div className="mt-6 space-y-5 text-muted-foreground leading-relaxed">
-              <p>
-                I work with healthcare and wellness organizations on the practical layers of the
-                client journey — CRM logic, intake, scheduling, staff handoffs, knowledge access,
-                and responsible AI-supported communication.
-              </p>
-              <p>
-                Aponchuk Workflow Systems LLC is based in Sarasota, Florida and delivers services
-                remotely across the United States.
-              </p>
+              <p>{t("aboutP1")}</p>
+              <p>{t("aboutP2")}</p>
               <Link href="/about" className="inline-flex items-center gap-1.5 text-blue font-medium hover:underline">
-                Read more about me <ArrowRight size={14} />
+                {t("aboutCta")} <ArrowRight size={14} />
               </Link>
             </div>
           </Reveal>

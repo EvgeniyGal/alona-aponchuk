@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, useTransition } from "react";
+import { useTranslations } from "next-intl";
 import { Trash2 } from "lucide-react";
 import { deleteLeadById } from "@/app/admin/leads/actions";
 import { cn } from "@/lib/utils";
@@ -20,6 +21,9 @@ function DeleteLeadDialog({
   onCancel: () => void;
   onConfirm: () => void;
 }) {
+  const t = useTranslations("admin");
+  const common = useTranslations("common");
+
   useEffect(() => {
     if (!open) return;
 
@@ -48,11 +52,10 @@ function DeleteLeadDialog({
         onClick={(event) => event.stopPropagation()}
       >
         <h2 id="delete-lead-title" className="font-display text-xl text-graphite">
-          Delete lead?
+          {t("leadDetail.deleteTitle")}
         </h2>
         <p className="mt-2 text-[14px] leading-relaxed text-muted-foreground">
-          This will permanently remove the lead record for <span className="font-medium text-graphite">{leadName}</span>.
-          The linked chat session transcript will be kept.
+          {t("leadDetail.deleteBody", { name: leadName })}
         </p>
         {error ? <p className="mt-3 text-[13px] text-destructive">{error}</p> : null}
         <div className="mt-5 flex justify-end gap-2">
@@ -62,7 +65,7 @@ function DeleteLeadDialog({
             onClick={onCancel}
             className="rounded-md border border-hairline px-3 py-2 text-[13px] font-medium text-graphite hover:bg-ivory disabled:opacity-60"
           >
-            Cancel
+            {common("cancel")}
           </button>
           <button
             type="button"
@@ -71,7 +74,7 @@ function DeleteLeadDialog({
             className="inline-flex items-center gap-1.5 rounded-md bg-destructive px-3 py-2 text-[13px] font-medium text-white hover:bg-destructive/90 disabled:opacity-60"
           >
             <Trash2 size={14} />
-            {pending ? "Deleting…" : "Delete lead"}
+            {pending ? t("leadDetail.deleting") : t("leadDetail.delete")}
           </button>
         </div>
       </div>
@@ -92,6 +95,7 @@ export function DeleteLeadButton({
   className?: string;
   variant?: "icon" | "button";
 }) {
+  const t = useTranslations("admin");
   const [open, setOpen] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
@@ -106,7 +110,7 @@ export function DeleteLeadButton({
     startTransition(async () => {
       const result = await deleteLeadById(leadId);
       if (!result.ok) {
-        setError(result.error || "Could not delete this lead.");
+        setError(result.error || t("leadDetail.deleteError"));
         return;
       }
       setOpen(false);
@@ -127,14 +131,14 @@ export function DeleteLeadButton({
           )}
         >
           <Trash2 size={14} />
-          Delete lead
+          {t("leadDetail.delete")}
         </button>
       ) : (
         <button
           type="button"
           disabled={pending}
           onClick={handleOpen}
-          aria-label={`Delete lead for ${leadName}`}
+          aria-label={`${t("leadDetail.delete")} ${leadName}`}
           className={cn(
             "inline-flex h-8 w-8 items-center justify-center rounded-md border border-hairline text-muted-foreground hover:border-destructive/40 hover:bg-destructive/5 hover:text-destructive disabled:opacity-60",
             className,

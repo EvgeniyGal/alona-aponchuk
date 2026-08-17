@@ -1,18 +1,22 @@
 import type { Metadata } from "next";
 import { Manrope, Inter } from "next/font/google";
+import { NextIntlClientProvider } from "next-intl";
+import { getLocale, getMessages } from "next-intl/server";
 import { AppChrome } from "@/components/app-chrome";
+import { LocaleSync } from "@/components/locale-sync";
 import { absoluteUrl, siteConfig } from "@/lib/seo";
+import { localeHtmlLang, localeOg, parseAppLocale } from "@/i18n/config";
 import "./globals.css";
 
 const manrope = Manrope({
-  subsets: ["latin"],
+  subsets: ["latin", "cyrillic", "cyrillic-ext"],
   variable: "--font-display-family",
   display: "swap",
   weight: ["400", "500", "600", "700", "800"],
 });
 
 const inter = Inter({
-  subsets: ["latin"],
+  subsets: ["latin", "cyrillic", "cyrillic-ext"],
   variable: "--font-sans-family",
   display: "swap",
   weight: ["400", "500", "600", "700"],
@@ -59,7 +63,7 @@ export const metadata: Metadata = {
   },
   openGraph: {
     type: "website",
-    locale: siteConfig.locale,
+    locale: localeOg.en,
     url: siteConfig.url,
     siteName: `${siteConfig.name} — ${siteConfig.legalName}`,
     title: "Alona Aponchuk — CRM Workflow & Client Journey Automation",
@@ -83,11 +87,17 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const locale = parseAppLocale(await getLocale());
+  const messages = await getMessages();
+
   return (
-    <html lang="en" className={`${inter.variable} ${manrope.variable}`}>
+    <html lang={localeHtmlLang[locale]} className={`${inter.variable} ${manrope.variable}`}>
       <body>
-        <AppChrome>{children}</AppChrome>
+        <NextIntlClientProvider messages={messages}>
+          <LocaleSync />
+          <AppChrome>{children}</AppChrome>
+        </NextIntlClientProvider>
       </body>
     </html>
   );
