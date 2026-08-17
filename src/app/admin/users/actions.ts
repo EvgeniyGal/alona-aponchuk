@@ -55,3 +55,20 @@ export async function setUserApproved(userId: string, approved: boolean) {
   await db.update(users).set({ approved }).where(eq(users.id, userId));
   revalidatePath("/admin/users");
 }
+
+export async function deleteUserById(userId: string) {
+  const current = await requireAdmin();
+  if (!userId) return { ok: false as const, error: "User not found." };
+  if (current.id === userId) {
+    return { ok: false as const, error: "You cannot delete your own account." };
+  }
+
+  const db = getDb();
+  const [user] = await db.select({ id: users.id }).from(users).where(eq(users.id, userId)).limit(1);
+  if (!user) return { ok: false as const, error: "User not found." };
+
+  await db.delete(authTokens).where(eq(authTokens.userId, userId));
+  await db.delete(users).where(eq(users.id, userId));
+  revalidatePath("/admin/users");
+  return { ok: true as const };
+}

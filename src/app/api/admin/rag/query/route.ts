@@ -25,6 +25,7 @@ export async function POST(request: Request) {
     question: parsed.data.question,
     documentIds: parsed.data.documentIds,
     locale,
+    applySafety: false,
   });
 
   return NextResponse.json({

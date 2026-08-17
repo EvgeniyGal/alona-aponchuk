@@ -1,9 +1,11 @@
 "use client";
 
-import { useMemo, useState, useTransition } from "react";
+import { useEffect, useMemo, useRef, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
+import { FileUp, Loader2, Trash2 } from "lucide-react";
 import type { RagDocument } from "@/lib/db/schema";
+import { cn } from "@/lib/utils";
 
 type ChunkHit = {
   id: string;
@@ -13,6 +15,107 @@ type ChunkHit = {
   chunkIndex: number;
   matchedBy?: Array<"vector" | "keyword">;
 };
+
+function DeleteDocumentDialog({
+  filename,
+  pending,
+  onCancel,
+  onConfirm,
+}: {
+  filename: string;
+  pending: boolean;
+  onCancel: () => void;
+  onConfirm: () => void;
+}) {
+  const t = useTranslations("admin.rag");
+  const common = useTranslations("common");
+
+  useEffect(() => {
+    function onKeyDown(event: KeyboardEvent) {
+      if (event.key === "Escape" && !pending) onCancel();
+    }
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [pending, onCancel]);
+
+  return (
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-graphite/35 px-4"
+      onClick={() => {
+        if (!pending) onCancel();
+      }}
+    >
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="delete-rag-title"
+        className="w-full max-w-md rounded-xl border border-hairline bg-white p-5 shadow-xl"
+        onClick={(event) => event.stopPropagation()}
+      >
+        <h2 id="delete-rag-title" className="font-display text-xl text-graphite">
+          {t("deleteTitle")}
+        </h2>
+        <p className="mt-2 text-[14px] leading-relaxed text-muted-foreground">
+          {t("deleteBody", { name: filename })}
+        </p>
+        <div className="mt-5 flex justify-end gap-2">
+          <button
+            type="button"
+            disabled={pending}
+            onClick={onCancel}
+            className="cursor-pointer rounded-md border border-hairline px-3 py-2 text-[13px] font-medium text-graphite hover:bg-ivory disabled:opacity-60"
+          >
+            {common("cancel")}
+          </button>
+          <button
+            type="button"
+            disabled={pending}
+            onClick={onConfirm}
+            className="inline-flex cursor-pointer items-center gap-1.5 rounded-md bg-destructive px-3 py-2 text-[13px] font-medium text-white hover:bg-destructive/90 disabled:opacity-60"
+          >
+            {pending ? <Loader2 size={14} className="animate-spin" /> : <Trash2 size={14} />}
+            {pending ? t("deleting") : t("delete")}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function SourceChunk({ chunk }: { chunk: ChunkHit }) {
+  const t = useTranslations("admin.rag");
+  const [open, setOpen] = useState(false);
+  const long = chunk.content.length > 420;
+
+  return (
+    <article className="rounded-lg border border-hairline p-4">
+      <p className="text-[12px] font-medium text-blue">
+        {chunk.filename}
+        {` · ${t("chunkIndex", { n: chunk.chunkIndex + 1 })}`}
+        {` · ${t("score", { score: chunk.score })}`}
+        {chunk.matchedBy?.includes("vector") ? ` · ${t("matchVector")}` : ""}
+        {chunk.matchedBy?.includes("keyword") ? ` · ${t("matchKeyword")}` : ""}
+      </p>
+      <p
+        className={cn(
+          "mt-2 whitespace-pre-wrap text-[13.5px] leading-relaxed text-muted-foreground",
+          !open && long && "line-clamp-6",
+        )}
+      >
+        {chunk.content}
+      </p>
+      {long ? (
+        <button
+          type="button"
+          onClick={() => setOpen((value) => !value)}
+          className="mt-2 cursor-pointer text-[12.5px] font-medium text-blue hover:underline"
+        >
+          {open ? t("showLess") : t("showMore")}
+        </button>
+      ) : null}
+    </article>
+  );
+}
 
 export function RagConsole({ initialDocuments }: { initialDocuments: RagDocument[] }) {
   const t = useTranslations("admin.rag");
@@ -24,12 +127,40 @@ export function RagConsole({ initialDocuments }: { initialDocuments: RagDocument
   const [question, setQuestion] = useState("");
   const [answer, setAnswer] = useState<string | null>(null);
   const [chunks, setChunks] = useState<ChunkHit[]>([]);
+  const [hasResult, setHasResult] = useState(false);
+  const resultsRef = useRef<HTMLDivElement>(null);
   const [error, setError] = useState<string | null>(null);
   const [uploading, startUpload] = useTransition();
   const [asking, startAsk] = useTransition();
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [confirmDoc, setConfirmDoc] = useState<RagDocument | null>(null);
+  const [file, setFile] = useState<File | null>(null);
+  const [dragOver, setDragOver] = useState(false);
+  const fileInput = useRef<HTMLInputElement>(null);
 
   const readyDocs = useMemo(() => documents.filter((doc) => doc.status === "ready"), [documents]);
+
+  function acceptFile(next: File | undefined | null) {
+    if (!next) return;
+    const name = next.name.toLowerCase();
+    const allowed = [".txt", ".pdf", ".doc", ".docx"].some((ext) => name.endsWith(ext));
+    if (!allowed) {
+      setError(t("fileType"));
+      return;
+    }
+    if (next.size > 4 * 1024 * 1024) {
+      setError(t("fileTooLarge"));
+      return;
+    }
+    setError(null);
+    setFile(next);
+  }
+
+  function formatSize(bytes: number) {
+    if (bytes < 1024) return `${bytes} B`;
+    if (bytes < 1024 * 1024) return `${Math.max(1, Math.round(bytes / 1024))} KB`;
+    return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+  }
 
   async function refresh() {
     const res = await fetch("/api/admin/rag/documents");
@@ -44,14 +175,33 @@ export function RagConsole({ initialDocuments }: { initialDocuments: RagDocument
     return t("statusError");
   }
 
+  function confirmDelete() {
+    if (!confirmDoc) return;
+    const doc = confirmDoc;
+    setDeletingId(doc.id);
+    void fetch(`/api/admin/rag/documents/${doc.id}`, { method: "DELETE" })
+      .then(async (res) => {
+        if (!res.ok) {
+          setError(t("deleteError"));
+          return;
+        }
+        setConfirmDoc(null);
+        setSelected((current) => current.filter((id) => id !== doc.id));
+        await refresh();
+      })
+      .finally(() => setDeletingId(null));
+  }
+
   return (
+    <>
     <div className="mt-8 space-y-8">
       <form
         className="rounded-xl border border-hairline bg-white p-5"
         onSubmit={(event) => {
           event.preventDefault();
-          const form = event.currentTarget;
-          const data = new FormData(form);
+          if (!file || uploading) return;
+          const data = new FormData();
+          data.set("file", file);
           setError(null);
           startUpload(async () => {
             const res = await fetch("/api/admin/rag/documents", { method: "POST", body: data });
@@ -60,27 +210,70 @@ export function RagConsole({ initialDocuments }: { initialDocuments: RagDocument
               setError(json.error || t("uploading"));
               return;
             }
-            form.reset();
+            setFile(null);
+            if (fileInput.current) fileInput.current.value = "";
             await refresh();
           });
         }}
       >
         <h2 className="font-display text-lg">{t("upload")}</h2>
         <p className="mt-1 text-[13px] text-muted-foreground">{t("formats")}</p>
-        <div className="mt-4 flex flex-wrap items-center gap-3">
-          <input
-            type="file"
-            name="file"
-            required
-            accept=".txt,.pdf,.doc,.docx,text/plain,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-            className="text-[13px]"
-          />
+        <input
+          ref={fileInput}
+          type="file"
+          name="file"
+          accept=".txt,.pdf,.doc,.docx,text/plain,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+          className="sr-only"
+          onChange={(event) => acceptFile(event.target.files?.[0] ?? null)}
+        />
+        <button
+          type="button"
+          disabled={uploading}
+          onClick={() => fileInput.current?.click()}
+          onDragEnter={(event) => {
+            event.preventDefault();
+            setDragOver(true);
+          }}
+          onDragOver={(event) => {
+            event.preventDefault();
+            setDragOver(true);
+          }}
+          onDragLeave={(event) => {
+            event.preventDefault();
+            if (event.currentTarget.contains(event.relatedTarget as Node)) return;
+            setDragOver(false);
+          }}
+          onDrop={(event) => {
+            event.preventDefault();
+            setDragOver(false);
+            acceptFile(event.dataTransfer.files?.[0] ?? null);
+          }}
+          className={cn(
+            "mt-4 flex w-full cursor-pointer flex-col items-center justify-center rounded-lg border border-dashed px-4 py-8 text-center transition-colors disabled:cursor-not-allowed disabled:opacity-60",
+            dragOver ? "border-blue bg-blue-soft/40" : "border-hairline bg-ivory/50 hover:border-blue hover:bg-blue-soft/20",
+          )}
+        >
+          <FileUp className="mb-2 text-blue" size={22} />
+          {file ? (
+            <>
+              <p className="text-[14px] font-medium text-graphite">{file.name}</p>
+              <p className="mt-1 text-[12.5px] text-muted-foreground">{formatSize(file.size)} · {t("changeFile")}</p>
+            </>
+          ) : (
+            <>
+              <p className="text-[14px] font-medium text-graphite">{t("dropHint")}</p>
+              <p className="mt-1 text-[12.5px] text-muted-foreground">{t("choose")}</p>
+            </>
+          )}
+        </button>
+        {error ? <p className="mt-3 text-[13px] text-destructive">{error}</p> : null}
+        <div className="mt-3 flex justify-end">
           <button
             type="submit"
-            disabled={uploading}
+            disabled={uploading || !file}
             className="rounded-md bg-blue px-4 py-2 text-[13.5px] font-medium text-white disabled:opacity-60"
           >
-            {uploading ? t("uploading") : t("choose")}
+            {uploading ? t("uploading") : t("uploadAction")}
           </button>
         </div>
       </form>
@@ -111,15 +304,11 @@ export function RagConsole({ initialDocuments }: { initialDocuments: RagDocument
                     <button
                       type="button"
                       disabled={deletingId === doc.id}
-                      onClick={() => {
-                        setDeletingId(doc.id);
-                        void fetch(`/api/admin/rag/documents/${doc.id}`, { method: "DELETE" })
-                          .then(refresh)
-                          .finally(() => setDeletingId(null));
-                      }}
-                      className="rounded-md border border-hairline px-3 py-1.5 text-[13px]"
+                      onClick={() => setConfirmDoc(doc)}
+                      aria-label={`${t("delete")} ${doc.filename}`}
+                      className="inline-flex h-8 w-8 cursor-pointer items-center justify-center rounded-md border border-hairline text-muted-foreground hover:border-destructive/40 hover:bg-destructive/5 hover:text-destructive disabled:opacity-60"
                     >
-                      {deletingId === doc.id ? t("deleting") : t("delete")}
+                      {deletingId === doc.id ? <Loader2 size={14} className="animate-spin" /> : <Trash2 size={14} />}
                     </button>
                   </td>
                 </tr>
@@ -136,6 +325,7 @@ export function RagConsole({ initialDocuments }: { initialDocuments: RagDocument
           setError(null);
           setAnswer(null);
           setChunks([]);
+          setHasResult(false);
           if (!question.trim()) {
             setError(t("needQuestion"));
             return;
@@ -164,6 +354,10 @@ export function RagConsole({ initialDocuments }: { initialDocuments: RagDocument
             }
             setAnswer(json.answer);
             setChunks(json.chunks ?? []);
+            setHasResult(true);
+            requestAnimationFrame(() => {
+              resultsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+            });
           });
         }}
       >
@@ -182,7 +376,7 @@ export function RagConsole({ initialDocuments }: { initialDocuments: RagDocument
         {!allDocs ? (
           <div>
             <p className="mb-2 text-[13px] font-medium">{t("selectDocs")}</p>
-            <div className="space-y-1.5">
+            <div className="max-h-48 space-y-1.5 overflow-y-auto rounded-md border border-hairline p-3">
               {readyDocs.map((doc) => (
                 <label key={doc.id} className="flex items-center gap-2 text-[13.5px]">
                   <input
@@ -218,32 +412,40 @@ export function RagConsole({ initialDocuments }: { initialDocuments: RagDocument
         >
           {asking ? t("asking") : t("ask")}
         </button>
-        {answer ? (
-          <div className="rounded-lg border border-hairline bg-ivory/60 p-4">
-            <h3 className="text-[12px] font-semibold uppercase tracking-wide text-muted-foreground">{t("answer")}</h3>
-            <p className="mt-2 whitespace-pre-wrap text-[14.5px] leading-relaxed text-graphite">{answer}</p>
+        {hasResult ? (
+          <div ref={resultsRef} className="space-y-4 border-t border-hairline pt-4">
+            <div className="rounded-lg border border-hairline bg-ivory/60 p-4">
+              <h3 className="text-[12px] font-semibold uppercase tracking-wide text-muted-foreground">{t("answer")}</h3>
+              <p className="mt-2 whitespace-pre-wrap text-[14.5px] leading-relaxed text-graphite">
+                {answer || "—"}
+              </p>
+            </div>
+            {chunks.length > 0 ? (
+              <div className="space-y-3">
+                <h3 className="text-[12px] font-semibold uppercase tracking-wide text-muted-foreground">
+                  {t("sourcesFromDb", { count: chunks.length })}
+                </h3>
+                {chunks.map((chunk) => (
+                  <SourceChunk key={chunk.id} chunk={chunk} />
+                ))}
+              </div>
+            ) : (
+              <p className="text-[13px] text-muted-foreground">{t("noSources")}</p>
+            )}
           </div>
-        ) : null}
-        {chunks.length > 0 ? (
-          <div className="space-y-3">
-            <h3 className="text-[12px] font-semibold uppercase tracking-wide text-muted-foreground">{t("sources")}</h3>
-            {chunks.map((chunk) => (
-              <article key={chunk.id} className="rounded-lg border border-hairline p-4">
-                <p className="text-[12px] font-medium text-blue">
-                  {chunk.filename} · {t("score", { score: chunk.score })}
-                  {chunk.matchedBy?.includes("vector") ? ` · ${t("matchVector")}` : ""}
-                  {chunk.matchedBy?.includes("keyword") ? ` · ${t("matchKeyword")}` : ""}
-                </p>
-                <p className="mt-2 text-[13.5px] leading-relaxed text-muted-foreground whitespace-pre-wrap">
-                  {chunk.content}
-                </p>
-              </article>
-            ))}
-          </div>
-        ) : answer ? (
-          <p className="text-[13px] text-muted-foreground">{t("noSources")}</p>
         ) : null}
       </form>
     </div>
+    {confirmDoc ? (
+      <DeleteDocumentDialog
+        filename={confirmDoc.filename}
+        pending={deletingId === confirmDoc.id}
+        onCancel={() => {
+          if (!deletingId) setConfirmDoc(null);
+        }}
+        onConfirm={confirmDelete}
+      />
+    ) : null}
+    </>
   );
 }

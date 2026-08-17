@@ -30,9 +30,14 @@ type SearchHit = {
 };
 
 function rowsOf(result: unknown): Record<string, unknown>[] {
-  if (Array.isArray(result)) return result as Record<string, unknown>[];
-  if (result && typeof result === "object" && "rows" in result) {
-    return (result as { rows: Record<string, unknown>[] }).rows ?? [];
+  if (Array.isArray(result)) {
+    return result.filter((row): row is Record<string, unknown> => Boolean(row) && typeof row === "object");
+  }
+  if (result && typeof result === "object") {
+    const rows = (result as { rows?: unknown }).rows;
+    if (Array.isArray(rows)) {
+      return rows.filter((row): row is Record<string, unknown> => Boolean(row) && typeof row === "object");
+    }
   }
   return [];
 }

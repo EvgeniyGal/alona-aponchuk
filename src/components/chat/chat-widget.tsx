@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { MessageCircle, Send, X } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import {
@@ -252,6 +252,7 @@ export function ChatWidget() {
   const [error, setError] = useState<string | null>(null);
   const scroller = useRef<HTMLDivElement>(null);
   const loaded = useRef(false);
+  const wasOpen = useRef(false);
   const sessionId = useRef<string | null>(readCache()?.sessionId ?? null);
   const visitorId = useRef("");
 
@@ -311,9 +312,23 @@ export function ChatWidget() {
     load().catch(() => setError(t("loadError")));
   }, [locale, load, t]);
 
-  useEffect(() => {
-    scroller.current?.scrollTo({ top: scroller.current.scrollHeight, behavior: "smooth" });
-  }, [messages, busy]);
+  useLayoutEffect(() => {
+    if (!open) {
+      wasOpen.current = false;
+      return;
+    }
+    const el = scroller.current;
+    if (!el) return;
+    const justOpened = !wasOpen.current;
+    wasOpen.current = true;
+    el.scrollTo({ top: el.scrollHeight, behavior: justOpened ? "auto" : "smooth" });
+    if (justOpened) {
+      const frame = requestAnimationFrame(() => {
+        el.scrollTo({ top: el.scrollHeight, behavior: "auto" });
+      });
+      return () => cancelAnimationFrame(frame);
+    }
+  }, [open, messages, busy]);
 
   useEffect(() => {
     if (open) {
@@ -450,16 +465,16 @@ export function ChatWidget() {
             {error ? <p className="text-[12px] text-destructive">{error}</p> : null}
           </div>
           {inAssessment ? (
-            <div className="shrink-0 border-t border-hairline bg-white p-3">
+            <div className="shrink-0 border-t border-hairline bg-white px-3 py-3 text-center">
+              <p className="text-[12.5px] leading-relaxed text-muted-foreground">{t("assessmentLocked")}</p>
               <button
                 type="button"
                 disabled={busy}
                 onClick={() => void send({ type: "cta", value: "pause_assessment" })}
-                className="inline-flex w-full cursor-pointer items-center justify-center rounded-md bg-blue px-3 py-2.5 text-[13px] font-semibold text-white hover:bg-blue/90 disabled:opacity-50"
+                className="mt-2.5 inline-flex cursor-pointer items-center justify-center rounded-md border border-hairline bg-ivory px-3 py-1.5 text-[12.5px] font-medium text-graphite hover:border-blue hover:text-blue disabled:opacity-50"
               >
                 {t("pauseAssessment")}
               </button>
-              <p className="mt-2 text-center text-[12px] leading-relaxed text-muted-foreground">{t("assessmentLocked")}</p>
             </div>
           ) : (
             <form

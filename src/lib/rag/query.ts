@@ -10,16 +10,20 @@ export async function answerFromDocuments({
   question,
   documentIds,
   locale = defaultLocale,
+  applySafety = true,
 }: {
   question: string;
   documentIds?: string[] | "all";
   locale?: AppLocale;
+  applySafety?: boolean;
 }): Promise<{ answer: string; chunks: RetrievedChunk[] }> {
   const chat = getChatCatalog(locale);
-  const risk = classifyRisk(question);
-  if (risk === "phi") return { answer: chat.fallbackPhi, chunks: [] };
-  if (risk === "medical") return { answer: chat.fallbackMedical, chunks: [] };
-  if (risk === "guarantee") return { answer: chat.fallbackGuarantee, chunks: [] };
+  if (applySafety) {
+    const risk = classifyRisk(question);
+    if (risk === "phi") return { answer: chat.fallbackPhi, chunks: [] };
+    if (risk === "medical") return { answer: chat.fallbackMedical, chunks: [] };
+    if (risk === "guarantee") return { answer: chat.fallbackGuarantee, chunks: [] };
+  }
 
   const chunks = await retrieveChunks({ query: question, documentIds, limit: 8 });
   if (chunks.length === 0) {

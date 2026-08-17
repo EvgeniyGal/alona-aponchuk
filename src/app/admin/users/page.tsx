@@ -4,6 +4,7 @@ import { requireAdmin } from "@/lib/admin/require-admin";
 import { getDb } from "@/lib/db";
 import { users } from "@/lib/db/schema";
 import { UserApprovalButton } from "./approval-button";
+import { DeleteUserButton } from "./delete-user-button";
 import { InviteUserForm } from "./invite-form";
 
 export default async function UsersPage() {
@@ -40,7 +41,10 @@ export default async function UsersPage() {
                   {user.id === currentUser.id ? (
                     <span className="text-[12px] text-muted-foreground">{common("you")}</span>
                   ) : (
-                    <UserApprovalButton userId={user.id} approved={user.approved} />
+                    <div className="flex items-center gap-2">
+                      <UserApprovalButton userId={user.id} approved={user.approved} />
+                      <DeleteUserButton userId={user.id} userName={user.name || user.email} />
+                    </div>
                   )}
                 </td>
               </tr>
