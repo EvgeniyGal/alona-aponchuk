@@ -4,7 +4,7 @@ import { z } from "zod";
 import { getDb } from "@/lib/db";
 import { chatMessages, chatSessions } from "@/lib/db/schema";
 import { processTurn, type IncomingMessage } from "@/lib/chat/engine";
-import { getOrCreateChatSession, publicMessage } from "@/lib/chat/session";
+import { getOrCreateChatSession, publicMessage, visitorIdFromRequest } from "@/lib/chat/session";
 import { newId } from "@/lib/id";
 import { rateLimit } from "@/lib/rate-limit";
 
@@ -31,7 +31,7 @@ const payloadSchema = z.discriminatedUnion("type", [
 
 export async function POST(request: Request) {
   try {
-    const { session, messages } = await getOrCreateChatSession();
+    const { session, messages } = await getOrCreateChatSession(visitorIdFromRequest(request));
     const limited = rateLimit(`chat:${session.id}`, 40, 10 * 60 * 1000);
     if (!limited.ok) {
       return NextResponse.json(

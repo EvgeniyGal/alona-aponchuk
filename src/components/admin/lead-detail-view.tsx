@@ -1,0 +1,261 @@
+"use client";
+
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useState, useTransition } from "react";
+import { ArrowLeft } from "lucide-react";
+import { updateLeadStatusById } from "@/app/admin/leads/actions";
+import { DeleteLeadButton } from "@/components/admin/delete-lead-button";
+import { LeadStatusBadge } from "@/components/admin/lead-status-badge";
+import {
+  assessmentFieldLabel,
+  CHAT_ASSESSMENT_SECTIONS,
+  CONTACT_FORM_SECTIONS,
+  displayAssessmentAnswer,
+} from "@/lib/admin/lead-fields";
+import {
+  formatLeadSource,
+  isLeadStatus,
+  LEAD_STATUSES,
+  LEAD_STATUS_CONFIG,
+  type LeadStatus,
+} from "@/lib/admin/lead-status";
+import { formatAdminDateTime } from "@/lib/admin/format-date";
+import type { AssessmentAnswers, TranscriptLine } from "@/lib/db/schema";
+import { cn } from "@/lib/utils";
+import { ChatTranscript } from "@/components/admin/chat-transcript";
+
+type ChatMessageRow = {
+  id: string;
+  role: string;
+  content: string;
+  createdAt: string;
+};
+
+export type LeadDetailData = {
+  id: string;
+  source: "chat_assessment" | "contact_form";
+  status: LeadStatus;
+  fullName: string;
+  organizationName: string;
+  workEmail: string;
+  phone: string | null;
+  website: string | null;
+  roleTitle: string | null;
+  consentAt: string;
+  createdAt: string;
+  updatedAt: string;
+  notifiedAt: string | null;
+  diagnosticSummary: string | null;
+  assessmentAnswers: AssessmentAnswers;
+  transcript: TranscriptLine[];
+  sessionId: string | null;
+  chatMessages: ChatMessageRow[];
+};
+
+function InfoRow({ label, value }: { label: string; value: React.ReactNode }) {
+  return (
+    <div className="grid gap-1 sm:grid-cols-[10rem_1fr] sm:gap-3">
+      <dt className="text-[12px] font-medium uppercase tracking-wide text-muted-foreground">{label}</dt>
+      <dd className="text-[14px] text-graphite">{value || "—"}</dd>
+    </div>
+  );
+}
+
+function AssessmentSections({
+  answers,
+  source,
+}: {
+  answers: AssessmentAnswers;
+  source: LeadDetailData["source"];
+}) {
+  const sections = source === "contact_form" ? CONTACT_FORM_SECTIONS : CHAT_ASSESSMENT_SECTIONS;
+  const covered = new Set(sections.flatMap((section) => section.fields));
+
+  return (
+    <div className="space-y-6">
+      {sections.map((section) => {
+        const items = section.fields
+          .map((field) => ({ field, answer: answers[field] }))
+          .filter((item) => item.answer && displayAssessmentAnswer(item.answer) !== "—");
+
+        if (items.length === 0) return null;
+
+        return (
+          <div key={section.title}>
+            <h3 className="font-display text-base text-graphite">{section.title}</h3>
+            <dl className="mt-3 space-y-3">
+              {items.map(({ field, answer }) => (
+                <InfoRow
+                  key={field}
+                  label={assessmentFieldLabel(field)}
+                  value={displayAssessmentAnswer(answer!)}
+                />
+              ))}
+            </dl>
+          </div>
+        );
+      })}
+
+      {Object.entries(answers)
+        .filter(([field]) => !covered.has(field))
+        .filter(([, answer]) => displayAssessmentAnswer(answer) !== "—")
+        .map(([field, answer]) => (
+          <InfoRow key={field} label={assessmentFieldLabel(field)} value={displayAssessmentAnswer(answer)} />
+        ))}
+    </div>
+  );
+}
+
+function StatusEditor({ leadId, initialStatus }: { leadId: string; initialStatus: LeadStatus }) {
+  const [status, setStatus] = useState(initialStatus);
+  const [pending, startTransition] = useTransition();
+  const config = LEAD_STATUS_CONFIG[status];
+
+  return (
+    <div className="flex flex-wrap items-center gap-3">
+      <LeadStatusBadge status={status} />
+      <select
+        value={status}
+        disabled={pending}
+        onChange={(event) => {
+          const next = event.target.value;
+          if (!isLeadStatus(next) || next === status) return;
+          startTransition(async () => {
+            const result = await updateLeadStatusById(leadId, next);
+            if (result.ok) setStatus(next);
+          });
+        }}
+        className={cn(
+          "rounded-md border px-3 py-2 text-[13.5px] font-medium outline-none focus:ring-2 focus:ring-blue/20 disabled:opacity-60",
+          config.select,
+        )}
+      >
+        {LEAD_STATUSES.map((item) => (
+          <option key={item} value={item}>
+            {LEAD_STATUS_CONFIG[item].label}
+          </option>
+        ))}
+      </select>
+      {pending ? <span className="text-[12px] text-muted-foreground">Saving…</span> : null}
+    </div>
+  );
+}
+
+export function LeadDetailView({ lead }: { lead: LeadDetailData }) {
+  const router = useRouter();
+  const transcriptLines =
+    lead.chatMessages.length > 0
+      ? lead.chatMessages.map((message) => ({
+          role: message.role,
+          content: message.content,
+          createdAt: message.createdAt,
+        }))
+      : lead.transcript;
+
+  return (
+    <div className="space-y-8">
+      <div className="flex flex-wrap items-start justify-between gap-4">
+        <div>
+          <Link
+            href="/admin/leads"
+            className="inline-flex items-center gap-1.5 text-[13px] text-blue hover:underline"
+          >
+            <ArrowLeft size={14} />
+            Back to leads
+          </Link>
+          <p className="eyebrow mt-4">Lead profile</p>
+          <h1 className="mt-2 font-display text-3xl">{lead.fullName}</h1>
+          <p className="text-[15px] text-muted-foreground">{lead.organizationName}</p>
+        </div>
+        <div className="flex flex-wrap items-center gap-3">
+          <StatusEditor leadId={lead.id} initialStatus={lead.status} />
+          <DeleteLeadButton
+            leadId={lead.id}
+            leadName={lead.fullName}
+            variant="button"
+            onDeleted={() => router.push("/admin/leads")}
+          />
+        </div>
+      </div>
+
+      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        {[
+          { label: "Source", value: formatLeadSource(lead.source) },
+          { label: "Submitted", value: formatAdminDateTime(lead.createdAt) },
+          { label: "Consent", value: formatAdminDateTime(lead.consentAt) },
+          {
+            label: "Notifications",
+            value: lead.notifiedAt ? `Sent ${formatAdminDateTime(lead.notifiedAt)}` : "Not sent yet",
+          },
+        ].map((item) => (
+          <div key={item.label} className="rounded-xl border border-hairline bg-white p-4">
+            <p className="text-[11px] uppercase tracking-wide text-muted-foreground">{item.label}</p>
+            <p className="mt-1 text-[14px] font-medium text-graphite">{item.value}</p>
+          </div>
+        ))}
+      </div>
+
+      <section className="rounded-xl border border-hairline bg-white p-5">
+        <h2 className="font-display text-lg">Contact details</h2>
+        <dl className="mt-4 space-y-3">
+          <InfoRow
+            label="Work email"
+            value={
+              <a href={`mailto:${lead.workEmail}`} className="text-blue hover:underline">
+                {lead.workEmail}
+              </a>
+            }
+          />
+          <InfoRow label="Phone" value={lead.phone} />
+          <InfoRow
+            label="Website"
+            value={
+              lead.website ? (
+                <a
+                  href={lead.website.startsWith("http") ? lead.website : `https://${lead.website}`}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-blue hover:underline"
+                >
+                  {lead.website}
+                </a>
+              ) : null
+            }
+          />
+          <InfoRow label="Role / title" value={lead.roleTitle} />
+        </dl>
+      </section>
+
+      <section className="rounded-xl border border-hairline bg-white p-5">
+        <h2 className="font-display text-lg">
+          {lead.source === "contact_form" ? "Workflow Audit request" : "Workflow assessment"}
+        </h2>
+        <p className="mt-1 text-[13.5px] text-muted-foreground">
+          {lead.source === "contact_form"
+            ? "Fields submitted through the contact form."
+            : "Structured answers collected during the chat assessment."}
+        </p>
+        <div className="mt-5">
+          <AssessmentSections answers={lead.assessmentAnswers} source={lead.source} />
+        </div>
+      </section>
+
+      <section className="rounded-xl border border-hairline bg-white p-5">
+        <h2 className="font-display text-lg">AI diagnostic summary</h2>
+        <p className="mt-3 whitespace-pre-wrap text-[14px] leading-relaxed text-graphite">
+          {lead.diagnosticSummary ||
+            (lead.source === "contact_form"
+              ? "No AI diagnostic was generated for this contact-form lead."
+              : "No diagnostic summary was stored for this assessment.")}
+        </p>
+      </section>
+
+      <ChatTranscript
+        title={lead.source === "contact_form" ? "Related chat activity" : "Chat conversation"}
+        lines={transcriptLines}
+        emptyMessage="No messages recorded for this lead."
+      />
+    </div>
+  );
+}

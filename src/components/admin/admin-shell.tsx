@@ -6,6 +6,7 @@ import { signOut } from "next-auth/react";
 
 const links = [
   { href: "/admin/leads", label: "Leads" },
+  { href: "/admin/sessions", label: "Sessions" },
   { href: "/admin/knowledge-base", label: "Knowledge base" },
   { href: "/admin/settings", label: "Assistant" },
   { href: "/admin/notifications", label: "Notifications" },

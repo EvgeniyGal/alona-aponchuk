@@ -1,9 +1,9 @@
 import { NextResponse } from "next/server";
-import { getOrCreateChatSession, publicMessage, publicSession } from "@/lib/chat/session";
+import { getOrCreateChatSession, publicMessage, publicSession, visitorIdFromRequest } from "@/lib/chat/session";
 
-export async function GET() {
+export async function GET(request: Request) {
   try {
-    const { session, messages } = await getOrCreateChatSession();
+    const { session, messages } = await getOrCreateChatSession(visitorIdFromRequest(request));
     return NextResponse.json({
       ok: true,
       session: publicSession(session),

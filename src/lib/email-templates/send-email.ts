@@ -30,7 +30,7 @@ function getClient() {
 
 export async function sendTemplateEmail(
   templateName: string,
-  to: string,
+  to: string | string[],
   options: SendTemplateEmailOptions = {},
 ): Promise<SendTemplateEmailResult> {
   const mail = getClient();
@@ -45,9 +45,11 @@ export async function sendTemplateEmail(
     );
   }
 
-  const recipient = template.to || to;
-  if (!recipient) {
-    throw new Error("Recipient is required (the template defines no fixed recipient)");
+  const recipients = template.to
+    ? [template.to]
+    : (Array.isArray(to) ? to : [to]).filter(Boolean);
+  if (recipients.length === 0) {
+    throw new Error("At least one recipient is required");
   }
 
   const templateData = options.templateData ?? {};
@@ -59,7 +61,7 @@ export async function sendTemplateEmail(
 
   await mail.client.messages.create(mail.domain, {
     from: mail.from,
-    to: [recipient],
+    to: recipients,
     subject,
     html,
     text,

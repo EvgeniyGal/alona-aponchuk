@@ -2,6 +2,14 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { MessageCircle, Send, X } from "lucide-react";
+import {
+  chatFetchHeaders,
+  clearCache,
+  getOrCreateVisitorId,
+  readCache,
+  serializeMessage,
+  writeCache,
+} from "@/lib/chat/client-storage";
 import { cn } from "@/lib/utils";
 import type { ChatMessageUi } from "@/lib/db/schema";
 
@@ -229,12 +237,26 @@ function MessageBody({
 
 export function ChatWidget() {
   const [open, setOpen] = useState(false);
-  const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [messages, setMessages] = useState<ChatMessage[]>(() => readCache()?.messages ?? []);
   const [busy, setBusy] = useState(false);
   const [draft, setDraft] = useState("");
   const [error, setError] = useState<string | null>(null);
   const scroller = useRef<HTMLDivElement>(null);
   const loaded = useRef(false);
+  const sessionId = useRef<string | null>(readCache()?.sessionId ?? null);
+  const visitorId = useRef("");
+
+  const persistCache = useCallback((nextMessages: ChatMessage[], nextSessionId?: string | null) => {
+    if (nextSessionId) sessionId.current = nextSessionId;
+    if (!sessionId.current || !visitorId.current) return;
+
+    writeCache({
+      sessionId: sessionId.current,
+      visitorId: visitorId.current,
+      messages: nextMessages.map(serializeMessage),
+      updatedAt: new Date().toISOString(),
+    });
+  }, []);
 
   const lastAssistantHasInput = useMemo(() => {
     const last = [...messages].reverse().find((message) => message.role === "assistant");
@@ -242,10 +264,26 @@ export function ChatWidget() {
   }, [messages]);
 
   const load = useCallback(async () => {
-    const res = await fetch("/api/chat/session");
+    visitorId.current = getOrCreateVisitorId();
+    const cached = readCache();
+    if (cached?.messages.length) {
+      setMessages(cached.messages);
+      sessionId.current = cached.sessionId;
+    }
+
+    const res = await fetch("/api/chat/session", { headers: chatFetchHeaders(visitorId.current) });
     const json = await res.json();
-    if (json.ok) setMessages(json.messages);
-  }, []);
+    if (!json.ok) throw new Error(json.error || "Could not load the assistant.");
+
+    const serverMessages = json.messages as ChatMessage[];
+    setMessages(serverMessages);
+    sessionId.current = json.session.id;
+
+    if (cached && cached.sessionId !== json.session.id) {
+      clearCache();
+    }
+    persistCache(serverMessages, json.session.id);
+  }, [persistCache]);
 
   useEffect(() => {
     if (!open || loaded.current) return;
@@ -263,12 +301,19 @@ export function ChatWidget() {
     try {
       const res = await fetch("/api/chat/message", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          ...chatFetchHeaders(visitorId.current || getOrCreateVisitorId()),
+        },
         body: JSON.stringify(payload),
       });
       const json = await res.json();
       if (!res.ok || !json.ok) throw new Error(json.error || "Could not send.");
-      setMessages((current) => [...current, ...json.messages]);
+      setMessages((current) => {
+        const next = [...current, ...(json.messages as ChatMessage[])];
+        persistCache(next);
+        return next;
+      });
     } catch (err) {
       setError(err instanceof Error ? err.message : "Could not send.");
     } finally {
@@ -279,12 +324,21 @@ export function ChatWidget() {
   async function submitLead(payload: Record<string, string | boolean>) {
     const res = await fetch("/api/chat/lead", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        ...chatFetchHeaders(visitorId.current || getOrCreateVisitorId()),
+      },
       body: JSON.stringify({ ...payload, consent: payload.consent === true }),
     });
     const json = await res.json();
     if (!res.ok || !json.ok) throw new Error(json.error || "Could not submit.");
-    if (json.message) setMessages((current) => [...current, json.message]);
+    if (json.message) {
+      setMessages((current) => {
+        const next = [...current, json.message as ChatMessage];
+        persistCache(next);
+        return next;
+      });
+    }
   }
 
   return (

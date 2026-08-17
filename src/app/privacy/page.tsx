@@ -37,7 +37,7 @@ const sections = [
   {
     title: "Cookies and Analytics",
     body:
-      "This website uses only the essential cookies required for basic functionality. If web analytics are introduced in the future, they will be limited to aggregated, non-identifying usage data, and this Privacy Policy will be updated to reflect that change.",
+      "This website uses essential cookies required for basic functionality, including a session cookie that keeps your chatbot conversation active when you return to the site. The chat assistant also stores a browser identifier and a local copy of your conversation in your browser's local storage so messages can appear quickly on repeat visits. This local data stays on your device and is not shared with third parties. If web analytics are introduced in the future, they will be limited to aggregated, non-identifying usage data, and this Privacy Policy will be updated to reflect that change.",
   },
   {
     title: "Third-Party Service Providers",

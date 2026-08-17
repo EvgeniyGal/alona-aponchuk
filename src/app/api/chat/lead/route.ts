@@ -3,7 +3,7 @@ import { eq } from "drizzle-orm";
 import { z } from "zod";
 import { getDb } from "@/lib/db";
 import { chatMessages, chatSessions, leads } from "@/lib/db/schema";
-import { getOrCreateChatSession } from "@/lib/chat/session";
+import { getOrCreateChatSession, visitorIdFromRequest } from "@/lib/chat/session";
 import { newId } from "@/lib/id";
 import { notifyNewLead } from "@/lib/notify/leads";
 import { rateLimit } from "@/lib/rate-limit";
@@ -20,7 +20,7 @@ const leadSchema = z.object({
 
 export async function POST(request: Request) {
   try {
-    const { session, messages } = await getOrCreateChatSession();
+    const { session, messages } = await getOrCreateChatSession(visitorIdFromRequest(request));
     const limited = rateLimit(`lead:${session.id}`, 5, 60 * 60 * 1000);
     if (!limited.ok) {
       return NextResponse.json({ ok: false, error: "This assessment was already submitted." }, { status: 429 });

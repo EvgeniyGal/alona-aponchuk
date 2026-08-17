@@ -2,6 +2,7 @@ import { and, eq, isNotNull } from "drizzle-orm";
 import { getDb } from "@/lib/db";
 import { leads, users, type Lead } from "@/lib/db/schema";
 import { sendTemplateEmail } from "@/lib/email-templates/send-email";
+import { getLeadNotificationEmails } from "@/lib/notify/settings";
 import { leadDetailsUrl, leadSummaryText, sendTelegramMessage } from "@/lib/notify/telegram";
 
 function label(lead: Lead, field: string) {
@@ -25,7 +26,8 @@ export async function notifyNewLead(lead: Lead, options: { email?: boolean } = {
 
   if (sendEmail) {
     try {
-      await sendTemplateEmail("new-assessment-lead", "info@aponchukworkflow.com", {
+      const to = await getLeadNotificationEmails();
+      await sendTemplateEmail("new-assessment-lead", to, {
         replyTo: lead.workEmail,
         templateData: {
           header,

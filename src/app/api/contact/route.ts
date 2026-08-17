@@ -5,6 +5,7 @@ import { getDb } from "@/lib/db";
 import { leads, type AssessmentAnswers } from "@/lib/db/schema";
 import { newId } from "@/lib/id";
 import { notifyNewLead } from "@/lib/notify/leads";
+import { getLeadNotificationEmails } from "@/lib/notify/settings";
 import { sendTemplateEmail } from "@/lib/email-templates/send-email";
 
 function field(value: string, label = value): AssessmentAnswers[string] {
@@ -59,8 +60,9 @@ export async function POST(request: Request) {
       })
       .returning();
 
+    const notificationEmails = await getLeadNotificationEmails();
     const idempotencyKey = `workflow-audit-${data.email}-${Date.now()}`;
-    const result = await sendTemplateEmail("workflow-audit-request", "info@aponchukworkflow.com", {
+    const result = await sendTemplateEmail("workflow-audit-request", notificationEmails, {
       templateData: data,
       idempotencyKey,
       replyTo: data.email,

@@ -101,6 +101,7 @@ export const authTokens = pgTable("auth_tokens", {
 
 export const chatSessions = pgTable("chat_sessions", {
   id: text("id").primaryKey(),
+  visitorId: text("visitor_id"),
   mode: chatModeEnum("mode").notNull().default("welcome"),
   assessmentStep: text("assessment_step"),
   assessmentAnswers: jsonb("assessment_answers").$type<AssessmentAnswers>().notNull().default({}),
@@ -108,7 +109,9 @@ export const chatSessions = pgTable("chat_sessions", {
   leadId: text("lead_id"),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
-});
+}, (table) => [
+  index("chat_sessions_visitor_idx").on(table.visitorId),
+]);
 
 export const chatMessages = pgTable("chat_messages", {
   id: text("id").primaryKey(),
@@ -173,9 +176,16 @@ export const assistantSettings = pgTable("assistant_settings", {
   updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
 });
 
+export const notificationSettings = pgTable("notification_settings", {
+  id: text("id").primaryKey(),
+  leadEmails: jsonb("lead_emails").$type<string[]>().notNull().default([]),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+});
+
 export type User = typeof users.$inferSelect;
 export type Lead = typeof leads.$inferSelect;
 export type ChatSession = typeof chatSessions.$inferSelect;
 export type ChatMessage = typeof chatMessages.$inferSelect;
 export type KnowledgeBaseEntry = typeof knowledgeBaseEntries.$inferSelect;
 export type AssistantSettings = typeof assistantSettings.$inferSelect;
+export type NotificationSettings = typeof notificationSettings.$inferSelect;

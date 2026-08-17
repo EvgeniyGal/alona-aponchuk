@@ -1,5 +1,5 @@
 import type { Lead } from "@/lib/db/schema";
-import { siteUrl } from "@/lib/site-url";
+import { siteUrl, telegramWebhookUrl } from "@/lib/site-url";
 
 const API = "https://api.telegram.org";
 
@@ -76,4 +76,48 @@ export function leadSummaryText(lead: Lead) {
 
 export function leadDetailsUrl(leadId: string) {
   return `${siteUrl()}/admin/leads/${leadId}`;
+}
+
+export type TelegramWebhookStatus = {
+  configured: boolean;
+  expectedUrl: string;
+  url: string | null;
+  pendingUpdates: number;
+  lastError: string | null;
+  urlMatches: boolean;
+};
+
+export async function getTelegramWebhookStatus(): Promise<TelegramWebhookStatus> {
+  const expectedUrl = telegramWebhookUrl();
+  const token = process.env.TELEGRAM_BOT_TOKEN;
+  if (!token) {
+    return {
+      configured: false,
+      expectedUrl,
+      url: null,
+      pendingUpdates: 0,
+      lastError: "TELEGRAM_BOT_TOKEN is not configured.",
+      urlMatches: false,
+    };
+  }
+
+  const res = await fetch(`https://api.telegram.org/bot${token}/getWebhookInfo`, { cache: "no-store" });
+  const json = (await res.json()) as {
+    ok: boolean;
+    result?: {
+      url?: string;
+      pending_update_count?: number;
+      last_error_message?: string;
+    };
+  };
+
+  const url = json.result?.url ?? null;
+  return {
+    configured: Boolean(url),
+    expectedUrl,
+    url,
+    pendingUpdates: json.result?.pending_update_count ?? 0,
+    lastError: json.result?.last_error_message ?? null,
+    urlMatches: url === expectedUrl,
+  };
 }

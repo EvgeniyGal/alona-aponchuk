@@ -1,5 +1,5 @@
 import "dotenv/config";
-import { siteUrl } from "../src/lib/site-url";
+import { telegramWebhookUrl } from "../src/lib/site-url";
 
 async function main() {
   const token = process.env.TELEGRAM_BOT_TOKEN;
@@ -7,7 +7,7 @@ async function main() {
   if (!token || !secret) {
     throw new Error("TELEGRAM_BOT_TOKEN and TELEGRAM_WEBHOOK_SECRET are required.");
   }
-  const url = `${siteUrl()}/api/telegram/webhook`;
+  const url = telegramWebhookUrl();
   const res = await fetch(`https://api.telegram.org/bot${token}/setWebhook`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },

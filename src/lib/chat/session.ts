@@ -6,8 +6,35 @@ import { newId } from "@/lib/id";
 import { welcomeMessages } from "@/lib/chat/engine";
 
 export const SESSION_COOKIE = "chat_session_id";
+export const VISITOR_HEADER = "x-chat-visitor-id";
 
-export async function getOrCreateChatSession() {
+const VISITOR_ID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+
+export function parseVisitorId(value: string | null | undefined) {
+  if (!value) return null;
+  const trimmed = value.trim();
+  return VISITOR_ID_PATTERN.test(trimmed) ? trimmed : null;
+}
+
+export function visitorIdFromRequest(request: Request) {
+  return parseVisitorId(request.headers.get(VISITOR_HEADER));
+}
+
+async function backfillVisitorId(session: ChatSession, visitorId: string | null) {
+  if (!visitorId || session.visitorId) return session;
+
+  const db = getDb();
+  const now = new Date();
+  await db
+    .update(chatSessions)
+    .set({ visitorId, updatedAt: now })
+    .where(eq(chatSessions.id, session.id));
+
+  return { ...session, visitorId, updatedAt: now };
+}
+
+export async function getOrCreateChatSession(visitorId?: string | null) {
+  const parsedVisitorId = parseVisitorId(visitorId ?? null);
   const jar = await cookies();
   const existingId = jar.get(SESSION_COOKIE)?.value;
   const db = getDb();
@@ -15,12 +42,13 @@ export async function getOrCreateChatSession() {
   if (existingId) {
     const [session] = await db.select().from(chatSessions).where(eq(chatSessions.id, existingId)).limit(1);
     if (session) {
+      const linkedSession = await backfillVisitorId(session, parsedVisitorId);
       const messages = await db
         .select()
         .from(chatMessages)
-        .where(eq(chatMessages.sessionId, session.id))
+        .where(eq(chatMessages.sessionId, linkedSession.id))
         .orderBy(chatMessages.createdAt);
-      return { session, messages };
+      return { session: linkedSession, messages };
     }
   }
 
@@ -28,6 +56,7 @@ export async function getOrCreateChatSession() {
   const now = new Date();
   await db.insert(chatSessions).values({
     id,
+    visitorId: parsedVisitorId,
     mode: "welcome",
     assessmentAnswers: {},
     createdAt: now,
@@ -77,5 +106,6 @@ export function publicSession(session: ChatSession) {
     mode: session.mode,
     assessmentStep: session.assessmentStep,
     leadId: session.leadId,
+    visitorId: session.visitorId,
   };
 }
