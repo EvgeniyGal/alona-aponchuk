@@ -85,7 +85,29 @@ export type TelegramWebhookStatus = {
   pendingUpdates: number;
   lastError: string | null;
   urlMatches: boolean;
+  /** True when a live POST to the webhook URL succeeds (ignores stale Telegram errors). */
+  liveOk: boolean;
 };
+
+async function probeWebhookLive(url: string): Promise<boolean> {
+  const secret = process.env.TELEGRAM_WEBHOOK_SECRET;
+  if (!secret) return false;
+
+  try {
+    const res = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-telegram-bot-api-secret-token": secret,
+      },
+      body: JSON.stringify({ update_id: 0 }),
+      cache: "no-store",
+    });
+    return res.ok;
+  } catch {
+    return false;
+  }
+}
 
 export async function getTelegramWebhookStatus(): Promise<TelegramWebhookStatus> {
   const expectedUrl = telegramWebhookUrl();
@@ -98,6 +120,7 @@ export async function getTelegramWebhookStatus(): Promise<TelegramWebhookStatus>
       pendingUpdates: 0,
       lastError: "TELEGRAM_BOT_TOKEN is not configured.",
       urlMatches: false,
+      liveOk: false,
     };
   }
 
@@ -112,12 +135,16 @@ export async function getTelegramWebhookStatus(): Promise<TelegramWebhookStatus>
   };
 
   const url = json.result?.url ?? null;
+  const urlMatches = url === expectedUrl;
+  const liveOk = urlMatches ? await probeWebhookLive(expectedUrl) : false;
+
   return {
     configured: Boolean(url),
     expectedUrl,
     url,
     pendingUpdates: json.result?.pending_update_count ?? 0,
     lastError: json.result?.last_error_message ?? null,
-    urlMatches: url === expectedUrl,
+    urlMatches,
+    liveOk,
   };
 }

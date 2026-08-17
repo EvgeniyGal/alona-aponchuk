@@ -52,7 +52,10 @@ export function TelegramConnect({
   }, [waitingForLink, linked, router]);
 
   const webhookHealthy =
-    webhookStatus.configured && webhookStatus.urlMatches && !webhookStatus.lastError;
+    webhookStatus.configured && webhookStatus.urlMatches && (webhookStatus.liveOk || !webhookStatus.lastError);
+
+  const staleTelegramError =
+    webhookHealthy && webhookStatus.liveOk && Boolean(webhookStatus.lastError);
 
   return (
     <div className="mt-6 space-y-4 rounded-xl border border-hairline bg-white p-6">
@@ -81,15 +84,21 @@ export function TelegramConnect({
             <p className="mt-1 text-graphite/80">{webhookStatus.pendingUpdates} pending Telegram updates.</p>
           ) : null}
           <p className="mt-2 text-graphite/80">
-            After deploying the site, run <span className="font-mono text-[12px]">npm run telegram:set-webhook</span>{" "}
-            with <span className="font-mono text-[12px]">NEXT_PUBLIC_SITE_URL=https://aponchukworkflow.com</span>.
+            After deploying, run <span className="font-mono text-[12px]">npm run telegram:set-webhook</span> with{" "}
+            <span className="font-mono text-[12px]">NEXT_PUBLIC_SITE_URL</span> set to your public site URL.
           </p>
+        </div>
+      ) : staleTelegramError ? (
+        <div className="rounded-md border border-amber-200 bg-amber-50 px-3 py-3 text-[13px] text-amber-900">
+          <p className="font-medium">Webhook is responding, but Telegram still shows an old delivery error.</p>
+          <p className="mt-1">{webhookStatus.lastError}</p>
+          <p className="mt-1 text-graphite/80">You can connect below — this should clear after a successful link.</p>
         </div>
       ) : null}
 
       <p className="text-[13.5px] text-muted-foreground">
-        Only approved admins who connect Telegram here receive lead summaries. Unregistered Telegram accounts cannot
-        subscribe by messaging the bot.
+        Only approved admins who connect Telegram here receive lead summaries. Messaging the bot directly without the
+        connect link from this page will not link your account.
       </p>
       <div className="flex flex-wrap gap-3">
         <button

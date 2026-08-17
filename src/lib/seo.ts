@@ -6,7 +6,7 @@ export const siteConfig = {
   title: "Alona Aponchuk — CRM Workflow & Client Journey Automation for Healthcare & Wellness",
   description:
     "Alona Aponchuk helps healthcare and wellness organizations improve CRM workflows, client journeys, scheduling, follow-up, and AI-mediated communication through structured workflow analysis, QA validation, and RAG-ready automation design.",
-  url: process.env.NEXT_PUBLIC_SITE_URL || "https://www.aponchukworkflow.com",
+  url: process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "") || "https://alona-aponchuk.vercel.app",
   locale: "en_US",
   email: "info@aponchukworkflow.com",
   phone: undefined as string | undefined,

@@ -1,5 +1,5 @@
 export function siteUrl() {
-  return (process.env.NEXT_PUBLIC_SITE_URL || "https://aponchukworkflow.com").replace(/\/$/, "");
+  return (process.env.NEXT_PUBLIC_SITE_URL || "https://alona-aponchuk.vercel.app").replace(/\/$/, "");
 }
 
 export function telegramWebhookUrl() {
