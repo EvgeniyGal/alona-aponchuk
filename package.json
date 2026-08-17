@@ -35,6 +35,7 @@
     "openai": "^7.4.0",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
+    "recharts": "^3.10.1",
     "tailwind-merge": "^3.5.0",
     "unpdf": "^1.8.1",
     "word-extractor": "^1.0.4",

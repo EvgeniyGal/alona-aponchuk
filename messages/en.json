@@ -1104,6 +1104,7 @@
     "tagline": "Lead and assistant console",
     "signOut": "Sign out",
     "nav": {
+      "overview": "Statistics",
       "leads": "Leads",
       "sessions": "Sessions",
       "knowledgeBase": "Knowledge base",
@@ -1380,6 +1381,113 @@
       "page": "Page {current} of {total}",
       "prev": "Previous page",
       "next": "Next page"
+    },
+    "stats": {
+      "title": "Statistics",
+      "lead": "Leads, chat sessions, and assessment funnel for the selected period. Unique visitors are people who opened the assistant.",
+      "empty": "No activity in this period yet.",
+      "vsPrevious": "{value} vs prior",
+      "noChange": "No prior period",
+      "other": "Other",
+      "range": {
+        "7d": "7 days",
+        "30d": "30 days",
+        "90d": "90 days",
+        "all": "All time"
+      },
+      "kpi": {
+        "leads": "Leads",
+        "visitors": "Unique visitors",
+        "sessions": "Chat sessions",
+        "assessmentsCompleted": "Assessments completed",
+        "chatLeads": "Chat leads",
+        "conversion": "Assessment conversion",
+        "abandon": "Lead-form abandon",
+        "qualifiedClosed": "Qualified + closed"
+      },
+      "kpiHint": {
+        "leads": "New inquiries in this period",
+        "visitors": "People who opened the assistant",
+        "sessions": "Conversations started",
+        "assessmentsCompleted": "Reached the final assessment question",
+        "chatLeads": "Leads from the chat assessment",
+        "conversion": "Chat leads among sessions that started the assessment",
+        "abandon": "Completed the quiz but did not submit contact details",
+        "qualifiedClosed": "Leads currently qualified or closed"
+      },
+      "sections": {
+        "funnel": "Chat conversion funnel",
+        "funnelLead": "How far sessions progressed. Restarts clear answers, so this is a current snapshot.",
+        "activity": "Activity over time",
+        "pipeline": "Lead pipeline",
+        "pipelineLead": "Current status of leads created in this period.",
+        "source": "Lead source",
+        "modes": "Session mode",
+        "locales": "Assistant language",
+        "dropoff": "Assessment drop-off",
+        "dropoffLead": "Sessions that still have each answer. Optional branch questions are omitted.",
+        "insights": "Assessment answers",
+        "insightsLead": "Most common answers from chat assessments in this period.",
+        "messages": "Message volume",
+        "messagesLead": "Assistant and visitor messages by day.",
+        "heatmap": "Activity by hour (UTC)",
+        "heatmapLead": "When chat messages were sent. Darker cells mean more activity.",
+        "scatter": "Engagement depth",
+        "scatterLead": "Messages versus session length, capped at 24 hours so idle cookies do not dominate.",
+        "returning": "Visitors and conversion",
+        "notifications": "Lead alerts"
+      },
+      "funnel": {
+        "sessions": "Sessions",
+        "started": "Started assessment",
+        "completed": "Completed assessment",
+        "lead_submitted": "Lead submitted"
+      },
+      "fields": {
+        "organization_type": "Organization type",
+        "role": "Role",
+        "main_problem": "Main workflow problem",
+        "client_dropoff_stage": "Client drop-off stage",
+        "crm_status": "CRM / EHR usage",
+        "followup_method": "Follow-up method",
+        "ai_automation_status": "Chatbot / AI status",
+        "chatbot_issues": "Chatbot issues",
+        "monthly_inquiries": "Monthly inquiries",
+        "primary_priority": "Primary priority"
+      },
+      "series": {
+        "leads": "Leads",
+        "sessions": "Sessions",
+        "messages": "Messages"
+      },
+      "locales": {
+        "en": "English",
+        "uk": "Ukrainian",
+        "ru": "Russian"
+      },
+      "days": {
+        "sun": "Sun",
+        "mon": "Mon",
+        "tue": "Tue",
+        "wed": "Wed",
+        "thu": "Thu",
+        "fri": "Fri",
+        "sat": "Sat"
+      },
+      "notified": "Notified",
+      "pending": "Pending",
+      "newVisitors": "New",
+      "returningVisitors": "Returning",
+      "converted": "Converted",
+      "notConverted": "Not converted",
+      "messagesAxis": "Messages",
+      "durationAxis": "Duration (hours)",
+      "avgTimeToLead": "Avg. time to lead",
+      "medianTimeToLead": "Median time to lead",
+      "avgMessages": "Avg. messages / session",
+      "medianDuration": "Median session length",
+      "hours": "{value} h",
+      "minutes": "{value} min"
     }
   }
 }
