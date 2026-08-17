@@ -237,6 +237,7 @@ function MessageBody({
 
 export function ChatWidget() {
   const [open, setOpen] = useState(false);
+  const [showHelpPrompt, setShowHelpPrompt] = useState(false);
   const [messages, setMessages] = useState<ChatMessage[]>(() => readCache()?.messages ?? []);
   const [busy, setBusy] = useState(false);
   const [draft, setDraft] = useState("");
@@ -295,6 +296,30 @@ export function ChatWidget() {
     scroller.current?.scrollTo({ top: scroller.current.scrollHeight, behavior: "smooth" });
   }, [messages, busy]);
 
+  useEffect(() => {
+    if (open) {
+      setShowHelpPrompt(false);
+      return;
+    }
+
+    if (typeof window !== "undefined" && sessionStorage.getItem("chat-help-prompt-dismissed") === "1") {
+      return;
+    }
+
+    const timer = window.setTimeout(() => setShowHelpPrompt(true), 30_000);
+    return () => window.clearTimeout(timer);
+  }, [open]);
+
+  function dismissHelpPrompt() {
+    setShowHelpPrompt(false);
+    sessionStorage.setItem("chat-help-prompt-dismissed", "1");
+  }
+
+  function openChat() {
+    setOpen(true);
+    setShowHelpPrompt(false);
+  }
+
   async function send(payload: Incoming) {
     setBusy(true);
     setError(null);
@@ -343,14 +368,40 @@ export function ChatWidget() {
 
   return (
     <>
-      <button
-        type="button"
-        aria-label={open ? "Close assistant" : "Open workflow assistant"}
-        onClick={() => setOpen((value) => !value)}
-        className="chat-launcher"
-      >
-        {open ? <X size={20} /> : <MessageCircle size={20} />}
-      </button>
+      <div className={cn("chat-launcher-wrap", open && "chat-launcher-wrap--open")}>
+        {showHelpPrompt && !open ? (
+          <div className="chat-help-prompt" role="status" aria-live="polite">
+            <button
+              type="button"
+              className="chat-help-prompt__body"
+              onClick={openChat}
+            >
+              <span className="chat-help-prompt__eyebrow">Workflow assistant</span>
+              <span className="chat-help-prompt__title">Need help?</span>
+              <span className="chat-help-prompt__copy">Ask about intake, CRM, follow-up, or start a quick assessment.</span>
+            </button>
+            <button
+              type="button"
+              aria-label="Dismiss help prompt"
+              className="chat-help-prompt__close"
+              onClick={dismissHelpPrompt}
+            >
+              <X size={14} />
+            </button>
+          </div>
+        ) : null}
+        <button
+          type="button"
+          aria-label={open ? "Close assistant" : "Open workflow assistant"}
+          aria-expanded={open}
+          onClick={() => (open ? setOpen(false) : openChat())}
+          className={cn("chat-launcher", open ? "chat-launcher--compact" : "chat-launcher--attention")}
+        >
+          <span className="chat-launcher__pulse" aria-hidden="true" />
+          {open ? <X size={22} /> : <MessageCircle size={22} />}
+          {!open ? <span className="chat-launcher__label">Help</span> : null}
+        </button>
+      </div>
       {open ? (
         <section className="chat-panel" role="dialog" aria-label="Aponchuk Workflow Assistant">
           <header className="flex items-center justify-between border-b border-hairline bg-ivory px-4 py-3">
