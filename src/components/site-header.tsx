@@ -49,17 +49,23 @@ export function SiteHeader() {
         </Link>
 
         <nav className="hidden lg:flex items-center gap-7">
-          {nav.map((n) => (
-            <Link
-              key={n.to}
-              href={n.to}
-              className={`text-[14px] transition-colors ${
-                isActive(pathname, n.to) ? "text-blue font-medium" : "text-graphite/80 hover:text-blue"
-              }`}
-            >
-              {t(n.key)}
-            </Link>
-          ))}
+          {nav.map((n) => {
+            const active = isActive(pathname, n.to);
+            return (
+              <Link
+                key={n.to}
+                href={n.to}
+                aria-current={active ? "page" : undefined}
+                className={`text-[14px] transition-colors ${
+                  active
+                    ? "font-medium text-blue underline decoration-blue decoration-1 underline-offset-[7px]"
+                    : "text-graphite/80 hover:text-blue"
+                }`}
+              >
+                {t(n.key)}
+              </Link>
+            );
+          })}
         </nav>
 
         <div className="flex items-center gap-3">
@@ -83,18 +89,24 @@ export function SiteHeader() {
       {open && (
         <div className="lg:hidden border-t border-hairline bg-ivory">
           <div className="container-page py-3 flex flex-col">
-            {nav.map((n) => (
-              <Link
-                key={n.to}
-                href={n.to}
-                className={`py-3 text-[15px] border-b border-hairline last:border-b-0 ${
-                  isActive(pathname, n.to) ? "text-blue font-medium" : "text-graphite"
-                }`}
-                onClick={() => setOpen(false)}
-              >
-                {t(n.key)}
-              </Link>
-            ))}
+            {nav.map((n) => {
+              const active = isActive(pathname, n.to);
+              return (
+                <Link
+                  key={n.to}
+                  href={n.to}
+                  aria-current={active ? "page" : undefined}
+                  className={`border-b border-hairline py-3 text-[15px] last:border-b-0 ${
+                    active
+                      ? "font-medium text-blue underline decoration-blue decoration-1 underline-offset-[6px]"
+                      : "text-graphite"
+                  }`}
+                  onClick={() => setOpen(false)}
+                >
+                  {t(n.key)}
+                </Link>
+              );
+            })}
             <Link
               href="/contact"
               className="mt-4 mb-2 inline-flex justify-center rounded-md bg-blue px-4 py-3 text-[14px] font-medium text-white"
