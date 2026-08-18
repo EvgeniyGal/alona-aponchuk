@@ -63,23 +63,32 @@ export async function POST(request: Request) {
     const notificationEmails = await getLeadNotificationEmails();
     const idempotencyKey = `workflow-audit-${data.email}-${Date.now()}`;
 
-    if (lead) {
-      void notifyNewLead(lead, { email: false }).catch((error) =>
-        console.error("[contact] telegram/notify", error),
+    if (!lead) {
+      return NextResponse.json(
+        { ok: false, error: "Could not save this request. Please email info@aponchukworkflow.com directly." },
+        { status: 500 },
       );
     }
 
-    try {
-      const result = await sendTemplateEmail("workflow-audit-request", notificationEmails, {
+    const [notifyResult, emailResult] = await Promise.allSettled([
+      notifyNewLead(lead, { email: false }),
+      sendTemplateEmail("workflow-audit-request", notificationEmails, {
         templateData: data,
         idempotencyKey,
         replyTo: data.email,
-      });
-      return NextResponse.json({ ok: true, delivered: result.sent });
-    } catch (emailError) {
-      console.error("[contact] email failed after lead save:", emailError);
+      }),
+    ]);
+
+    if (notifyResult.status === "rejected") {
+      console.error("[contact] telegram/notify", notifyResult.reason);
+    }
+
+    if (emailResult.status === "rejected") {
+      console.error("[contact] email failed after lead save:", emailResult.reason);
       return NextResponse.json({ ok: true, delivered: false });
     }
+
+    return NextResponse.json({ ok: true, delivered: emailResult.value.sent });
   } catch (error) {
     if (error instanceof ZodError) {
       return NextResponse.json(

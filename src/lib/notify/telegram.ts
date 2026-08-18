@@ -68,21 +68,27 @@ function answerLabel(lead: Lead, field: string) {
 export function leadSummaryText(lead: Lead) {
   const header =
     lead.source === "contact_form" ? "New Workflow Audit Request" : "New Workflow Assessment Lead";
+  const problem = answerLabel(lead, "main_problem") || answerLabel(lead, "problem");
+  const dropoff = answerLabel(lead, "client_dropoff_stage") || answerLabel(lead, "lost");
+  const volume = answerLabel(lead, "monthly_inquiries") || answerLabel(lead, "leads");
+  const orgType = answerLabel(lead, "organization_type") || answerLabel(lead, "orgType");
+  const crm = answerLabel(lead, "crm_platform") || answerLabel(lead, "crm");
+  const goal = answerLabel(lead, "primary_priority") || answerLabel(lead, "improve");
   const lines = [
     header,
     "",
     `Name: ${lead.fullName}`,
     `Organization: ${lead.organizationName}`,
+    orgType ? `Type: ${orgType}` : "",
     lead.roleTitle ? `Role: ${lead.roleTitle}` : "",
     `Email: ${lead.workEmail}`,
     lead.phone ? `Phone: ${lead.phone}` : "",
-    answerLabel(lead, "main_problem") || answerLabel(lead, "problem")
-      ? `Main problem: ${answerLabel(lead, "main_problem") || answerLabel(lead, "problem")}`
-      : "",
-    answerLabel(lead, "client_dropoff_stage")
-      ? `Drop-off: ${answerLabel(lead, "client_dropoff_stage")}`
-      : "",
-    answerLabel(lead, "monthly_inquiries") ? `Volume: ${answerLabel(lead, "monthly_inquiries")}` : "",
+    lead.website ? `Website: ${lead.website}` : "",
+    problem ? `Main problem: ${problem}` : "",
+    dropoff ? `Drop-off: ${dropoff}` : "",
+    crm ? `CRM: ${crm}` : "",
+    volume ? `Volume: ${volume}` : "",
+    goal ? `Priority: ${goal}` : "",
     lead.diagnosticSummary ? `Summary: ${lead.diagnosticSummary.slice(0, 280)}` : "",
     `Status: ${lead.status.replace("_", " ")}`,
   ].filter(Boolean);

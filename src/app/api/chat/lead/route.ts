@@ -90,7 +90,11 @@ export async function POST(request: Request) {
     await db.insert(chatMessages).values(thanks);
 
     if (lead) {
-      void notifyNewLead(lead).catch((error) => console.error("[chat/lead] notify", error));
+      try {
+        await notifyNewLead(lead);
+      } catch (error) {
+        console.error("[chat/lead] notify", error);
+      }
     }
 
     return NextResponse.json({
