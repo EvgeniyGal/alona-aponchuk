@@ -1,8 +1,8 @@
 {
   "common": {
     "language": "Language",
-    "requestAudit": "Request Workflow Audit",
-    "exploreMethod": "Explore My Method",
+    "requestAudit": "Request Audit",
+    "exploreMethod": "Explore Method",
     "learnMore": "Learn more",
     "readMore": "Read more",
     "toggleMenu": "Toggle menu",
@@ -24,8 +24,8 @@
     "mission": "Mission",
     "method": "Method",
     "services": "Services",
-    "caseStories": "Case Stories",
-    "responsibleAi": "Responsible AI",
+    "caseStories": "Cases",
+    "responsibleAi": "Safety",
     "research": "Research",
     "about": "About",
     "logoAlt": "Alona Aponchuk — Aponchuk Workflow Systems LLC",
@@ -674,11 +674,11 @@
   },
   "contact": {
     "seo": {
-      "title": "Request a Workflow Audit — Alona Aponchuk",
+      "title": "Request Audit — Alona Aponchuk",
       "description": "Request a diagnostic Workflow Audit. Share your CRM, scheduling, and communication setup to receive a structured review of where the client journey loses continuity.",
       "imageAlt": "Request a diagnostic Workflow Audit"
     },
-    "eyebrow": "Request Workflow Audit",
+    "eyebrow": "Request Audit",
     "title": "Tell me about your organization and current workflow.",
     "lead": "This diagnostic form takes about 5 minutes. All fields help me scope the audit accurately — the more context you share, the more useful the first call will be.",
     "receivedEyebrow": "Received",
@@ -720,7 +720,7 @@
     "afterForm": "What happens after a client submits a form?",
     "improve": "What would a more reliable workflow improve for the organization?",
     "consent": "By submitting this form you consent to being contacted regarding your inquiry. Please do not include protected health information (PHI) or identifying patient data in this form.",
-    "submit": "Request Workflow Audit",
+    "submit": "Request Audit",
     "sending": "Sending…",
     "error": "Something went wrong. Please email info@aponchukworkflow.com directly.",
     "direct": "Direct Contact",
@@ -766,7 +766,7 @@
       },
       {
         "title": "Information We Collect",
-        "body": "We collect only the information you voluntarily submit through the Request Workflow Audit form or through direct correspondence with us. This may include your name, organization, email address, phone number, website, role, information about the systems your organization uses (such as CRM or scheduling tools), and descriptions of the workflow challenges you would like to discuss. We do not use this website to collect protected health information, patient records, financial account data, or government identifiers."
+        "body": "We collect only the information you voluntarily submit through the Request Audit form or through direct correspondence with us. This may include your name, organization, email address, phone number, website, role, information about the systems your organization uses (such as CRM or scheduling tools), and descriptions of the workflow challenges you would like to discuss. We do not use this website to collect protected health information, patient records, financial account data, or government identifiers."
       },
       {
         "title": "How We Use Information",
