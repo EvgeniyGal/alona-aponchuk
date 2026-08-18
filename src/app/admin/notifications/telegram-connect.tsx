@@ -13,6 +13,7 @@ import {
   sendTestTelegramAlert,
 } from "./actions";
 import { formatAdminDateTime } from "@/lib/admin/format-date";
+import { adminTableHeadClass } from "@/lib/utils";
 import type { TelegramWebhookStatus } from "@/lib/notify/telegram";
 import type { TelegramRecipientView } from "@/lib/notify/telegram-recipients";
 
@@ -137,7 +138,7 @@ export function TelegramConnect({
 
       <div className="overflow-x-auto rounded-lg border border-hairline">
         <table className="w-full min-w-[640px] text-left text-[13.5px]">
-          <thead className="border-b border-hairline bg-ivory/80 text-[12px] uppercase tracking-wide text-muted-foreground">
+          <thead className={adminTableHeadClass}>
             <tr>
               <th className="px-4 py-3">{t("notifications.colTelegram")}</th>
               <th className="px-4 py-3">{t("notifications.colConnectedAs")}</th>

@@ -61,13 +61,9 @@ function assessmentCta(locale: AppLocale, session: EngineSession) {
 }
 
 function followupCtas(locale: AppLocale, session: EngineSession): ChatMessageUi {
-  const chat = getChatCatalog(locale);
   return {
     kind: "followup_ctas",
-    options: [
-      assessmentCta(locale, session),
-      { label: chat.passToAlona, value: "pass_to_alona" },
-    ],
+    options: [assessmentCta(locale, session)],
   };
 }
 
@@ -78,7 +74,6 @@ function pausedUi(locale: AppLocale): ChatMessageUi {
     options: [
       { label: chat.continueAssessment, value: "continue_assessment" },
       { label: chat.askQuestion, value: "ask_question" },
-      { label: chat.passToAlona, value: "pass_to_alona" },
     ],
   };
 }

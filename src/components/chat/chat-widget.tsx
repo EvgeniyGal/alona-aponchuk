@@ -142,7 +142,9 @@ function MessageBody({
       <p className="whitespace-pre-wrap">{message.content}</p>
       {ui?.kind === "welcome_ctas" || ui?.kind === "followup_ctas" || ui?.kind === "buttons" ? (
         <div className="mt-3 flex flex-wrap gap-1.5">
-          {(ui.options ?? []).map((option) => (
+          {(ui.options ?? [])
+            .filter((option) => option.value !== "pass_to_alona")
+            .map((option) => (
             <button
               key={option.value}
               type="button"

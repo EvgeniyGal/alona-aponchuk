@@ -16,6 +16,7 @@ import { ArrowDown, ArrowUp, ArrowUpDown, ChevronLeft, ChevronRight } from "luci
 import Link from "next/link";
 import { formatAdminDateTime } from "@/lib/admin/format-date";
 import { truncateId } from "@/lib/admin/chat-session";
+import { adminTableHeadClass } from "@/lib/utils";
 import type { ChatSession } from "@/lib/db/schema";
 
 export type SessionRow = {
@@ -169,7 +170,7 @@ export function SessionsTable({ data }: { data: SessionRow[] }) {
     <div className="space-y-4">
       <div className="overflow-x-auto rounded-xl border border-hairline bg-white">
         <table className="w-full min-w-[860px] text-left text-[13.5px]">
-          <thead className="border-b border-hairline bg-ivory/80 text-[12px] uppercase tracking-wide text-muted-foreground">
+          <thead className={adminTableHeadClass}>
             {table.getHeaderGroups().map((headerGroup) => (
               <tr key={headerGroup.id}>
                 {headerGroup.headers.map((header) => (

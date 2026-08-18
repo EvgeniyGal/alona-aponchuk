@@ -23,7 +23,7 @@ import {
   type LeadStatus,
 } from "@/lib/admin/lead-status";
 import { formatAdminDateTime } from "@/lib/admin/format-date";
-import { cn } from "@/lib/utils";
+import { cn, adminTableHeadClass } from "@/lib/utils";
 
 export type LeadRow = {
   id: string;
@@ -215,7 +215,7 @@ export function LeadsTable({ data }: { data: LeadRow[] }) {
     <div className="space-y-4">
       <div className="overflow-x-auto rounded-xl border border-hairline bg-white">
         <table className="w-full min-w-[920px] text-left text-[13.5px]">
-          <thead className="border-b border-hairline bg-ivory/80 text-[12px] uppercase tracking-wide text-muted-foreground">
+          <thead className={adminTableHeadClass}>
             {table.getHeaderGroups().map((headerGroup) => (
               <tr key={headerGroup.id}>
                 {headerGroup.headers.map((header) => (

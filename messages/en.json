@@ -1104,7 +1104,7 @@
     "tagline": "Lead and assistant console",
     "signOut": "Sign out",
     "nav": {
-      "overview": "Statistics",
+      "overview": "Dashboard",
       "leads": "Leads",
       "sessions": "Sessions",
       "knowledgeBase": "Knowledge base",
@@ -1225,14 +1225,27 @@
     },
     "kb": {
       "title": "Knowledge base",
-      "lead": "Approved answers used by the assistant. Inactive entries are excluded from the cached prompt.",
+      "lead": "Approved answers used by the assistant. Inactive entries are excluded from the cached prompt. Hover a row to preview the full entry, then click to edit.",
       "add": "Add entry",
       "slug": "slug-for-analytics",
+      "slugLabel": "Slug",
       "intent": "User question / intent",
       "answer": "Approved answer",
       "active": "Active",
+      "inactive": "Inactive",
+      "updated": "Updated",
+      "empty": "No knowledge-base entries yet.",
+      "edit": "Edit entry",
+      "editLead": "Save to refresh the cached assistant prompt.",
       "save": "Save",
-      "delete": "Delete"
+      "saving": "Saving…",
+      "saveError": "Could not save this entry.",
+      "slugTaken": "That slug is already in use.",
+      "delete": "Delete",
+      "deleting": "Deleting…",
+      "deleteTitle": "Delete this entry?",
+      "deleteBody": "This will permanently remove “{slug}” from the assistant knowledge base.",
+      "deleteError": "Could not delete this entry."
     },
     "settings": {
       "title": "Assistant settings",

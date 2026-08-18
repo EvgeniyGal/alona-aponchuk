@@ -7,6 +7,8 @@ import { useState } from "react";
 import { Menu, X } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { LanguageSwitcher } from "@/components/language-switcher";
+import { useHasMounted } from "@/lib/use-has-mounted";
+import { cn } from "@/lib/utils";
 
 const nav = [
   { to: "/", key: "home" },
@@ -20,15 +22,35 @@ const nav = [
 ] as const;
 
 function isActive(pathname: string, to: string) {
-  if (to === "/") return pathname === "/";
-  return pathname === to || pathname.startsWith(`${to}/`);
+  const path = pathname.length > 1 && pathname.endsWith("/") ? pathname.slice(0, -1) : pathname || "/";
+  if (to === "/") return path === "/";
+  return path === to || path.startsWith(`${to}/`);
 }
 
 export function SiteHeader() {
   const [open, setOpen] = useState(false);
-  const pathname = usePathname();
+  const pathname = usePathname() ?? "/";
+  const mounted = useHasMounted();
   const t = useTranslations("nav");
   const common = useTranslations("common");
+
+  function navClass(to: string, mobile = false) {
+    const active = mounted && isActive(pathname, to);
+    if (mobile) {
+      return cn(
+        "border-b border-hairline py-3 text-[15px] last:border-b-0",
+        active
+          ? "font-medium text-blue underline decoration-blue decoration-1 underline-offset-[6px]"
+          : "text-graphite",
+      );
+    }
+    return cn(
+      "text-[14px] transition-colors",
+      active
+        ? "font-medium text-blue underline decoration-blue decoration-1 underline-offset-[7px]"
+        : "text-graphite/80 hover:text-blue",
+    );
+  }
 
   return (
     <header className="sticky top-0 z-40 border-b border-hairline bg-ivory/90 backdrop-blur">
@@ -49,23 +71,11 @@ export function SiteHeader() {
         </Link>
 
         <nav className="hidden lg:flex items-center gap-7">
-          {nav.map((n) => {
-            const active = isActive(pathname, n.to);
-            return (
-              <Link
-                key={n.to}
-                href={n.to}
-                aria-current={active ? "page" : undefined}
-                className={`text-[14px] transition-colors ${
-                  active
-                    ? "font-medium text-blue underline decoration-blue decoration-1 underline-offset-[7px]"
-                    : "text-graphite/80 hover:text-blue"
-                }`}
-              >
-                {t(n.key)}
-              </Link>
-            );
-          })}
+          {nav.map((n) => (
+            <Link key={n.to} href={n.to} className={navClass(n.to)} suppressHydrationWarning>
+              {t(n.key)}
+            </Link>
+          ))}
         </nav>
 
         <div className="flex items-center gap-3">
@@ -89,24 +99,17 @@ export function SiteHeader() {
       {open && (
         <div className="lg:hidden border-t border-hairline bg-ivory">
           <div className="container-page py-3 flex flex-col">
-            {nav.map((n) => {
-              const active = isActive(pathname, n.to);
-              return (
-                <Link
-                  key={n.to}
-                  href={n.to}
-                  aria-current={active ? "page" : undefined}
-                  className={`border-b border-hairline py-3 text-[15px] last:border-b-0 ${
-                    active
-                      ? "font-medium text-blue underline decoration-blue decoration-1 underline-offset-[6px]"
-                      : "text-graphite"
-                  }`}
-                  onClick={() => setOpen(false)}
-                >
-                  {t(n.key)}
-                </Link>
-              );
-            })}
+            {nav.map((n) => (
+              <Link
+                key={n.to}
+                href={n.to}
+                className={navClass(n.to, true)}
+                suppressHydrationWarning
+                onClick={() => setOpen(false)}
+              >
+                {t(n.key)}
+              </Link>
+            ))}
             <Link
               href="/contact"
               className="mt-4 mb-2 inline-flex justify-center rounded-md bg-blue px-4 py-3 text-[14px] font-medium text-white"

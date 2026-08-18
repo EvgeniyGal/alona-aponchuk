@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import { FileUp, Loader2, Trash2 } from "lucide-react";
 import type { RagDocument } from "@/lib/db/schema";
-import { cn } from "@/lib/utils";
+import { cn, adminTableHeadClass } from "@/lib/utils";
 
 type ChunkHit = {
   id: string;
@@ -283,7 +283,7 @@ export function RagConsole({ initialDocuments }: { initialDocuments: RagDocument
           <p className="px-5 py-10 text-center text-[14px] text-muted-foreground">{t("empty")}</p>
         ) : (
           <table className="w-full min-w-[640px] text-left text-[13.5px]">
-            <thead className="border-b border-hairline bg-ivory/80 text-[12px] uppercase tracking-wide text-muted-foreground">
+            <thead className={adminTableHeadClass}>
               <tr>
                 <th className="px-4 py-3">{t("filename")}</th>
                 <th className="px-4 py-3">{t("status")}</th>

@@ -6,6 +6,7 @@ import { users } from "@/lib/db/schema";
 import { UserApprovalButton } from "./approval-button";
 import { DeleteUserButton } from "./delete-user-button";
 import { InviteUserForm } from "./invite-form";
+import { adminTableHeadClass } from "@/lib/utils";
 
 export default async function UsersPage() {
   const currentUser = await requireAdmin();
@@ -21,7 +22,7 @@ export default async function UsersPage() {
       <InviteUserForm />
       <div className="mt-8 overflow-x-auto rounded-xl border border-hairline bg-white">
         <table className="w-full min-w-[640px] text-left text-[13.5px]">
-          <thead className="border-b border-hairline bg-ivory/80 text-[12px] uppercase tracking-wide text-muted-foreground">
+          <thead className={adminTableHeadClass}>
             <tr>
               <th className="px-4 py-3">{t("users.email")}</th>
               <th className="px-4 py-3">{t("users.name")}</th>

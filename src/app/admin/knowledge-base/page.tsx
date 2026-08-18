@@ -3,7 +3,8 @@ import { getTranslations } from "next-intl/server";
 import { requireAdmin } from "@/lib/admin/require-admin";
 import { getDb } from "@/lib/db";
 import { knowledgeBaseEntries } from "@/lib/db/schema";
-import { createKbEntry, deleteKbEntry, updateKbEntry } from "./actions";
+import { KnowledgeBaseTable, type KbRow } from "@/components/admin/kb-table";
+import { createKbEntry } from "./actions";
 
 const inputCls =
   "w-full rounded-md border border-hairline bg-white px-3 py-2 text-[14px] outline-none focus:border-blue";
@@ -13,6 +14,16 @@ export default async function KnowledgeBasePage() {
   const t = await getTranslations("admin");
   const db = getDb();
   const entries = await db.select().from(knowledgeBaseEntries).orderBy(asc(knowledgeBaseEntries.sortOrder));
+
+  const tableData: KbRow[] = entries.map((entry) => ({
+    id: entry.id,
+    slug: entry.slug,
+    intent: entry.intent,
+    approvedAnswer: entry.approvedAnswer,
+    active: entry.active,
+    createdAt: entry.createdAt.toISOString(),
+    updatedAt: entry.updatedAt.toISOString(),
+  }));
 
   return (
     <div>
@@ -29,27 +40,8 @@ export default async function KnowledgeBasePage() {
         </button>
       </form>
 
-      <div className="mt-8 space-y-4">
-        {entries.map((entry) => (
-          <form key={entry.id} action={updateKbEntry} className="space-y-3 rounded-xl border border-hairline bg-white p-5">
-            <input type="hidden" name="id" value={entry.id} />
-            <p className="text-[12px] text-muted-foreground">{entry.slug}</p>
-            <input className={inputCls} name="intent" defaultValue={entry.intent} />
-            <textarea className={inputCls} name="approvedAnswer" rows={4} defaultValue={entry.approvedAnswer} />
-            <label className="flex items-center gap-2 text-[13px]">
-              <input type="checkbox" name="active" defaultChecked={entry.active} />
-              {t("kb.active")}
-            </label>
-            <div className="flex gap-2">
-              <button type="submit" className="rounded-md bg-blue px-3 py-2 text-[13px] font-medium text-white">
-                {t("kb.save")}
-              </button>
-              <button formAction={deleteKbEntry} className="rounded-md border border-hairline px-3 py-2 text-[13px]">
-                {t("kb.delete")}
-              </button>
-            </div>
-          </form>
-        ))}
+      <div className="mt-8">
+        <KnowledgeBaseTable data={tableData} />
       </div>
     </div>
   );
