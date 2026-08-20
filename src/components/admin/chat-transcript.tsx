@@ -1,3 +1,6 @@
+"use client";
+
+import { useLocale, useTranslations } from "next-intl";
 import { formatAdminDateTime } from "@/lib/admin/format-date";
 import { cn } from "@/lib/utils";
 
@@ -10,19 +13,22 @@ export type ChatTranscriptLine = {
 export function ChatTranscript({
   title,
   lines,
-  emptyMessage = "No messages recorded.",
+  emptyMessage,
 }: {
   title: string;
   lines: ChatTranscriptLine[];
   emptyMessage?: string;
 }) {
+  const t = useTranslations("admin");
+  const locale = useLocale();
   const visible = lines.filter((line) => line.role === "user" || line.role === "assistant");
+  const empty = emptyMessage ?? t("sessionDetail.empty");
 
   if (visible.length === 0) {
     return (
       <section className="rounded-xl border border-hairline bg-white p-5">
         <h2 className="font-display text-lg">{title}</h2>
-        <p className="mt-3 text-[14px] text-muted-foreground">{emptyMessage}</p>
+        <p className="mt-3 text-[14px] text-muted-foreground">{empty}</p>
       </section>
     );
   }
@@ -42,8 +48,8 @@ export function ChatTranscript({
               )}
             >
               <div className="mb-1 flex items-center justify-between gap-3 text-[10.5px] uppercase tracking-wide opacity-75">
-                <span>{isUser ? "Visitor" : "Assistant"}</span>
-                {line.createdAt ? <span>{formatAdminDateTime(line.createdAt)}</span> : null}
+                <span>{isUser ? t("sessions.visitor") : t("sessions.assistant")}</span>
+                {line.createdAt ? <span>{formatAdminDateTime(line.createdAt, locale)}</span> : null}
               </div>
               <p className="whitespace-pre-wrap">{line.content}</p>
             </div>

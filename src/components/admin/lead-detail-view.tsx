@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { ArrowLeft } from "lucide-react";
 import { updateLeadStatusById } from "@/app/admin/leads/actions";
 import { DeleteLeadButton } from "@/components/admin/delete-lead-button";
@@ -54,6 +54,10 @@ export type LeadDetailData = {
   chatMessages: ChatMessageRow[];
 };
 
+function fieldLabel(t: ReturnType<typeof useTranslations<"admin">>, field: string) {
+  return t.has(`leadDetail.fields.${field}`) ? t(`leadDetail.fields.${field}`) : assessmentFieldLabel(field);
+}
+
 function InfoRow({ label, value }: { label: string; value: React.ReactNode }) {
   return (
     <div className="grid gap-1 sm:grid-cols-[10rem_1fr] sm:gap-3">
@@ -70,6 +74,7 @@ function AssessmentSections({
   answers: AssessmentAnswers;
   source: LeadDetailData["source"];
 }) {
+  const t = useTranslations("admin");
   const sections = source === "contact_form" ? CONTACT_FORM_SECTIONS : CHAT_ASSESSMENT_SECTIONS;
   const covered = new Set(sections.flatMap((section) => section.fields));
 
@@ -83,15 +88,11 @@ function AssessmentSections({
         if (items.length === 0) return null;
 
         return (
-          <div key={section.title}>
-            <h3 className="font-display text-base text-graphite">{section.title}</h3>
+          <div key={section.titleKey}>
+            <h3 className="font-display text-base text-graphite">{t(`leadDetail.sections.${section.titleKey}`)}</h3>
             <dl className="mt-3 space-y-3">
               {items.map(({ field, answer }) => (
-                <InfoRow
-                  key={field}
-                  label={assessmentFieldLabel(field)}
-                  value={displayAssessmentAnswer(answer!)}
-                />
+                <InfoRow key={field} label={fieldLabel(t, field)} value={displayAssessmentAnswer(answer!)} />
               ))}
             </dl>
           </div>
@@ -102,7 +103,7 @@ function AssessmentSections({
         .filter(([field]) => !covered.has(field))
         .filter(([, answer]) => displayAssessmentAnswer(answer) !== "—")
         .map(([field, answer]) => (
-          <InfoRow key={field} label={assessmentFieldLabel(field)} value={displayAssessmentAnswer(answer)} />
+          <InfoRow key={field} label={fieldLabel(t, field)} value={displayAssessmentAnswer(answer)} />
         ))}
     </div>
   );
@@ -147,6 +148,7 @@ function StatusEditor({ leadId, initialStatus }: { leadId: string; initialStatus
 
 export function LeadDetailView({ lead }: { lead: LeadDetailData }) {
   const t = useTranslations("admin");
+  const locale = useLocale();
   const router = useRouter();
   const transcriptLines =
     lead.chatMessages.length > 0
@@ -168,7 +170,7 @@ export function LeadDetailView({ lead }: { lead: LeadDetailData }) {
             <ArrowLeft size={14} />
             {t("leadDetail.back")}
           </Link>
-          <p className="eyebrow mt-4">Lead profile</p>
+          <p className="eyebrow mt-4">{t("leadDetail.profile")}</p>
           <h1 className="mt-2 font-display text-3xl">{lead.fullName}</h1>
           <p className="text-[15px] text-muted-foreground">{lead.organizationName}</p>
         </div>
@@ -189,11 +191,13 @@ export function LeadDetailView({ lead }: { lead: LeadDetailData }) {
             label: t("leads.source"),
             value: lead.source === "contact_form" ? t("leads.sourceContact") : t("leads.sourceChat"),
           },
-          { label: "Submitted", value: formatAdminDateTime(lead.createdAt) },
-          { label: "Consent", value: formatAdminDateTime(lead.consentAt) },
+          { label: t("leadDetail.submitted"), value: formatAdminDateTime(lead.createdAt, locale) },
+          { label: t("leadDetail.consent"), value: formatAdminDateTime(lead.consentAt, locale) },
           {
-            label: "Notifications",
-            value: lead.notifiedAt ? `Sent ${formatAdminDateTime(lead.notifiedAt)}` : "Not sent yet",
+            label: t("leadDetail.notifications"),
+            value: lead.notifiedAt
+              ? t("leadDetail.notifiedAt", { date: formatAdminDateTime(lead.notifiedAt, locale) })
+              : t("leadDetail.notNotified"),
           },
         ].map((item) => (
           <div key={item.label} className="rounded-xl border border-hairline bg-white p-4">
@@ -204,19 +208,19 @@ export function LeadDetailView({ lead }: { lead: LeadDetailData }) {
       </div>
 
       <section className="rounded-xl border border-hairline bg-white p-5">
-        <h2 className="font-display text-lg">Contact details</h2>
+        <h2 className="font-display text-lg">{t("leadDetail.contactDetails")}</h2>
         <dl className="mt-4 space-y-3">
           <InfoRow
-            label="Work email"
+            label={t("leadDetail.workEmail")}
             value={
               <a href={`mailto:${lead.workEmail}`} className="text-blue hover:underline">
                 {lead.workEmail}
               </a>
             }
           />
-          <InfoRow label="Phone" value={lead.phone} />
+          <InfoRow label={t("leadDetail.phone")} value={lead.phone} />
           <InfoRow
-            label="Website"
+            label={t("leadDetail.website")}
             value={
               lead.website ? (
                 <a
@@ -230,18 +234,16 @@ export function LeadDetailView({ lead }: { lead: LeadDetailData }) {
               ) : null
             }
           />
-          <InfoRow label="Role / title" value={lead.roleTitle} />
+          <InfoRow label={t("leadDetail.roleTitle")} value={lead.roleTitle} />
         </dl>
       </section>
 
       <section className="rounded-xl border border-hairline bg-white p-5">
         <h2 className="font-display text-lg">
-          {lead.source === "contact_form" ? "Workflow Audit request" : "Workflow assessment"}
+          {lead.source === "contact_form" ? t("leadDetail.contactRequestTitle") : t("leadDetail.assessmentTitle")}
         </h2>
         <p className="mt-1 text-[13.5px] text-muted-foreground">
-          {lead.source === "contact_form"
-            ? "Fields submitted through the contact form."
-            : "Structured answers collected during the chat assessment."}
+          {lead.source === "contact_form" ? t("leadDetail.contactRequestLead") : t("leadDetail.assessmentLead")}
         </p>
         <div className="mt-5">
           <AssessmentSections answers={lead.assessmentAnswers} source={lead.source} />
@@ -249,19 +251,17 @@ export function LeadDetailView({ lead }: { lead: LeadDetailData }) {
       </section>
 
       <section className="rounded-xl border border-hairline bg-white p-5">
-        <h2 className="font-display text-lg">AI diagnostic summary</h2>
+        <h2 className="font-display text-lg">{t("leadDetail.diagnosticTitle")}</h2>
         <p className="mt-3 whitespace-pre-wrap text-[14px] leading-relaxed text-graphite">
           {lead.diagnosticSummary ||
-            (lead.source === "contact_form"
-              ? "No AI diagnostic was generated for this contact-form lead."
-              : "No diagnostic summary was stored for this assessment.")}
+            (lead.source === "contact_form" ? t("leadDetail.diagnosticEmptyContact") : t("leadDetail.diagnosticEmptyChat"))}
         </p>
       </section>
 
       <ChatTranscript
-        title={lead.source === "contact_form" ? "Related chat activity" : "Chat conversation"}
+        title={lead.source === "contact_form" ? t("leadDetail.relatedChat") : t("leadDetail.conversation")}
         lines={transcriptLines}
-        emptyMessage="No messages recorded for this lead."
+        emptyMessage={t("leadDetail.emptyTranscript")}
       />
     </div>
   );

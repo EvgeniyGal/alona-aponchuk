@@ -30,49 +30,49 @@ export const ASSESSMENT_FIELD_LABELS: Record<string, string> = {
 };
 
 export const CONTACT_FORM_SECTIONS: Array<{
-  title: string;
+  titleKey: string;
   fields: string[];
 }> = [
   {
-    title: "Organization",
+    titleKey: "organization",
     fields: ["organization_type", "orgType", "role"],
   },
   {
-    title: "Current systems",
+    titleKey: "systems",
     fields: ["crm", "scheduling", "ai", "forms", "messaging"],
   },
   {
-    title: "Main problem & volume",
+    titleKey: "problemVolume",
     fields: ["problem", "leads", "consults", "clients", "staff"],
   },
   {
-    title: "Diagnostic notes",
+    titleKey: "diagnosticNotes",
     fields: ["lost", "followup", "afterForm", "improve"],
   },
 ];
 
 export const CHAT_ASSESSMENT_SECTIONS: Array<{
-  title: string;
+  titleKey: string;
   fields: string[];
 }> = [
   {
-    title: "Organization profile",
+    titleKey: "orgProfile",
     fields: ["organization_type", "role"],
   },
   {
-    title: "Workflow pain points",
+    titleKey: "painPoints",
     fields: ["main_problem", "client_dropoff_stage", "primary_priority"],
   },
   {
-    title: "Systems & follow-up",
+    titleKey: "systemsFollowup",
     fields: ["crm_status", "crm_platform", "tracking_method", "followup_method", "followup_owner"],
   },
   {
-    title: "Automation",
+    titleKey: "automation",
     fields: ["ai_automation_status", "chatbot_issues"],
   },
   {
-    title: "Volume",
+    titleKey: "volume",
     fields: ["monthly_inquiries"],
   },
 ];

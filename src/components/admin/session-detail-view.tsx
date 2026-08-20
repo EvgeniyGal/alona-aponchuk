@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { getTranslations } from "next-intl/server";
+import { getLocale, getTranslations } from "next-intl/server";
 import { ArrowLeft } from "lucide-react";
 import { ChatTranscript } from "@/components/admin/chat-transcript";
 import {
@@ -40,6 +40,7 @@ function InfoRow({ label, value }: { label: string; value: React.ReactNode }) {
 
 export async function SessionDetailView({ session }: { session: SessionDetailData }) {
   const t = await getTranslations("admin");
+  const locale = await getLocale();
   const assessmentItems = CHAT_ASSESSMENT_SECTIONS.flatMap((section) =>
     section.fields
       .map((field) => ({ field, answer: session.assessmentAnswers[field] }))
@@ -60,15 +61,15 @@ export async function SessionDetailView({ session }: { session: SessionDetailDat
         <p className="eyebrow mt-4">{t("sessionDetail.title")}</p>
         <h1 className="mt-2 font-display text-3xl">{truncateId(session.id, 12)}</h1>
         <p className="text-[15px] text-muted-foreground">
-          {t("sessionDetail.lastActive", { mode: modeLabel, date: formatAdminDateTime(session.updatedAt) })}
+          {t("sessionDetail.lastActive", { mode: modeLabel, date: formatAdminDateTime(session.updatedAt, locale) })}
         </p>
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         {[
           { label: t("sessionDetail.mode"), value: modeLabel },
-          { label: t("sessionDetail.started"), value: formatAdminDateTime(session.createdAt) },
-          { label: t("sessionDetail.lastActivity"), value: formatAdminDateTime(session.updatedAt) },
+          { label: t("sessionDetail.started"), value: formatAdminDateTime(session.createdAt, locale) },
+          { label: t("sessionDetail.lastActivity"), value: formatAdminDateTime(session.updatedAt, locale) },
           {
             label: t("sessionDetail.linkedLead"),
             value: session.leadId ? (
@@ -112,7 +113,7 @@ export async function SessionDetailView({ session }: { session: SessionDetailDat
             {assessmentItems.map(({ field, answer }) => (
               <InfoRow
                 key={field}
-                label={assessmentFieldLabel(field)}
+                label={t.has(`leadDetail.fields.${field}`) ? t(`leadDetail.fields.${field}`) : assessmentFieldLabel(field)}
                 value={displayAssessmentAnswer(answer!)}
               />
             ))}
