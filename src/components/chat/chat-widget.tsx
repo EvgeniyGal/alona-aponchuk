@@ -28,6 +28,48 @@ type Incoming =
   | { type: "multi_done"; step: string; values: string[] }
   | { type: "text"; value: string };
 
+type ChatViewport = {
+  offsetTop: number;
+  height: number;
+  keyboard: boolean;
+};
+
+const IDLE_VIEWPORT: ChatViewport = { offsetTop: 0, height: 0, keyboard: false };
+
+function readChatViewport(): ChatViewport {
+  const vv = window.visualViewport;
+  const height = vv?.height ?? window.innerHeight;
+  const offsetTop = vv?.offsetTop ?? 0;
+  const obscured = Math.max(0, window.innerHeight - height - offsetTop);
+  return { offsetTop, height, keyboard: obscured > 80 || offsetTop > 40 };
+}
+
+function useChatViewport(active: boolean): ChatViewport {
+  const [viewport, setViewport] = useState<ChatViewport>(IDLE_VIEWPORT);
+
+  useLayoutEffect(() => {
+    if (!active) {
+      setViewport(IDLE_VIEWPORT);
+      return;
+    }
+
+    const update = () => setViewport(readChatViewport());
+    update();
+
+    const vv = window.visualViewport;
+    vv?.addEventListener("resize", update);
+    vv?.addEventListener("scroll", update);
+    window.addEventListener("resize", update);
+    return () => {
+      vv?.removeEventListener("resize", update);
+      vv?.removeEventListener("scroll", update);
+      window.removeEventListener("resize", update);
+    };
+  }, [active]);
+
+  return viewport;
+}
+
 function optionLabel(option: { label: string; compactLabel?: string }) {
   if (typeof window === "undefined") return option.label;
   return window.innerWidth < 640 && option.compactLabel ? option.compactLabel : option.label;
@@ -253,10 +295,41 @@ export function ChatWidget() {
   const [draft, setDraft] = useState("");
   const [error, setError] = useState<string | null>(null);
   const scroller = useRef<HTMLDivElement>(null);
+  const panel = useRef<HTMLElement>(null);
   const loaded = useRef(false);
   const wasOpen = useRef(false);
   const sessionId = useRef<string | null>(readCache()?.sessionId ?? null);
   const visitorId = useRef("");
+  const viewport = useChatViewport(open);
+
+  useEffect(() => {
+    if (!open || typeof window === "undefined") return;
+    if (!window.matchMedia("(max-width: 640px)").matches) return;
+
+    const root = document.documentElement;
+    const previousOverflow = root.style.overflow;
+    root.style.overflow = "hidden";
+    return () => {
+      root.style.overflow = previousOverflow;
+    };
+  }, [open]);
+
+  useEffect(() => {
+    const root = panel.current;
+    if (!open || !root) return;
+
+    const onFocusIn = (event: FocusEvent) => {
+      const target = event.target;
+      if (!(target instanceof HTMLElement)) return;
+      if (!target.matches("input, textarea, select")) return;
+      requestAnimationFrame(() => {
+        scroller.current?.scrollTo({ top: scroller.current.scrollHeight });
+      });
+    };
+
+    root.addEventListener("focusin", onFocusIn);
+    return () => root.removeEventListener("focusin", onFocusIn);
+  }, [open]);
 
   const persistCache = useCallback((nextMessages: ChatMessage[], nextSessionId?: string | null) => {
     if (nextSessionId) sessionId.current = nextSessionId;
@@ -405,7 +478,7 @@ export function ChatWidget() {
 
   return (
     <>
-      <div className={cn("chat-launcher-wrap", open && "chat-launcher-wrap--open")}>
+      <div className={cn("chat-launcher-wrap", open && "chat-launcher-wrap--open", viewport.keyboard && "chat-launcher-wrap--keyboard")}>
         {showHelpPrompt && !open ? (
           <div className="chat-help-prompt" role="status" aria-live="polite">
             <button
@@ -440,8 +513,21 @@ export function ChatWidget() {
         </button>
       </div>
       {open ? (
-        <section className="chat-panel" role="dialog" aria-label={t("dialogLabel")}>
-          <header className="flex items-center justify-between border-b border-hairline bg-ivory px-4 py-3">
+        <section
+          ref={panel}
+          className={cn("chat-panel", viewport.keyboard && "chat-panel--keyboard")}
+          role="dialog"
+          aria-label={t("dialogLabel")}
+          style={
+            viewport.height > 0
+              ? ({
+                  "--chat-vv-top": `${viewport.offsetTop}px`,
+                  "--chat-vv-height": `${viewport.height}px`,
+                } as React.CSSProperties)
+              : undefined
+          }
+        >
+          <header className="chat-panel__header flex items-center justify-between border-b border-hairline bg-ivory px-4 py-3">
             <div className="min-w-0 pr-2">
               <p className="font-display text-[15px] font-semibold text-graphite">{t("widgetTitle")}</p>
               <p className="text-[11.5px] text-muted-foreground">{t("widgetSubtitle")}</p>
@@ -452,7 +538,7 @@ export function ChatWidget() {
               </button>
             </div>
           </header>
-          <div ref={scroller} className="flex-1 space-y-3 overflow-y-auto bg-[#fbfaf6] px-3 py-3">
+          <div ref={scroller} className="chat-panel__messages flex-1 space-y-3 overflow-y-auto bg-[#fbfaf6] px-3 py-3">
             {messages.map((message, index) => (
               <MessageBody
                 key={message.id}
@@ -467,7 +553,7 @@ export function ChatWidget() {
             {error ? <p className="text-[12px] text-destructive">{error}</p> : null}
           </div>
           {inAssessment ? (
-            <div className="shrink-0 border-t border-hairline bg-white px-3 py-3 text-center">
+            <div className="chat-panel__composer border-t border-hairline bg-white px-3 py-3 text-center">
               <p className="text-[12.5px] leading-relaxed text-muted-foreground">{t("assessmentLocked")}</p>
               <button
                 type="button"
@@ -480,7 +566,7 @@ export function ChatWidget() {
             </div>
           ) : (
             <form
-              className="flex gap-2 border-t border-hairline bg-white p-3"
+              className="chat-panel__composer flex gap-2 border-t border-hairline bg-white p-3"
               onSubmit={(event) => {
                 event.preventDefault();
                 const value = draft.trim();

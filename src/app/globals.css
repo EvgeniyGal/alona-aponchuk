@@ -580,19 +580,47 @@ html {
   height: min(36rem, calc(100dvh - 7rem));
   flex-direction: column;
   overflow: hidden;
+  overscroll-behavior: contain;
   border: 1px solid #e6e3d9;
   border-radius: 1rem;
   background: #ffffff;
   box-shadow: 0 24px 48px -24px rgba(31, 41, 51, 0.5);
 }
 
+.chat-panel__header,
+.chat-panel__composer {
+  flex-shrink: 0;
+}
+
+.chat-panel__messages {
+  min-height: 0;
+}
+
 @media (max-width: 640px) {
   .chat-panel {
+    top: auto;
     right: 0.5rem;
     left: 0.5rem;
     bottom: 5rem;
     width: auto;
     height: min(38rem, calc(100dvh - 6.25rem));
+  }
+
+  .chat-panel--keyboard {
+    top: calc(var(--chat-vv-top, 0px) + 0.5rem);
+    bottom: auto;
+    height: calc(var(--chat-vv-height, 100dvh) - 1rem);
+  }
+
+  .chat-launcher-wrap--keyboard {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .chat-panel input,
+  .chat-panel textarea,
+  .chat-panel select {
+    font-size: 16px;
   }
 
   .chat-launcher-wrap,
