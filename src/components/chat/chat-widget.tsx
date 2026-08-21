@@ -527,13 +527,18 @@ export function ChatWidget() {
               : undefined
           }
         >
-          <header className="chat-panel__header flex items-center justify-between border-b border-hairline bg-ivory px-4 py-3">
+          <header className="chat-panel__header flex items-center justify-between px-4 py-3">
             <div className="min-w-0 pr-2">
-              <p className="font-display text-[15px] font-semibold text-graphite">{t("widgetTitle")}</p>
-              <p className="text-[11.5px] text-muted-foreground">{t("widgetSubtitle")}</p>
+              <p className="font-display text-[15px] font-semibold">{t("widgetTitle")}</p>
+              <p className="chat-panel__subtitle text-[11.5px]">{t("widgetSubtitle")}</p>
             </div>
             <div className="flex shrink-0 items-center">
-              <button type="button" aria-label={t("closeShort")} onClick={() => setOpen(false)} className="cursor-pointer text-graphite/70 hover:text-graphite">
+              <button
+                type="button"
+                aria-label={t("closeShort")}
+                onClick={() => setOpen(false)}
+                className="chat-panel__close inline-flex h-8 w-8 cursor-pointer items-center justify-center rounded-md"
+              >
                 <X size={16} />
               </button>
             </div>

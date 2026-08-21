@@ -581,15 +581,35 @@ html {
   flex-direction: column;
   overflow: hidden;
   overscroll-behavior: contain;
-  border: 1px solid #e6e3d9;
+  border: 1px solid color-mix(in oklab, var(--color-blue) 32%, var(--color-hairline));
   border-radius: 1rem;
   background: #ffffff;
-  box-shadow: 0 24px 48px -24px rgba(31, 41, 51, 0.5);
+  box-shadow:
+    0 28px 56px -22px rgba(31, 41, 51, 0.48),
+    0 0 0 1px rgba(70, 106, 134, 0.1);
 }
 
 .chat-panel__header,
 .chat-panel__composer {
   flex-shrink: 0;
+}
+
+.chat-panel__header {
+  background: linear-gradient(135deg, #466a86 0%, #3a5870 100%);
+  color: #ffffff;
+}
+
+.chat-panel__subtitle {
+  color: rgba(255, 255, 255, 0.78);
+}
+
+.chat-panel__close {
+  color: rgba(255, 255, 255, 0.82);
+}
+
+.chat-panel__close:hover {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.14);
 }
 
 .chat-panel__messages {
